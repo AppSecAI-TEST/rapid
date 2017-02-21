@@ -12,6 +12,8 @@
 	<url>http://maven.apache.org</url>
 
 	<properties>
+		<junit.version>4.12</junit.version>
+
 		<!-- libs -->
 		<!-- logs -->
 		<slf4j.version>1.7.22</slf4j.version>
@@ -20,9 +22,24 @@
 		<log4j-over-slf4j.version>1.7.22</log4j-over-slf4j.version>
 		<!-- spring -->
 		<spring.version>4.3.5.RELEASE</spring.version>
+		<!-- serialization -->
+		<gson.version>2.8.0</gson.version>
+		<protostuff.version>1.5.2</protostuff.version>
+		<!-- http client -->
+		<httpclient.version>4.5.2</httpclient.version>
+		<httpclient.async.version>4.1.2</httpclient.async.version>
+		<!-- jedis -->
+		<jedis.version>2.9.0</jedis.version>
+
+		<servlet.version>2.5</servlet.version>
+		<janino.version>3.0.6</janino.version>
+		<commons-pool2.version>2.4.2</commons-pool2.version>
+		<commons-codec.version>1.10</commons-codec.version>
 
 		<!-- plugins -->
-		<assembly.version>2.6</assembly.version>
+		<maven-assembly.version>3.0.0</maven-assembly.version>
+		<maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
+		<maven-war-plugin.version>3.0.0</maven-war-plugin.version>
 		<maven-surefire-plugin.version>2.18.1</maven-surefire-plugin.version>
 
 		<!-- environments -->
@@ -33,6 +50,26 @@
 
 	<dependencyManagement>
 		<dependencies>
+			<!-- test environment -->
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${junit.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-test</artifactId>
+				<version>4.3.5.RELEASE</version>
+				<scope>test</scope>
+				<exclusions>
+					<exclusion>
+						<groupId>commons-logging</groupId>
+						<artifactId>commons-logging</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+
 			<!-- logger configuration -->
 			<dependency>
 				<groupId>org.slf4j</groupId>
@@ -56,8 +93,8 @@
 				<version>${jcl-over-slf4j.version}</version>
 				<exclusions>
 					<exclusion>
-						<groupId>*</groupId>
-						<artifactId>*</artifactId>
+						<groupId>org.slf4j</groupId>
+						<artifactId>slf4j-api</artifactId>
 					</exclusion>
 				</exclusions>
 			</dependency>
@@ -67,10 +104,15 @@
 				<version>${log4j-over-slf4j.version}</version>
 				<exclusions>
 					<exclusion>
-						<groupId>*</groupId>
-						<artifactId>*</artifactId>
+						<groupId>org.slf4j</groupId>
+						<artifactId>slf4j-api</artifactId>
 					</exclusion>
 				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.codehaus.janino</groupId>
+				<artifactId>janino</artifactId>
+				<version>${janino.version}</version>
 			</dependency>
 
 			<!-- spring -->
@@ -85,8 +127,117 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
+
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>servlet-api</artifactId>
+				<version>${servlet.version}</version>
+				<scope>provided</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-web</artifactId>
+				<version>${spring.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>commons-logging</groupId>
+						<artifactId>commons-logging</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+
+			<!-- serialization -->
+			<dependency>
+				<groupId>com.google.code.gson</groupId>
+				<artifactId>gson</artifactId>
+				<version>${gson.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.protostuff</groupId>
+				<artifactId>protostuff-runtime</artifactId>
+				<version>${protostuff.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.protostuff</groupId>
+				<artifactId>protostuff-core</artifactId>
+				<version>${protostuff.version}</version>
+			</dependency>
+
+			<!-- http client -->
+			<dependency>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>httpclient</artifactId>
+				<version>${httpclient.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>commons-logging</groupId>
+						<artifactId>*</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>commons-codec</groupId>
+						<artifactId>commons-codec</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>httpasyncclient</artifactId>
+				<version>${httpclient.async.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>commons-logging</groupId>
+						<artifactId>*</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+
+			<!-- redis -->
+			<dependency>
+				<groupId>redis.clients</groupId>
+				<artifactId>jedis</artifactId>
+				<version>${jedis.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.apache.commons</groupId>
+						<artifactId>commons-pool2</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-pool2</artifactId>
+				<version>${commons-pool2.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>commons-codec</groupId>
+				<artifactId>commons-codec</artifactId>
+				<version>${commons-codec.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
+
+	<dependencies>
+		<!-- logger configuration, force to use logback system -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>log4j-over-slf4j</artifactId>
+		</dependency>
+	</dependencies>
 
 	<build>
 		<pluginManagement>
@@ -112,8 +263,21 @@
 				</plugin>
 
 				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>${maven-jar-plugin.version}</version>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-assembly-plugin</artifactId>
-					<version>${assembly.version}</version>
+					<version>${maven-assembly.version}</version>
+					<configuration>
+						<appendAssemblyId>false</appendAssemblyId>
+						<descriptors>
+							<descriptor>src/main/assembly/assembly.xml</descriptor>
+						</descriptors>
+					</configuration>
 					<executions>
 						<execution>
 							<id>make-assembly</id>
@@ -121,11 +285,6 @@
 							<goals>
 								<goal>single</goal>
 							</goals>
-							<configuration>
-								<descriptors>
-									<descriptor>src/main/assembly/assembly.xml</descriptor>
-								</descriptors>
-							</configuration>
 						</execution>
 					</executions>
 				</plugin>
@@ -135,9 +294,7 @@
 
 	<modules>
 		<module>rapid-util</module>
-		<module>rapid-soa-service</module>
-		<module>rapid-soa</module>
-		<module>rapid-soa-deploy</module>
-		<module>rapid-soa-consumer</module>
+		<module>rapid-dubbo</module>
+		<module>rapid-redis</module>
 	</modules>
 </project>
