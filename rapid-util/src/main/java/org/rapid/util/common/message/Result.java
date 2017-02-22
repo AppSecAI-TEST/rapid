@@ -1,8 +1,8 @@
 package org.rapid.util.common.message;
 
 import org.rapid.util.common.SerializeUtil;
+import org.rapid.util.common.consts.code.Code;
 import org.rapid.util.common.consts.code.ICode;
-import org.rapid.util.common.consts.code.ICode.CommonCode;
 import org.rapid.util.common.message.IMessage.Message;
 
 /**
@@ -19,37 +19,59 @@ public class Result<T> extends Message<T> {
 	private int code;
 	private String desc;
 	
-	public Result(int code, String desc, T attach) {
-		super(attach);
-		this.code = code;
-		this.desc = desc;
-	}
-	
 	public int getCode() {
 		return code;
+	}
+	
+	public void setCode(int code) {
+		this.code = code;
 	}
 	
 	public String getDesc() {
 		return desc;
 	}
 	
+	public void setDesc(String desc) {
+		this.desc = desc;
+	}
+	
+	public static <T> Result<T> result(int code) {
+		return result(code, null);
+	}
+	
+	public static <T> Result<T> result(int code, T attach) {
+		return result(code, null, attach);
+	}
+	
+	public static <T> Result<T> result(int code, String desc, T attach) {
+		Result<T> result = new Result<T>();
+		result.setCode(code);
+		result.setDesc(desc);
+		result.setAttach(attach);
+		return result;
+	}
+	
 	public static String jsonSuccess() {
-		return jsonError(CommonCode.OK);
+		return jsonResult(Code.OK.id(), null, null);
 	}
 	
-	public static <T> String jsonSuccess(T data) { 
-		return jsonError(CommonCode.OK, data);
+	public static <T> String jsonSuccess(T attach) { 
+		return jsonResult(Code.OK.id(), attach);
 	}
 	
-	public static String jsonResult(int code, String desc) {
-		return SerializeUtil.JsonUtil.GSON.toJson(new Result<Void>(code, desc, null));
+	public static String jsonResult(ICode code) {
+		return jsonResult(code.id(), null, null);
 	}
 	
-	public static <T> String jsonError(ICode code, T data) {
-		return SerializeUtil.JsonUtil.GSON.toJson(new Result<T>(code.id(), code.value(), data));
+	public static String jsonResult(int code) {
+		return jsonResult(code, null, null);
 	}
 	
-	public static String jsonError(ICode code) {
-		return SerializeUtil.JsonUtil.GSON.toJson(new Result<Void>(code.id(), code.value(), null));
+	public static <T> String jsonResult(int code, T attach) {
+		return jsonResult(code, null, attach);
+	}
+	
+	public static <T> String jsonResult(int code, String desc, T attach) {
+		return SerializeUtil.JsonUtil.GSON.toJson(result(code, desc, attach));
 	}
 }

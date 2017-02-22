@@ -47,23 +47,18 @@ public interface IMessage<T> extends Serializable {
 		private int messageType;
 		
 		public Message() {
-			this(null, MessageType.RESPONSE);
-		}
-		
-		public Message(T attach) {
-			this(attach, MessageType.RESPONSE);
-		}
-		
-		public Message(MessageType messageType) {
-			this(null, messageType);
-		}
-		
-		public Message(T attach, MessageType messageType) {
-			this.attach = attach;
-			this.messageType = messageType.mark();
 			this.createTime = System.currentTimeMillis();
 		}
-
+		
+		@Override
+		public T attach() {
+			return this.attach;
+		}
+		
+		public void setAttach(T attach) {
+			this.attach = attach;
+		}
+		
 		@Override
 		public long createTime() {
 			return this.createTime;
@@ -73,10 +68,9 @@ public interface IMessage<T> extends Serializable {
 		public MessageType messageType() {
 			return MessageType.match(this.messageType);
 		}
-
-		@Override
-		public T attach() {
-			return this.attach;
+		
+		public void setMessageType(int messageType) {
+			this.messageType = messageType;
 		}
 	}
 }

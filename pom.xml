@@ -30,9 +30,13 @@
 		<httpclient.async.version>4.1.2</httpclient.async.version>
 		<!-- jedis -->
 		<jedis.version>2.9.0</jedis.version>
+		<!-- db -->
+		<HikariCP.version>2.6.0</HikariCP.version>
+		<mysql-connector-java.version>6.0.5</mysql-connector-java.version>
 
 		<servlet.version>2.5</servlet.version>
 		<janino.version>3.0.6</janino.version>
+		<libphonenumber.version>8.3.0</libphonenumber.version>
 		<commons-pool2.version>2.4.2</commons-pool2.version>
 		<commons-codec.version>1.10</commons-codec.version>
 
@@ -215,6 +219,32 @@
 				<groupId>commons-codec</groupId>
 				<artifactId>commons-codec</artifactId>
 				<version>${commons-codec.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.googlecode.libphonenumber</groupId>
+				<artifactId>libphonenumber</artifactId>
+				<version>${libphonenumber.version}</version>
+			</dependency>
+
+			<!-- db -->
+			<dependency>
+				<groupId>com.zaxxer</groupId>
+				<artifactId>HikariCP</artifactId>
+				<version>${HikariCP.version}</version>
+				<scope>provided</scope>
+				<exclusions>
+					<exclusion>
+						<groupId>org.slf4j</groupId>
+						<artifactId>slf4j-api</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>mysql</groupId>
+				<artifactId>mysql-connector-java</artifactId>
+				<version>${mysql-connector-java.version}</version>
+				<scope>provided</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

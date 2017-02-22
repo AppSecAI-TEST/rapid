@@ -15,7 +15,12 @@ public enum MessageType {
 	/**
 	 * 响应(客户端请求时返回的信息)
 	 */
-	RESPONSE(2);
+	RESPONSE(2),
+	
+	/**
+	 * 普通的方法调用或者 rpc 调用返回的结果
+	 */
+	MESSAGE(3);
 	
 	private int mark;
 	

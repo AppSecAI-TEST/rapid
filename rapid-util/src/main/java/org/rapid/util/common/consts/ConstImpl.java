@@ -21,7 +21,6 @@ public class ConstImpl<T> implements Const<T> {
 		this.id = id;
 		this.key = key;
 		this.value = value;
-		
 	}
 	
 	@Override
