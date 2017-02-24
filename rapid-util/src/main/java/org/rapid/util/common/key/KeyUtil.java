@@ -1,4 +1,4 @@
-package org.rapid.util.common;
+package org.rapid.util.common.key;
 
 import java.util.Random;
 

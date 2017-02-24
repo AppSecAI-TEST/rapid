@@ -18,7 +18,7 @@ import io.protostuff.runtime.RuntimeSchema;
 
 @SuppressWarnings("unchecked")
 public interface SerializeUtil {
-
+	
 	class JsonUtil {
 		public static final Gson GSON = new Gson();
 	}
@@ -80,6 +80,16 @@ public interface SerializeUtil {
 			T t = schema.newMessage();
 			ProtostuffIOUtil.mergeFrom(input, t, schema);
 			return t;
+		}
+	}
+	
+	class RedisUtil {
+		public static final byte[] encode(String str) {
+			return str.getBytes(Constants.UTF_8);
+		}
+		
+		public static final String decode(byte[] buffer) { 
+			return new String(buffer, Constants.UTF_8);
 		}
 	}
 }

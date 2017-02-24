@@ -19,7 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisSentinelPool;
 import redis.clients.jedis.exceptions.JedisNoScriptException;
 
 public class Redis {
@@ -29,7 +29,7 @@ public class Redis {
 	private static final String DEFAULT_LUA_FILE				= "/lua/";
 	private static final String LUA_SCRIPT_SUFFIX				= ".lua";
 
-	private JedisPool jedisPool;
+	private JedisSentinelPool jedisPool;
 	
 	// redis lua 脚本缓存
 	private Map<String, LuaScript> scripts = new ConcurrentHashMap<String, LuaScript>();
@@ -103,6 +103,15 @@ public class Redis {
 		});
 	}
 	
+	public long incr(String key) { 
+		return invoke(new RedisInvocation<Long>() {
+			@Override
+			public Long invok(Jedis jedis) {
+				return jedis.incr(key);
+			}
+		});
+	}
+	
 	/**
 	 * 设置 key 的值为 value
 	 * 
@@ -137,6 +146,38 @@ public class Redis {
 			}
 		});
 	}
+	
+	// ******************************** hash ********************************
+
+	public String hmset(String key, Map<String, String> hash) {
+		return invoke(new RedisInvocation<String>() {
+			@Override
+			public String invok(Jedis jedis) {
+				return jedis.hmset(key, hash);
+			}
+		});
+	}
+	
+	public String hmset(byte[] key, Map<byte[], byte[]> hash) {
+		return invoke(new RedisInvocation<String>() {
+			@Override
+			public String invok(Jedis jedis) {
+				return jedis.hmset(key, hash);
+			}
+		});
+	}
+	
+	// ******************************** server command ********************************
+	
+	public String flushAll() {
+		return invoke(new RedisInvocation<String>() {
+			@Override
+			public String invok(Jedis jedis) {
+				return jedis.flushAll();
+			}
+		});
+	}
+
 	
 	// ******************************** function command ********************************
 	
@@ -281,7 +322,7 @@ public class Redis {
 		}
 	}
 	
-	public void setJedisPool(JedisPool jedisPool) {
+	public void setJedisPool(JedisSentinelPool jedisPool) {
 		this.jedisPool = jedisPool;
 	}
 	
