@@ -14,9 +14,6 @@ public class Key<KEY> {
 	
 	private static final Map<Key<?>, Boolean> keys = new ConcurrentHashMap<Key<?>, Boolean>();
 	
-	public static final Key<Integer> JSON_ENTITY_SERIALIZER					= instance(1);
-	public static final Key<Integer> PROTOSTUFF_ENTITY_SERIALIZER			= instance(2);
-
 	private KEY key;
 	
 	private Key(KEY key) {

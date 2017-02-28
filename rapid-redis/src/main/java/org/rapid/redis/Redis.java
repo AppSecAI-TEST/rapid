@@ -12,6 +12,7 @@ import org.rapid.redis.ILuaCmd.LuaCmd;
 import org.rapid.redis.RedisOption.EXPX;
 import org.rapid.redis.RedisOption.NXXX;
 import org.rapid.util.common.Callback;
+import org.rapid.util.common.SerializeUtil;
 import org.rapid.util.common.uuid.AlternativeJdkIdGenerator;
 import org.rapid.util.io.FileReader;
 import org.rapid.util.lang.StringUtils;
@@ -148,6 +149,15 @@ public class Redis {
 	}
 	
 	// ******************************** hash ********************************
+	
+	public byte[] hget(byte[] key, byte[] field) {
+		return invoke(new RedisInvocation<byte[]>() {
+			@Override
+			public byte[] invok(Jedis jedis) {
+				return jedis.hget(key, field);
+			}
+		});
+	}
 
 	public String hmset(String key, Map<String, String> hash) {
 		return invoke(new RedisInvocation<String>() {
@@ -246,6 +256,15 @@ public class Redis {
 	}
 	
 	/**
+	 * 先删除整个 hash 的值, 再重新加载新的值(因为是原子操作所以没有并发问题)
+	 * 
+	 * @param params
+	 */
+	public void delAndHmset(byte[][] params) {
+		invokeLua(LuaCmd.DEL_AND_HMSET, params);
+	}
+	
+	/**
 	 * 如果 key 值存在并且值等于 value 则删除 value 然后返回 true，否则什么也不做返回 false
 	 * 
 	 * @param key
@@ -300,6 +319,25 @@ public class Redis {
 					return (T)jedis.evalsha(script.getSha1Key(), cmd.keyNum(), params);
 				
 				T object = (T) jedis.eval(script.getContent(), cmd.keyNum(), params);
+				script.setStored(true);
+				return object;
+			}
+		});
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected <T> T invokeLua(ILuaCmd cmd, byte[] ...params) {
+		LuaScript script = scripts.get(cmd.key());
+		if (null == script)
+			throw new JedisNoScriptException("Script " + cmd.key() + " not exist!");
+		
+		return invoke(new RedisInvocation<T>() {
+			@Override
+			public T invok(Jedis jedis) {
+				if (script.isStored()) 
+					return (T)jedis.evalsha(SerializeUtil.RedisUtil.encode(script.getSha1Key()), cmd.keyNum(), params);
+				
+				T object = (T) jedis.eval(SerializeUtil.RedisUtil.encode(script.getContent()), cmd.keyNum(), params);
 				script.setStored(true);
 				return object;
 			}

@@ -2,6 +2,7 @@ package org.rapid.redis;
 
 import org.rapid.redis.RedisOption.EXPX;
 import org.rapid.redis.RedisOption.NXXX;
+import org.rapid.util.common.SerializeUtil;
 
 public class RedisTest extends BaseTest {
 
@@ -51,5 +52,13 @@ public class RedisTest extends BaseTest {
 		redis.del("lock");
 		lockId = redis.lock("lock", 3000, 10000000);
 		assertNotNull(lockId);
+	}
+	
+	public void testDelAndHmset() { 
+		byte[][] arr = new byte[3][];
+		arr[0] = SerializeUtil.RedisUtil.encode("user:1");
+		arr[1] = SerializeUtil.RedisUtil.encode("age");
+		arr[2] = SerializeUtil.RedisUtil.encode("15");
+		redis.delAndHmset(arr);
 	}
 }

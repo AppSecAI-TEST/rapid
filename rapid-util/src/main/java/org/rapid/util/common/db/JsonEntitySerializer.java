@@ -1,7 +1,6 @@
 package org.rapid.util.common.db;
 
 import org.rapid.util.common.SerializeUtil;
-import org.rapid.util.common.key.Key;
 import org.rapid.util.exception.ConvertFailuerException;
 
 /**
@@ -11,20 +10,15 @@ import org.rapid.util.exception.ConvertFailuerException;
  *
  * @param <DATA>
  */
-public class JsonEntitySerializer<KEY, DATA extends Entity<KEY>> implements EntitySerializer<KEY, DATA, String> {
+public class JsonEntitySerializer<KEY, DATA extends Entity<KEY>> implements EntitySerializer<KEY, DATA, byte[]> {
 	
 	@Override
-	public String convert(DATA k) throws ConvertFailuerException {
-		return SerializeUtil.JsonUtil.GSON.toJson(k);
+	public byte[] convert(DATA k) throws ConvertFailuerException {
+		return SerializeUtil.RedisUtil.encode(SerializeUtil.JsonUtil.GSON.toJson(k));
 	}
 	
 	@Override
-	public DATA antiConvet(String t, Class<DATA> clazz) throws ConvertFailuerException {
-		return SerializeUtil.JsonUtil.GSON.fromJson(t, clazz);
-	}
-
-	@Override
-	public Key<Integer> identity() {
-		return Key.JSON_ENTITY_SERIALIZER;
+	public DATA antiConvet(byte[] t, Class<DATA> clazz) throws ConvertFailuerException {
+		return SerializeUtil.JsonUtil.GSON.fromJson(SerializeUtil.RedisUtil.decode(t), clazz);
 	}
 }

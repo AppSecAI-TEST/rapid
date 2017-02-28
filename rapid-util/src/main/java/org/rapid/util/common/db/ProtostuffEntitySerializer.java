@@ -1,7 +1,6 @@
 package org.rapid.util.common.db;
 
 import org.rapid.util.common.SerializeUtil;
-import org.rapid.util.common.key.Key;
 import org.rapid.util.exception.ConvertFailuerException;
 
 public class ProtostuffEntitySerializer<KEY, DATA extends Entity<KEY>> implements EntitySerializer<KEY, DATA, byte[]> {
@@ -14,10 +13,5 @@ public class ProtostuffEntitySerializer<KEY, DATA extends Entity<KEY>> implement
 	@Override
 	public byte[] convert(DATA k) throws ConvertFailuerException {
 		return SerializeUtil.ProtostuffUtil.serial(k);
-	}
-
-	@Override
-	public Key<Integer> identity() {
-		return Key.PROTOSTUFF_ENTITY_SERIALIZER;
 	}
 }

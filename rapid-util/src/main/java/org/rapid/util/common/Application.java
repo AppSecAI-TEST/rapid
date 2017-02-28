@@ -18,7 +18,7 @@ public abstract class Application implements ApplicationListener<ApplicationCont
 		else if (event instanceof ContextStoppedEvent)
 			stop();
 		else
-			logger.info("Spring refresh and closed were ignored1");
+			logger.info("Spring refresh and closed were ignored!");
 	}
 	
 	protected abstract void start();

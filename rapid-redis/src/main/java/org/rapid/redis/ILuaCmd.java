@@ -33,7 +33,20 @@ public interface ILuaCmd {
 			}
 		},
 		
+		/**
+		 * 如果值等于指定值，则删除，否则返回 0
+		 */
 		DEL_IF_EQUALS {
+			@Override
+			public int keyNum() {
+				return 1;
+			}
+		},
+		
+		/**
+		 * 先删除 key，再设置 key 的值为一个 hash
+		 */
+		DEL_AND_HMSET {
 			@Override
 			public int keyNum() {
 				return 1;
