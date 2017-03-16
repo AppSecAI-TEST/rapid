@@ -11,7 +11,7 @@ import org.rapid.util.common.SerializeUtil;
 @SuppressWarnings("all")
 public class RedisTest extends BaseTest {
 
-	private Redis redis;
+	protected Redis redis;
 	
 	@Override
 	protected void setUp() throws Exception {

@@ -34,6 +34,16 @@ public interface ILuaCmd {
 		},
 		
 		/**
+		 * 先删除 key，再设置 key 的值为一个 hash
+		 */
+		DEL_AND_HMSET {
+			@Override
+			public int keyNum() {
+				return 1;
+			}
+		},
+		
+		/**
 		 * 如果值等于指定值，则删除，否则返回 0
 		 */
 		DEL_IF_EQUALS {
@@ -43,10 +53,7 @@ public interface ILuaCmd {
 			}
 		},
 		
-		/**
-		 * 先删除 key，再设置 key 的值为一个 hash
-		 */
-		DEL_AND_HMSET {
+		GET_AND_DEL {
 			@Override
 			public int keyNum() {
 				return 1;
@@ -70,13 +77,6 @@ public interface ILuaCmd {
 			}
 		},
 		
-		GET_AND_DEL {
-			@Override
-			public int keyNum() {
-				return 1;
-			}
-		},
-		
 		HSET_AND_REFRESH {
 			@Override
 			public int keyNum() {
@@ -85,6 +85,20 @@ public interface ILuaCmd {
 		},
 		
 		HMSET_AND_REFRESH {
+			@Override
+			public int keyNum() {
+				return 1;
+			}
+		},
+		
+		HGET_AND_REFRESH {
+			@Override
+			public int keyNum() {
+				return 1;
+			}
+		},
+		
+		HGET_AND_DEL {
 			@Override
 			public int keyNum() {
 				return 1;
