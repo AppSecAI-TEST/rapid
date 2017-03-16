@@ -1,5 +1,6 @@
 package org.rapid.util.common;
 
+import org.rapid.util.common.converter.Converter;
 import org.rapid.util.exception.ConvertFailuerException;
 
 /**

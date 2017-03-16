@@ -15,6 +15,6 @@ public class BoolConst extends ConstImpl<Boolean> {
 	}
 
 	public BoolConst(int id, String key, boolean defaultValue) {
-		super(key, defaultValue);
+		super(id, key, defaultValue);
 	}
 }

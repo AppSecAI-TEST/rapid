@@ -36,4 +36,8 @@ public class ConstConvertFailureException extends ConvertFailuerException {
 	public static final ConstConvertFailureException nullConstException(Const<?> constant) { 
 		throw new ConstConvertFailureException(constant, true);
 	}
+	
+	public static final ConstConvertFailureException errorConstException(Const<?> constant) { 
+		throw new ConstConvertFailureException(constant, false);
+	}
 }

@@ -9,7 +9,7 @@ public interface CacheService<CACHE extends Cache<?, ?>> {
 	
 	void dispose();
 	
-	<ID, VALUE> Cache<ID, VALUE> getCache(String name);
+	CACHE getCache(String name);
 	
 	<ID, VALUE> VALUE getById(String name, ID id); 
 	

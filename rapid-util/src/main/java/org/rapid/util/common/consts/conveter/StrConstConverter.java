@@ -1,7 +1,7 @@
 package org.rapid.util.common.consts.conveter;
 
-import org.rapid.util.common.Converter;
 import org.rapid.util.common.consts.Const;
+import org.rapid.util.common.converter.Converter;
 import org.rapid.util.exception.ConstConvertFailureException;
 
 /**

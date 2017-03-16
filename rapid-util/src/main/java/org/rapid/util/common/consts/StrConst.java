@@ -15,6 +15,6 @@ public class StrConst extends ConstImpl<String> {
 	}
 
 	public StrConst(int id, String key, String value) {
-		super(key, value);
+		super(id, key, value);
 	}
 }

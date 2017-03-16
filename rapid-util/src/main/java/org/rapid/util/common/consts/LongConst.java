@@ -15,6 +15,6 @@ public class LongConst extends ConstImpl<Long> {
 	}
 
 	public LongConst(int id, String key, long defaultValue) {
-		super(key, defaultValue);
+		super(id, key, defaultValue);
 	}
 }

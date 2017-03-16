@@ -39,8 +39,20 @@ public class Result<T> extends Message<T> {
 		return result(code, null);
 	}
 	
+	public static <T> Result<T> result(ICode code) {
+		return result(code.id(), code.value(), null);
+	}
+	
+	public static <T> Result<T> result(T attach) {
+		return result(Code.OK.id(), attach);
+	}
+	
 	public static <T> Result<T> result(int code, T attach) {
 		return result(code, null, attach);
+	}
+	
+	public static <T> Result<T> result(ICode code, String desc) {
+		return result(code.id(), desc, null);
 	}
 	
 	public static <T> Result<T> result(int code, String desc, T attach) {

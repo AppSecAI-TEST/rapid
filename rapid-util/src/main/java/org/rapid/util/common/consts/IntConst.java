@@ -15,6 +15,6 @@ public class IntConst extends ConstImpl<Integer> {
 	}
 
 	public IntConst(int id, String key, int value) {
-		super(key, value);
+		super(id, key, value);
 	}
 }
