@@ -15,8 +15,8 @@ import org.rapid.data.storage.redis.RedisTable;
  */
 public abstract class Mapper<KEY, ENTITY extends Entity<KEY>, DAO extends Dao<KEY, ENTITY>> implements IMapper<KEY, ENTITY> {
 	
-	protected Redis redis;
 	protected DAO dao;
+	protected Redis redis;
 	protected RedisTable<KEY, ENTITY> table;
 	
 	protected Mapper(RedisTable<KEY, ENTITY> table) {

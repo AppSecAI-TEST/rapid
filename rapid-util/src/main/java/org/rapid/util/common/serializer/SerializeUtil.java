@@ -103,6 +103,14 @@ public interface SerializeUtil {
 	}
 
 	class RedisUtil {
+		public static final byte[] encode(long value) {
+			return encode(String.valueOf(value));
+		}
+		
+		public static final byte[] encode(int value) {
+			return encode(String.valueOf(value));
+		}
+		
 		public static final byte[] encode(String str) {
 			return str.getBytes(Constants.UTF_8);
 		}
