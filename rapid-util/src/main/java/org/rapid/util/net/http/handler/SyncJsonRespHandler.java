@@ -7,7 +7,7 @@ import java.nio.charset.Charset;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.ContentType;
-import org.rapid.util.common.SerializeUtil;
+import org.rapid.util.common.serializer.SerializeUtil;
 
 public class SyncJsonRespHandler<T> extends SyncRespHandler<T> {
 	

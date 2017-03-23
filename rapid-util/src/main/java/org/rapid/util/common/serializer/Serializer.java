@@ -1,4 +1,4 @@
-package org.rapid.util.common;
+package org.rapid.util.common.serializer;
 
 import org.rapid.util.common.converter.Converter;
 import org.rapid.util.exception.ConvertFailuerException;

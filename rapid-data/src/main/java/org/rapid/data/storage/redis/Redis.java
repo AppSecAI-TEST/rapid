@@ -5,6 +5,8 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -13,7 +15,7 @@ import org.rapid.data.storage.redis.ILuaCmd.LuaCmd;
 import org.rapid.data.storage.redis.RedisOption.EXPX;
 import org.rapid.data.storage.redis.RedisOption.NXXX;
 import org.rapid.util.common.Callback;
-import org.rapid.util.common.SerializeUtil;
+import org.rapid.util.common.serializer.SerializeUtil;
 import org.rapid.util.common.uuid.AlternativeJdkIdGenerator;
 import org.rapid.util.io.FileReader;
 import org.rapid.util.lang.StringUtils;
@@ -219,6 +221,10 @@ public class Redis {
 		});
 	}
 	
+	public String hgetAndRefresh(String key, String field, int expire) {
+		return invokeLua(LuaCmd.HGET_AND_REFRESH, key, field, String.valueOf(expire));
+	}
+	
 	public Map<String, String> hgetAll(String key) {
 		return invoke(new RedisInvocation<Map<String, String>>() {
 			@Override
@@ -255,6 +261,32 @@ public class Redis {
 		});
 	}
 	
+	public void hmsetAndRefresh(String ...params) {
+		invokeLua(LuaCmd.HMSET_AND_REFRESH, params);
+	}
+	
+	public void delAndHmset(byte[] key, Map<byte[], byte[]> params) {
+		byte[][] buffer = new byte[params.size() * 2 + 1][];
+		int index = 0;
+		buffer[index++] = key;
+		for (Entry<byte[], byte[]> entry : params.entrySet()) {
+			buffer[index++] = entry.getKey();
+			buffer[index++] = (entry.getValue());
+		}
+		invokeLua(LuaCmd.DEL_AND_HMSET, buffer);
+	}
+	
+	public void delAndHmset(String key, Map<String, String> params) {
+		String[] buffer = new String[params.size() * 2 + 1];
+		int index = 0;
+		buffer[index++] = key;
+		for (Entry<String, String> entry : params.entrySet()) {
+			buffer[index++] = entry.getKey();
+			buffer[index++] = (entry.getValue());
+		}
+		invokeLua(LuaCmd.DEL_AND_HMSET, buffer);
+	}
+	
 	public long hset(String key, String field, String value) { 
 		return invoke(new RedisInvocation<Long>() {
 			@Override
@@ -271,6 +303,19 @@ public class Redis {
 				return jedis.hset(key, field, value);
 			}
 		});
+	}
+	
+	public Set<String> hkeys(String key) {
+		return invoke(new RedisInvocation<Set<String>>() {
+			@Override
+			public Set<String> invok(Jedis jedis) {
+				return jedis.hkeys(key);
+			}
+		});
+	}
+	
+	public List<String> hkeysAndRefresh(String key, int expire) { 
+		return invokeLua(LuaCmd.HKEYS_AND_REFRESH, key, String.valueOf(expire));
 	}
 	
 	public List<byte[]> hvals(byte[] key) {
@@ -290,9 +335,64 @@ public class Redis {
 			}
 		});
 	}
+	
+	// ******************************** set ********************************
+	
+	public long sadd(String key, String... members) { 
+		return invoke(new RedisInvocation<Long>() {
+			@Override
+			public Long invok(Jedis jedis) {
+				return jedis.sadd(key, members);
+			}
+		});
+	}
+	
+	public long delAndSadd(String key, String... members) { 
+		if (null == key || members.length == 0) {
+			del(key);
+			return 0;
+		}
+		String[] params = new String[members.length + 1];
+		params[0] = key;
+		System.arraycopy(members, 0, params, 1, members.length);
+		return invokeLua(LuaCmd.DEL_AND_SADD, params);
+	}
+	
+	public long delAndSadd(String key, Set<String> members) { 
+		if (null == members || members.isEmpty()) {
+			del(key);
+			return 0;
+		}
+		String[] params = new String[members.size() + 1];
+		params[0] = key;
+		System.arraycopy(members.toArray(), 0, params, 1, members.size());
+		return invokeLua(LuaCmd.DEL_AND_SADD, params);
+	}
+	
+	public Set<byte[]> smembers(byte[] key) {
+		return invoke(new RedisInvocation<Set<byte[]>>() {
+			@Override
+			public Set<byte[]> invok(Jedis jedis) {
+				return jedis.smembers(key);
+			}
+		});
+	}
 
-	// ******************************** server command
-	// ********************************
+	public List<byte[]> smembersAndRefresh(String key) { 
+		return invokeLua(LuaCmd.SMEMBERS_AND_REFRESH, SerializeUtil.RedisUtil.encode(key));
+	}
+	
+	public void saddAndRefresh(String key, int expire, String... members) {
+		String[] params = new String[members.length + 2];
+		int index = 0;
+		params[index++] = key;
+		params[index++] = String.valueOf(expire);
+		for (String buffer : members)
+			params[index++] = buffer;
+		invokeLua(LuaCmd.SADD_AND_REFRESH, params);
+	}
+
+	// ******************************** server command ********************************
 
 	public String flushAll() {
 		return invoke(new RedisInvocation<String>() {
@@ -352,8 +452,7 @@ public class Redis {
 		return delIfEquals(lock, lockId);
 	}
 
-	// ******************************** lua command
-	// ********************************
+	// ******************************** lua command ********************************
 
 	/**
 	 * 获取验证码
@@ -379,19 +478,6 @@ public class Redis {
 	}
 
 	/**
-	 * 先删除整个 hash 的值, 再重新加载新的值(因为是原子操作所以没有并发问题)
-	 * 
-	 * @param params
-	 */
-	public void delAndHmset(byte[][] params) {
-		invokeLua(LuaCmd.DEL_AND_HMSET, params);
-	}
-	
-	public void delAndHmset(String[] params) {
-		invokeLua(LuaCmd.DEL_AND_HMSET, params);
-	}
-	
-	/**
 	 * 如果 key 值存在并且值等于 value 则删除 value 然后返回 true，否则什么也不做返回 false
 	 * 
 	 * @param key
@@ -414,7 +500,7 @@ public class Redis {
 	public void refreshHash(String ...params) {
 		invokeLua(LuaCmd.REFRESH_HASH, params);
 	}
-
+	
 	/**
 	 * 加载预定义的 lua 脚本
 	 * 

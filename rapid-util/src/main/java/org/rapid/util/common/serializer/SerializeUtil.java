@@ -1,4 +1,4 @@
-package org.rapid.util.common;
+package org.rapid.util.common.serializer;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +14,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import org.rapid.util.common.Constants;
 import org.rapid.util.common.converter.StrConverter;
 import org.rapid.util.common.converter.str.Str2BoolConverter;
 import org.rapid.util.common.converter.str.Str2ByteConverter;

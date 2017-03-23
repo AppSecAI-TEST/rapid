@@ -1,6 +1,6 @@
 package org.rapid.data.storage.redis;
 
-import org.rapid.util.common.SerializeUtil;
+import org.rapid.util.common.serializer.SerializeUtil;
 
 /**
  * Redis 的选项常量

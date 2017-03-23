@@ -1,12 +1,13 @@
 package org.rapid.data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.rapid.data.storage.redis.ILuaCmd;
 import org.rapid.data.storage.redis.Redis;
 import org.rapid.data.storage.redis.RedisOption.EXPX;
 import org.rapid.data.storage.redis.RedisOption.NXXX;
-import org.rapid.util.common.SerializeUtil;
+import org.rapid.util.common.serializer.SerializeUtil;
 
 @SuppressWarnings("all")
 public class RedisTest extends BaseTest {
@@ -59,17 +60,14 @@ public class RedisTest extends BaseTest {
 		assertNotNull(lockId);
 	}
 	
-	public void testDelAndHmset() { 
-		byte[][] arr = new byte[3][];
-		arr[0] = SerializeUtil.RedisUtil.encode("user:1");
-		arr[1] = SerializeUtil.RedisUtil.encode("age");
-		arr[2] = SerializeUtil.RedisUtil.encode("15");
-		redis.delAndHmset(arr);
-	}
-	
 	public void testHgetAllAndPexpire() { 
 		redis.pexpire("user:1", 10000000);
 		List<String> list = redis.hgetAllAndRefresh("user:1", 100000);
 		System.out.println(list);
+	}
+	
+	public void testDelAndSadd()  {
+		long value = redis.delAndSadd("set", "1", "2", "3", "2");
+		assertEquals(value, 3);
 	}
 }

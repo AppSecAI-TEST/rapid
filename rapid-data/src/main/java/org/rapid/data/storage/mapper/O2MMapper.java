@@ -8,12 +8,11 @@ import java.util.Map.Entry;
 import org.rapid.data.storage.db.Dao;
 import org.rapid.data.storage.db.Entity;
 import org.rapid.data.storage.redis.RedisTable;
-import org.rapid.util.common.SerializeUtil;
+import org.rapid.util.common.serializer.SerializeUtil;
 
 /**
  * <pre>
  * 一条数据映射成一个 redis 的 hash，表示 one to many
- * 一般 one to many 最好做成有 expire 失效时间的数据
  * </pre>
  * 
  * @author ahab
@@ -45,9 +44,10 @@ public abstract class O2MMapper<KEY, ENTITY extends Entity<KEY>, DAO extends Dao
 	protected abstract String redisKey(KEY key);
 	
 	@Override
-	public void insert(ENTITY entity) {
+	public ENTITY insert(ENTITY entity) {
 		dao.insert(entity);
-		refreshCache(entity);
+		refresh(entity);
+		return entity;
 	}
 	
 	/**
@@ -62,7 +62,7 @@ public abstract class O2MMapper<KEY, ENTITY extends Entity<KEY>, DAO extends Dao
 		if (null == list) {
 			entity = dao.selectByKey(key);
 			if (null != entity) 
-				refreshCache(entity);
+				refresh(entity);
 		} else 
 			entity = parse(list);
 		return entity;
@@ -71,7 +71,7 @@ public abstract class O2MMapper<KEY, ENTITY extends Entity<KEY>, DAO extends Dao
 	@Override
 	public void update(ENTITY entity) {
 		dao.update(entity);
-		refreshCache(entity);
+		refresh(entity);
 	}
 	
 	protected ENTITY parse(List<String> list) {
@@ -90,7 +90,7 @@ public abstract class O2MMapper<KEY, ENTITY extends Entity<KEY>, DAO extends Dao
 	 * 
 	 * @param entity
 	 */
-	protected void refreshCache(ENTITY entity) { 
+	protected void refresh(ENTITY entity) { 
 		Map<String, String> map = SerializeUtil.BeanMapUtil.beanToMap(entity);
 		redis.refreshHash(handlerLuaParameters(map, entity.key().toString(), String.valueOf(table.expireMillisSeconds())));
 	}

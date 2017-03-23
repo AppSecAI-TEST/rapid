@@ -22,7 +22,7 @@ public interface IMapper<KEY, ENTITY extends Entity<KEY>>  {
 	 * 
 	 * @param entity
 	 */
-	void insert(ENTITY entity);
+	ENTITY insert(ENTITY entity);
 	
 	/**
 	 * 根据主键获取唯一的数据

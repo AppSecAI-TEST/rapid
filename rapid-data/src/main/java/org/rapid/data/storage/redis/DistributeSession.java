@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.rapid.data.storage.redis.ILuaCmd.LuaCmd;
-import org.rapid.util.common.SerializeUtil;
+import org.rapid.util.common.serializer.SerializeUtil;
 import org.rapid.util.common.uuid.AlternativeJdkIdGenerator;
 import org.rapid.util.lang.DateUtils;
 
@@ -83,7 +83,16 @@ public class DistributeSession {
 		return null == buffer ? null : SerializeUtil.RedisUtil.decode(buffer);
 	}
 	
+	public Integer getAndDelInt(String field) { 
+		byte[] buffer = getAndDel(SerializeUtil.RedisUtil.encode(field));
+		return null == buffer ? null : Integer.parseInt(SerializeUtil.RedisUtil.decode(buffer));
+	}
+	
 	public void setInactiveInterval(int inactiveInterval) {
 		this.inactiveInterval = SerializeUtil.RedisUtil.encode(String.valueOf(inactiveInterval));
+	}
+	
+	public String sessionId() {
+		return sessionId;
 	}
 }

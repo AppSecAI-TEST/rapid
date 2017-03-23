@@ -28,14 +28,29 @@ public enum Code implements ICode {
 	PARAM_ERROR(3, "param {0} error"),
 	
 	/**
+	 * 禁止操作
+	 */
+	FORBID(4, "forbid"),
+	
+	/**
+	 * 无效的 token
+	 */
+	TOKEN_INVALID(5, "token is invalid"),
+	
+	/**
 	 * 用户不存在
 	 */
 	USER_NOT_EXIST(20, "user not exist"),
 	
 	/**
+	 * 用户已经存在
+	 */
+	USER_ALREADY_EXIST(21, "user already exist"),
+	
+	/**
 	 * 用户状态已经改变，当获取用户锁失败时返回该错误，表示当前用户的数据正在被修改中
 	 */
-	USER_STATUS_CHANGED(21, "user status changed"),
+	USER_STATUS_CHANGED(22, "user status changed"),
 	
 	/**
 	 * 验证码获取CD

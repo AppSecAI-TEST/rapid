@@ -103,6 +103,34 @@ public interface ILuaCmd {
 			public int keyNum() {
 				return 1;
 			}
+		},
+		
+		DEL_AND_SADD {
+			@Override
+			public int keyNum() {
+				return 1;
+			}
+		},
+		
+		SMEMBERS_AND_REFRESH {
+			@Override
+			public int keyNum() {
+				return 1;
+			}
+		},
+		
+		SADD_AND_REFRESH {
+			@Override
+			public int keyNum() {
+				return 1;
+			}
+		},
+		
+		HKEYS_AND_REFRESH {
+			@Override
+			public int keyNum() {
+				return 1;
+			}
 		};
 		
 		@Override

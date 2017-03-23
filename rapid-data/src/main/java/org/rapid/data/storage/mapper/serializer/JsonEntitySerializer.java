@@ -1,7 +1,7 @@
 package org.rapid.data.storage.mapper.serializer;
 
 import org.rapid.data.storage.db.Entity;
-import org.rapid.util.common.SerializeUtil;
+import org.rapid.util.common.serializer.SerializeUtil;
 import org.rapid.util.exception.ConvertFailuerException;
 
 /**

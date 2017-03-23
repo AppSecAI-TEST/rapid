@@ -1,9 +1,9 @@
 package org.rapid.util.common.message;
 
-import org.rapid.util.common.SerializeUtil;
 import org.rapid.util.common.consts.code.Code;
 import org.rapid.util.common.consts.code.ICode;
 import org.rapid.util.common.message.IMessage.Message;
+import org.rapid.util.common.serializer.SerializeUtil;
 
 /**
  * 可以表示任何调用过程的返回结果(rpc调用、web调用、甚至是方法调用都可以)
@@ -35,6 +35,14 @@ public class Result<T> extends Message<T> {
 		this.desc = desc;
 	}
 	
+	public boolean isSuccess() {
+		return code == Code.OK.id();
+	}
+	
+	public static <T> Result<T> success() {
+		return result(Code.OK);
+	}
+	
 	public static <T> Result<T> result(int code) {
 		return result(code, null);
 	}
@@ -53,6 +61,10 @@ public class Result<T> extends Message<T> {
 	
 	public static <T> Result<T> result(ICode code, String desc) {
 		return result(code.id(), desc, null);
+	}
+	
+	public static <T> Result<T> result(ICode code, T attach) {
+		return result(code.id(), code.value(), attach);
 	}
 	
 	public static <T> Result<T> result(int code, String desc, T attach) {

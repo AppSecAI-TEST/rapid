@@ -10,14 +10,13 @@ import org.rapid.data.storage.db.Dao;
 import org.rapid.data.storage.db.Entity;
 import org.rapid.data.storage.mapper.serializer.EntitySerializer;
 import org.rapid.data.storage.redis.RedisTable;
-import org.rapid.util.common.SerializeUtil;
+import org.rapid.util.common.serializer.SerializeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * <pre>
- * 一张数据库的表映射成一个 redis 的 hash，表示 one to one
- * one to one hash 一般都是持久 hash，因为一个 hash 中存储了所有的数据，因此不能做 expire 操作
+ * 一张数据库的表映射成一个 redis 的 hash，表示 one to one。
  * </pre>
  * 
  * @author ahab
@@ -54,28 +53,25 @@ public class O2OMapper<KEY, ENTITY extends Entity<KEY>, T, DAO extends Dao<KEY, 
 				redis.del((byte[]) redisKey);
 				return;
 			}
-			byte[][] params = new byte[entities.size() * 2 + 1][];
-			int index = 0;
-			params[index++] = (byte[]) redisKey;
-			for (ENTITY entity : entities) {
-				params[index++] = SerializeUtil.RedisUtil.encode(entity.key().toString());
-				params[index++] = (byte[]) serializer.convert(entity);
-			}
-			redis.delAndHmset(params);
+			Map<byte[], byte[]> map = new HashMap<byte[], byte[]>();
+			for (ENTITY entity : entities) 
+				map.put(SerializeUtil.RedisUtil.encode(entity.key().toString()), (byte[]) serializer.convert(entity));
+			redis.delAndHmset((byte[]) redisKey, map);
 		} else {			// 序列化成字符串
 			if (entities.isEmpty()) {
 				redis.del((String) redisKey);
 				return;
 			}
-			String[] params = new String[entities.size() * 2 + 1];
-			int index = 0;
-			params[index++] = (String) redisKey;
-			for (ENTITY entity : entities) {
-				params[index++] = entity.key().toString();
-				params[index++] = (String) serializer.convert(entity);
-			}
-			redis.delAndHmset(params);
+			Map<String, String> map = new HashMap<String, String>();
+			for (ENTITY entity : entities) 
+				map.put(entity.key().toString(), (String) serializer.convert(entity));
+			redis.delAndHmset((String) redisKey, map);
 		}
+		initHook(entities);
+	}
+	
+	protected void initHook(List<ENTITY> entities) {
+		// do nothing
 	}
 	
 	public Map<KEY, ENTITY> getAll() { 
@@ -98,9 +94,10 @@ public class O2OMapper<KEY, ENTITY extends Entity<KEY>, T, DAO extends Dao<KEY, 
 	 * 
 	 */
 	@Override
-	public void insert(ENTITY entity) {
+	public ENTITY insert(ENTITY entity) {
 		dao.insert(entity);
 		refresh(entity);
+		return entity;
 	}
 	
 	@Override
