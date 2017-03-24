@@ -103,16 +103,19 @@ public interface SerializeUtil {
 	}
 
 	class RedisUtil {
-		public static final byte[] encode(long value) {
-			return encode(String.valueOf(value));
+		public static final byte[] encode(Object value) {
+			return _encode(value.toString());
 		}
 		
-		public static final byte[] encode(int value) {
-			return encode(String.valueOf(value));
+		public static final byte[][] encode(Object ...params) {
+			byte[][] buffer = new byte[params.length][];
+			for (int i = 0, len = params.length; i < len; i++)
+				buffer[i] = _encode(params[i].toString());
+			return buffer;
 		}
 		
-		public static final byte[] encode(String str) {
-			return str.getBytes(Constants.UTF_8);
+		private static final byte[] _encode(String value) {
+			return value.getBytes(Constants.UTF_8);
 		}
 
 		public static final String decode(byte[] buffer) {

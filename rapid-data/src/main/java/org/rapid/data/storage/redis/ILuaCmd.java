@@ -23,6 +23,13 @@ public interface ILuaCmd {
 
 	enum LuaCmd implements ILuaCmd {
 		
+		TEST {
+			@Override
+			public int keyNum() {
+				return 2;
+			}
+		},
+		
 		/**
 		 * 获取验证码
 		 */

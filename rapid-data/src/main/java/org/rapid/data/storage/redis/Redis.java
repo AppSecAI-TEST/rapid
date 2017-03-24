@@ -202,6 +202,15 @@ public class Redis {
 	}
 
 	// ******************************** hash ********************************
+	
+	public boolean hexist(String key, String field) {
+		return invoke(new RedisInvocation<Boolean>() {
+			@Override
+			public Boolean invok(Jedis jedis) {
+				return jedis.hexists(key, field);
+			}
+		});
+	}
 
 	public byte[] hget(byte[] key, byte[] field) {
 		return invoke(new RedisInvocation<byte[]>() {
@@ -263,6 +272,15 @@ public class Redis {
 	
 	public void hmsetAndRefresh(String ...params) {
 		invokeLua(LuaCmd.HMSET_AND_REFRESH, params);
+	}
+	
+	public boolean hsetnx(String key, String field, String value) { 
+		return invoke(new RedisInvocation<Boolean>(){
+			@Override
+			public Boolean invok(Jedis jedis) {
+				return 1 == jedis.hsetnx(key, field, value);
+			}
+		});
 	}
 	
 	public void delAndHmset(byte[] key, Map<byte[], byte[]> params) {

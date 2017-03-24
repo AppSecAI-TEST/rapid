@@ -70,4 +70,9 @@ public class RedisTest extends BaseTest {
 		long value = redis.delAndSadd("set", "1", "2", "3", "2");
 		assertEquals(value, 3);
 	}
+	
+	public void test() { 
+		Object value = redis.invokeLua(ILuaCmd.LuaCmd.TEST, "DATA", "MAP", "1", "2", "3", "4", "5", "6");
+		System.out.println(value);
+	}
 }
