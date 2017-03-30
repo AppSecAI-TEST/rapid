@@ -24,4 +24,9 @@ public class Assert {
 			throw new IllegalArgumentException(message);
 		}
 	}
+	
+	public static void notNull(Object... objects) {
+		for (Object object : objects)
+			notNull(object);
+	}
 }

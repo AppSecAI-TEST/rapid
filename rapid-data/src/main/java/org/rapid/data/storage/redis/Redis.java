@@ -409,7 +409,18 @@ public class Redis {
 			params[index++] = buffer;
 		invokeLua(LuaCmd.SADD_AND_REFRESH, params);
 	}
-
+	
+	// ******************************** sorted set ********************************
+	
+	public long zadd(String key, Map<String, Double> scoreMembers) { 
+		return invoke(new RedisInvocation<Long>() {
+			@Override
+			public Long invok(Jedis jedis) {
+				return jedis.zadd(key, scoreMembers);
+			}
+		});
+	}
+	
 	// ******************************** server command ********************************
 
 	public String flushAll() {
@@ -519,6 +530,10 @@ public class Redis {
 		invokeLua(LuaCmd.REFRESH_HASH, params);
 	}
 	
+	public List<byte[]> hpaging(byte[] setKey, byte[] hashKey, byte[] page, byte[] pageSize, byte[] cmd) {
+		return invokeLua(LuaCmd.HPAGING, setKey, hashKey, page, pageSize, cmd);
+	}
+	
 	/**
 	 * 加载预定义的 lua 脚本
 	 * 
@@ -589,6 +604,51 @@ public class Redis {
 					}
 
 				T object = (T) jedis.eval(SerializeUtil.RedisUtil.encode(script.getContent()), cmd.keyNum(), params);
+				script.setStored(true);
+				return object;
+			}
+		});
+	}
+	
+	@SuppressWarnings("unchecked")
+	public <T> T invokeLua(ILuaCmd cmd, int keyNum, byte[]... params) {
+		LuaScript script = scripts.get(cmd.key());
+		if (null == script)
+			throw new JedisNoScriptException("Script " + cmd.key() + " not exist!");
+
+		return invoke(new RedisInvocation<T>() {
+			@Override
+			public T invok(Jedis jedis) {
+				if (script.isStored())
+					try {
+						return (T) jedis.evalsha(SerializeUtil.RedisUtil.encode(script.getSha1Key()), keyNum, params);
+					} catch (JedisNoScriptException e) {
+						logger.warn("script {} not cached!", cmd.key());
+					}
+
+				T object = (T) jedis.eval(SerializeUtil.RedisUtil.encode(script.getContent()), keyNum, params);
+				script.setStored(true);
+				return object;
+			}
+		});
+	}
+	
+	@SuppressWarnings("unchecked")
+	public <T> T invokeLua(ILuaCmd cmd, int keyNum, String... params) {
+		LuaScript script = scripts.get(cmd.key());
+		if (null == script)
+			throw new JedisNoScriptException("Script " + cmd.key() + " not exist!");
+
+		return invoke(new RedisInvocation<T>() {
+			@Override
+			public T invok(Jedis jedis) {
+				if (script.isStored())
+					try {
+						return (T) jedis.evalsha(script.getSha1Key(), keyNum, params);
+					} catch (JedisNoScriptException e) {
+						logger.warn("script {} not cached!", cmd.key());
+					}
+				T object = (T) jedis.eval(script.getContent(), keyNum, params);
 				script.setStored(true);
 				return object;
 			}

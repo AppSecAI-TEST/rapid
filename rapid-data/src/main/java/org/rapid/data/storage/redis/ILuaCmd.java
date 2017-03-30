@@ -138,6 +138,16 @@ public interface ILuaCmd {
 			public int keyNum() {
 				return 1;
 			}
+		},
+		
+		/**
+		 * hash 分页：数据存放在 hash 中，sorted set 中只存放 hash 的 各个 field
+		 */
+		HPAGING {
+			@Override
+			public int keyNum() {
+				return 2;
+			}
 		};
 		
 		@Override

@@ -1,13 +1,17 @@
 package org.rapid.data;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.rapid.data.storage.redis.ILuaCmd;
 import org.rapid.data.storage.redis.Redis;
 import org.rapid.data.storage.redis.RedisOption.EXPX;
 import org.rapid.data.storage.redis.RedisOption.NXXX;
 import org.rapid.util.common.serializer.SerializeUtil;
+import org.rapid.util.lang.DateUtils;
 
 @SuppressWarnings("all")
 public class RedisTest extends BaseTest {
@@ -71,8 +75,20 @@ public class RedisTest extends BaseTest {
 		assertEquals(value, 3);
 	}
 	
+	public void testHpaging() {
+		List<byte[]> list = redis.hpaging(
+				SerializeUtil.RedisUtil.encode("testset"), 
+				SerializeUtil.RedisUtil.encode("testmap"), 
+				SerializeUtil.RedisUtil.encode("1"), 
+				SerializeUtil.RedisUtil.encode("2"), 
+				SerializeUtil.RedisUtil.encode("ZREVRANGE"));
+		for (byte[] buffer : list) {
+			System.out.println(new String(buffer));
+		}
+	}
+	
 	public void test() { 
-		Object value = redis.invokeLua(ILuaCmd.LuaCmd.TEST, "DATA", "MAP", "1", "2", "3", "4", "5", "6");
+		Object value = redis.invokeLua(ILuaCmd.LuaCmd.TEST, "set:tenant:1000:apply:list", "hash:tenant:1000:apply", "1", "2", "ZREVRANGE");
 		System.out.println(value);
 	}
 }
