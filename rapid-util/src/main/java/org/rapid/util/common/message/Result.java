@@ -84,7 +84,7 @@ public class Result<T> extends Message<T> {
 	}
 	
 	public static String jsonResult(ICode code) {
-		return jsonResult(code.id(), null, null);
+		return jsonResult(code.id(), code.value(), null);
 	}
 	
 	public static String jsonResult(int code) {

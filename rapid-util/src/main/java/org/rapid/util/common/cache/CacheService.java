@@ -2,20 +2,74 @@ package org.rapid.util.common.cache;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-public interface CacheService<CACHE extends Cache<?, ?>> {
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-	void init();
+@SuppressWarnings("unchecked")
+public class CacheService<CACHE extends ICache<?, ?>> implements ICacheService<CACHE> {
 	
-	void dispose();
+	private static final Logger logger = LoggerFactory.getLogger(CacheService.class);
 	
-	CACHE getCache(String name);
+	private Map<String, CACHE> caches = new ConcurrentHashMap<String, CACHE>();
+
+	@Override
+	public void dispose() {
+		this.caches.clear();
+		logger.info("{} cache were disposed from CacheService!", caches.size());
+	}
 	
-	<ID, VALUE> VALUE getById(String name, ID id); 
+	protected void addCache(CACHE cache) {
+		caches.put(cache.name(), cache);
+	}
 	
-	<ID, VALUE> List<VALUE> getAll(String name); 
+	@Override
+	public void init() {
+		for (CACHE cache : caches.values())
+			try {
+				cache.load();
+			} catch (Exception e) {
+				logger.warn("Cache {} load failure, system will closed...", cache.name(), e);
+				System.exit(1);
+			}
+		logger.info("Cache service initialize success, total {} caches loaded!", caches.size());
+	}
 	
-	<ID, VALUE> List<VALUE> getByProperties(String name, String property, Object value); 
+	@Override
+	public CACHE getCache(String name) {
+		return (CACHE) caches.get(name);
+	}
+
+	@Override
+	public <ID, VALUE> VALUE getById(String name, ID id) {
+		ICache<ID, VALUE> cache = _getCache(name);
+		return cache.getById(id);
+	}
+
+	@Override
+	public <ID, VALUE> List<VALUE> getAll(String name) {
+		ICache<ID, VALUE> cache = _getCache(name);
+		return cache.getAll();
+	}
+
+	@Override
+	public <ID, VALUE> List<VALUE> getByProperties(String name, String property, Object value) {
+		ICache<ID, VALUE> cache = _getCache(name);
+		return cache.getByProperties(property, value);
+	}
+
+	@Override
+	public <ID, VALUE> List<VALUE> getByProperties(String name, Map<String, Object> params) {
+		ICache<ID, VALUE> cache = _getCache(name);
+		return cache.getByProperties(params);
+	}
+
+	private <ID, VALUE> ICache<ID, VALUE> _getCache(String name) {
+		return (ICache<ID, VALUE>) caches.get(name);
+	}
 	
-	<ID, VALUE> List<VALUE> getByProperties(String name, Map<String, Object> params);
+	public void setCaches(Map<String, CACHE> caches) {
+		this.caches = caches;
+	}
 }

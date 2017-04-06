@@ -65,7 +65,12 @@ public enum Code implements ICode {
 	/**
 	 * 验证码错误
 	 */
-	CAPTCHA_ERROR(102, "captcha error");
+	CAPTCHA_ERROR(102, "captcha error"),
+	
+	/**
+	 * 密码错误
+	 */
+	PWD_ERROR(103, "pwd error");
 	
 	private int code;
 	private String desc;

@@ -88,7 +88,7 @@ public class RedisTest extends BaseTest {
 	}
 	
 	public void test() { 
-		Object value = redis.invokeLua(ILuaCmd.LuaCmd.TEST, "set:tenant:1000:apply:list", "hash:tenant:1000:apply", "1", "2", "ZREVRANGE");
+		Object value = redis.invokeLua(ILuaCmd.LuaCmd.TEST, "hash:tenant:1000:apply", "1", "2", "ZREVRANGE");
 		System.out.println(value);
 	}
 }

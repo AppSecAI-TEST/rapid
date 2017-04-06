@@ -1,31 +1,76 @@
 package org.rapid.util.common.cache;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * 一级缓存，直接加载入内存，适合存放数据量不大、变动不频繁但是使用频繁的数据，比如说全局配置文件
- * 
- * @author ahab
- *
- * @param <ID> 缓存主键类型
- * @param <VALUE> 存储的对象类型
- */
-public interface Cache<ID, VALUE> {
-	
-	String name();
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-	void load() throws Exception;
+public abstract class Cache<ID, VALUE> implements ICache<ID, VALUE> {
 	
-	void reload() throws Exception;
+	private static final Logger logger = LoggerFactory.getLogger(Cache.class);
 	
-	void dispose();
+	private String name;
+//	private Map<String, Method> getter;
+	protected Map<ID, VALUE> cache = new ConcurrentHashMap<ID, VALUE>();
 	
-	VALUE getById(ID id);
+	protected Cache(String name) {
+		this.name = name;
+//		this.getter = new HashMap<String, Method>();
+//		Type superType = getClass().getGenericSuperclass();   
+//		Type[] generics = ((ParameterizedType) superType).getActualTypeArguments();   
+//		Class<VALUE> clazz = (Class<VALUE>) generics[1];
+//		PropertyDescriptor[] descriptors = ReflectUtils.getBeanGetters(clazz);
+//		for (PropertyDescriptor descriptor : descriptors)
+//			getter.put(descriptor.getName(), descriptor.getReadMethod());
+	}
+
+	@Override
+	public String name() {
+		return this.name;
+	}
 	
-	List<VALUE> getAll();
+	@Override
+	public void reload() throws Exception {
+		Map<ID, VALUE> temp = new HashMap<ID, VALUE>(this.cache);
+		try {
+			load();
+			temp.clear();
+			temp = null;
+		} catch (Exception e) {
+			this.cache.clear();
+			this.cache = temp;
+			logger.warn("Cache {} reload failure!", name, e);
+		}
+	}
+
+	@Override
+	public void dispose() {
+		this.cache.clear();
+		logger.info("Cache {} dispose!", name);
+	}
+
+	@Override
+	public VALUE getById(ID id) {
+		return cache.get(id);
+	}
+
+	@Override
+	public List<VALUE> getAll() {
+		return new ArrayList<VALUE>(cache.values());
+	}
+
+	@Override
+	public List<VALUE> getByProperties(String property, Object value) {
+		return null;
+	}
+
+	@Override
+	public List<VALUE> getByProperties(Map<String, Object> params) {
+		return null;
+	}
 	
-	List<VALUE> getByProperties(String property, Object value);
-	
-	List<VALUE> getByProperties(Map<String, Object> params);
 }

@@ -26,7 +26,7 @@ public interface ILuaCmd {
 		TEST {
 			@Override
 			public int keyNum() {
-				return 2;
+				return 1;
 			}
 		},
 		
