@@ -91,6 +91,10 @@ public class Result<T> extends Message<T> {
 		return jsonResult(code, null, null);
 	}
 	
+	public static <T> String jsonResult(int code, String desc) {
+		return jsonResult(code, desc, null);
+	}
+	
 	public static <T> String jsonResult(int code, T attach) {
 		return jsonResult(code, null, attach);
 	}

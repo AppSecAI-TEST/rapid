@@ -70,7 +70,12 @@ public enum Code implements ICode {
 	/**
 	 * 密码错误
 	 */
-	PWD_ERROR(103, "pwd error");
+	PWD_ERROR(103, "pwd error"),
+	
+	/**
+	 * 没有重置密码
+	 */
+	PWD_NOT_RESET(104, "pwd not reset");
 	
 	private int code;
 	private String desc;
