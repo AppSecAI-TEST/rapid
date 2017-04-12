@@ -48,10 +48,15 @@
 		<libphonenumber.version>8.3.0</libphonenumber.version>
 		<commons-pool2.version>2.4.2</commons-pool2.version>
 		<commons-codec.version>1.10</commons-codec.version>
-		
+
 		<!-- zookeeper -->
 		<zkclient.version>0.1</zkclient.version>
 		<zookeeper.version>3.4.9</zookeeper.version>
+
+		<!-- aliyun -->
+		<aliyun.sts.version>2.1.6</aliyun.sts.version>
+		<aliyun.oss.version>2.5.0</aliyun.oss.version>
+		<aliyun.core.version>3.2.2</aliyun.core.version>
 
 		<!-- plugins -->
 		<maven-assembly.version>3.0.0</maven-assembly.version>
@@ -315,7 +320,7 @@
 				<artifactId>ons-client</artifactId>
 				<version>${ons.version}</version>
 			</dependency>
-			
+
 			<!-- zkclient -->
 			<dependency>
 				<groupId>com.github.sgroschupf</groupId>
@@ -365,6 +370,59 @@
 					<exclusion>
 						<groupId>io.netty</groupId>
 						<artifactId>netty</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+
+			<!-- 阿里云 -->
+			<dependency>
+				<groupId>com.aliyun</groupId>
+				<artifactId>aliyun-java-sdk-sts</artifactId>
+				<version>${aliyun.sts.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.aliyun</groupId>
+				<artifactId>aliyun-java-sdk-core</artifactId>
+				<version>${aliyun.core.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.aliyun.oss</groupId>
+				<artifactId>aliyun-sdk-oss</artifactId>
+				<version>${aliyun.oss.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.apache.httpcomponents</groupId>
+						<artifactId>httpclient</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>commons-logging</groupId>
+						<artifactId>commons-logging</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>net.sf.ezmorph</groupId>
+						<artifactId>ezmorph</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>commons-lang</groupId>
+						<artifactId>commons-lang</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>commons-collections</groupId>
+						<artifactId>commons-collections</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>commons-beanutils</groupId>
+						<artifactId>commons-beanutils</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>net.sf.json-lib</groupId>
+						<artifactId>json-lib</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.jdom</groupId>
+						<artifactId>jdom</artifactId>
 					</exclusion>
 				</exclusions>
 			</dependency>

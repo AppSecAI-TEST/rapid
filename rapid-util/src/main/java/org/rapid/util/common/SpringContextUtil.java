@@ -2,6 +2,7 @@ package org.rapid.util.common;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
@@ -9,6 +10,7 @@ public class SpringContextUtil implements ApplicationContextAware {
 
 	// Spring application context
 	private static ApplicationContext applicationContext;
+	private static AutowireCapableBeanFactory autowireCapableBeanFactory;
 	
 	/**
 	 * ApplicationContext interface call back, set application context
@@ -19,6 +21,7 @@ public class SpringContextUtil implements ApplicationContextAware {
 	public void setApplicationContext(ApplicationContext applicationContext)
 			throws BeansException {
 		SpringContextUtil.applicationContext = applicationContext;
+		SpringContextUtil.autowireCapableBeanFactory = applicationContext.getAutowireCapableBeanFactory();
 	}
 	
 	/**
@@ -91,5 +94,14 @@ public class SpringContextUtil implements ApplicationContextAware {
 	 */
 	public static String[] getAliases(String name) throws NoSuchBeanDefinitionException {
 		return applicationContext.getAliases(name);
+	}
+	
+	public static void autowireBean(Object bean) {
+		autowireCapableBeanFactory.autowireBean(bean);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <T> T autowire(Class<?> beanClass) {
+		return (T) autowireCapableBeanFactory.autowire(beanClass, AutowireCapableBeanFactory.AUTOWIRE_BY_NAME, false);
 	}
 }
