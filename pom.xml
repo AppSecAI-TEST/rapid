@@ -266,7 +266,7 @@
 				<groupId>com.zaxxer</groupId>
 				<artifactId>HikariCP</artifactId>
 				<version>${HikariCP.version}</version>
-				<scope>provided</scope>
+				<optional>true</optional>
 				<exclusions>
 					<exclusion>
 						<groupId>org.slf4j</groupId>
@@ -278,7 +278,7 @@
 				<groupId>mysql</groupId>
 				<artifactId>mysql-connector-java</artifactId>
 				<version>${mysql-connector-java.version}</version>
-				<scope>provided</scope>
+				<optional>true</optional>
 			</dependency>
 			<dependency>
 				<groupId>org.mybatis</groupId>
