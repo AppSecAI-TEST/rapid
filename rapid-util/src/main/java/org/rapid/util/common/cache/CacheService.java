@@ -1,5 +1,8 @@
 package org.rapid.util.common.cache;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -26,7 +29,14 @@ public class CacheService<CACHE extends ICache<?, ?>> implements ICacheService<C
 	
 	@Override
 	public void init() {
-		for (CACHE cache : caches.values())
+		List<CACHE> list = new ArrayList<CACHE>(caches.values());
+		Collections.sort(list, new Comparator<CACHE>() {
+			@Override
+			public int compare(CACHE o1, CACHE o2) {
+				return o2.priority() - o1.priority();
+			}
+		});
+		for (CACHE cache : list)
 			try {
 				cache.load();
 			} catch (Exception e) {

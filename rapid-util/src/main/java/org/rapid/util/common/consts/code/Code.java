@@ -75,7 +75,12 @@ public enum Code implements ICode {
 	/**
 	 * 没有重置密码
 	 */
-	PWD_NOT_RESET(104, "pwd not reset");
+	PWD_NOT_RESET(104, "pwd not reset"),
+	
+	/**
+	 * 行政区划跨界了
+	 */
+	REGION_OUT_OF_BOUNDARY(105, "region out of boundary");
 	
 	private int code;
 	private String desc;

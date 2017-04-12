@@ -27,6 +27,11 @@ public abstract class Cache<ID, VALUE> implements ICache<ID, VALUE> {
 //		for (PropertyDescriptor descriptor : descriptors)
 //			getter.put(descriptor.getName(), descriptor.getReadMethod());
 	}
+	
+	@Override
+	public int priority() {
+		return 0;
+	}
 
 	@Override
 	public String name() {
