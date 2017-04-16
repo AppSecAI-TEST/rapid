@@ -1,40 +1,35 @@
 package org.rapid.data.storage.mapper;
 
-import org.rapid.data.storage.db.Entity;
+import org.rapid.util.common.model.UniqueModel;
 
 /**
- * 数据库映射器接口，能够将数据库中的表数据映射到指定的地方存储：比如 redis、memory 等
+ * 将普通 java 对象映射到 redis hash 的类
  * 
  * @author ahab
  *
  * @param <KEY>		主键类型
  * @param <ENTITY>	表所对应的 java pojo 类型
  */
-public interface IMapper<KEY, ENTITY extends Entity<KEY>>  {
+public interface IMapper<KEY, MODEL extends UniqueModel<KEY>>  {
 
-	/**
-	 * 初始化，可以将一些读多写少的数据先进行映射，比如配置数据
-	 */
-	void init();
-	
 	/**
 	 * 插入数据
 	 * 
-	 * @param entity
+	 * @param model
 	 */
-	ENTITY insert(ENTITY entity);
+	MODEL insert(MODEL model);
 	
 	/**
 	 * 根据主键获取唯一的数据
 	 * 
 	 * @return
 	 */
-	ENTITY getByKey(KEY key);
+	MODEL getByKey(KEY key);
 	
 	/**
 	 * 更新数据
 	 * 
-	 * @param entity
+	 * @param model
 	 */
-	void update(ENTITY entity);
+	void update(MODEL model);
 }

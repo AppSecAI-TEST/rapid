@@ -1,11 +1,13 @@
 package org.rapid.data.storage.mapper.serializer;
 
-import org.rapid.data.storage.db.Entity;
+import org.rapid.util.common.model.UniqueModel;
 import org.rapid.util.common.serializer.SerializeUtil;
 import org.rapid.util.exception.ConvertFailuerException;
 
-public class ProtostuffEntitySerializer<KEY, DATA extends Entity<KEY>> implements EntitySerializer<KEY, DATA, byte[]> {
-
+public class ProtostuffEntitySerializer<KEY, DATA extends UniqueModel<KEY>> implements EntitySerializer<KEY, DATA, byte[]> {
+	
+	public static final ProtostuffEntitySerializer<Object, UniqueModel<Object>> INSTANCE = new ProtostuffEntitySerializer<>();
+	
 	@Override
 	public DATA antiConvet(byte[] t, Class<DATA> clazz) throws ConvertFailuerException {
 		return SerializeUtil.ProtostuffUtil.deserial(t, clazz);

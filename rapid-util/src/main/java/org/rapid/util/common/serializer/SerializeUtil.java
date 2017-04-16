@@ -109,8 +109,12 @@ public interface SerializeUtil {
 		
 		public static final byte[][] encode(Object ...params) {
 			byte[][] buffer = new byte[params.length][];
-			for (int i = 0, len = params.length; i < len; i++)
-				buffer[i] = _encode(params[i].toString());
+			for (int i = 0, len = params.length; i < len; i++) {
+				if (params[i] instanceof byte[]) 
+					buffer[i] = (byte[]) params[i];
+				else
+					buffer[i] = _encode(params[i].toString());
+			}
 			return buffer;
 		}
 		

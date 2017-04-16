@@ -14,32 +14,19 @@ public abstract class Cache<ID, VALUE> implements ICache<ID, VALUE> {
 	private static final Logger logger = LoggerFactory.getLogger(Cache.class);
 	
 	private String name;
-//	private Map<String, Method> getter;
 	protected Map<ID, VALUE> cache = new ConcurrentHashMap<ID, VALUE>();
 	
 	protected Cache(String name) {
 		this.name = name;
-//		this.getter = new HashMap<String, Method>();
-//		Type superType = getClass().getGenericSuperclass();   
-//		Type[] generics = ((ParameterizedType) superType).getActualTypeArguments();   
-//		Class<VALUE> clazz = (Class<VALUE>) generics[1];
-//		PropertyDescriptor[] descriptors = ReflectUtils.getBeanGetters(clazz);
-//		for (PropertyDescriptor descriptor : descriptors)
-//			getter.put(descriptor.getName(), descriptor.getReadMethod());
 	}
 	
-	@Override
-	public int priority() {
-		return 0;
-	}
-
 	@Override
 	public String name() {
 		return this.name;
 	}
 	
 	@Override
-	public void reload() throws Exception {
+	public void reload() {
 		Map<ID, VALUE> temp = new HashMap<ID, VALUE>(this.cache);
 		try {
 			load();

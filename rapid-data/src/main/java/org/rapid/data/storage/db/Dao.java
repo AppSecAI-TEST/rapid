@@ -2,7 +2,9 @@ package org.rapid.data.storage.db;
 
 import java.util.List;
 
-public interface Dao<KEY, ENTITY extends Entity<KEY>> {
+import org.rapid.util.common.model.UniqueModel;
+
+public interface Dao<KEY, ENTITY extends UniqueModel<KEY>> {
 	
 	/**
 	 * 插入数据

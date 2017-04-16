@@ -13,19 +13,11 @@ import java.util.Map;
  */
 public interface ICache<ID, VALUE> {
 	
-	/**
-	 * 缓存的 priority 决定了再 cacheService 中该 Cache 的加载的顺序，如果
-	 * 不指定默认为 0 则顺序是不定的，否则 priority 越大越先被加载
-	 * 
-	 * @return
-	 */
-	int priority();
-	
 	String name();
 
 	void load() throws Exception;
 	
-	void reload() throws Exception;
+	void reload();
 	
 	void dispose();
 	

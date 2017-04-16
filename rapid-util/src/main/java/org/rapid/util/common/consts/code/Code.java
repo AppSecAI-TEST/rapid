@@ -80,7 +80,12 @@ public enum Code implements ICode {
 	/**
 	 * 行政区划跨界了
 	 */
-	REGION_OUT_OF_BOUNDARY(105, "region out of boundary");
+	REGION_OUT_OF_BOUNDARY(105, "region out of boundary"),
+	
+	/**
+	 * 身份证已经存在了
+	 */
+	IDENTITY_ALREADY_EXIST(106, "identity already exist");
 	
 	private int code;
 	private String desc;

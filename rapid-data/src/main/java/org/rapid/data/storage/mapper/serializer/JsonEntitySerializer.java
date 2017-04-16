@@ -1,6 +1,6 @@
 package org.rapid.data.storage.mapper.serializer;
 
-import org.rapid.data.storage.db.Entity;
+import org.rapid.util.common.model.UniqueModel;
 import org.rapid.util.common.serializer.SerializeUtil;
 import org.rapid.util.exception.ConvertFailuerException;
 
@@ -11,7 +11,7 @@ import org.rapid.util.exception.ConvertFailuerException;
  *
  * @param <DATA>
  */
-public class JsonEntitySerializer<KEY, DATA extends Entity<KEY>> implements EntitySerializer<KEY, DATA, String> {
+public class JsonEntitySerializer<KEY, DATA extends UniqueModel<KEY>> implements EntitySerializer<KEY, DATA, String> {
 	
 	@Override
 	public String convert(DATA k) throws ConvertFailuerException {

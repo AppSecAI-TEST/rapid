@@ -530,8 +530,8 @@ public class Redis {
 		invokeLua(LuaCmd.REFRESH_HASH, params);
 	}
 	
-	public List<byte[]> hpaging(byte[] setKey, byte[] hashKey, byte[] page, byte[] pageSize, byte[] cmd) {
-		return invokeLua(LuaCmd.HPAGING, setKey, hashKey, page, pageSize, cmd);
+	public List<byte[]> hpaging(byte[] setKey, byte[] hashKey, byte[] page, byte[] pageSize, byte[] option) {
+		return invokeLua(LuaCmd.HPAGING, setKey, hashKey, page, pageSize, option);
 	}
 	
 	/**
