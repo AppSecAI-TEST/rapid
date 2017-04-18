@@ -67,6 +67,14 @@ public class Result<T> extends Message<T> {
 		return result(code.id(), code.value(), attach);
 	}
 	
+	public static <T> Result<T> result(ICode code, String desc, T attach) {
+		Result<T> result = new Result<T>();
+		result.setCode(code.id());
+		result.setDesc(desc);
+		result.setAttach(attach);
+		return result;
+	}
+	
 	public static <T> Result<T> result(int code, String desc, T attach) {
 		Result<T> result = new Result<T>();
 		result.setCode(code);
