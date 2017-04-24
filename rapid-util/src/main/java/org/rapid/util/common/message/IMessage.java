@@ -47,6 +47,7 @@ public interface IMessage<T> extends Serializable {
 		private int messageType;
 		
 		public Message() {
+			this.messageType = MessageType.RESPONSE.mark();
 			this.createTime = System.currentTimeMillis();
 		}
 		

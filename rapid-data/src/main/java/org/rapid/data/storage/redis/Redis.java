@@ -251,6 +251,15 @@ public class Redis {
 			}
 		});
 	}
+	
+	public List<byte[]> hmget(byte[] key, byte[]... fields) {
+		return invoke(new RedisInvocation<List<byte[]>>() {
+			@Override
+			public List<byte[]> invok(Jedis jedis) {
+				return jedis.hmget(key, fields);
+			}
+		});
+	}
 
 	public String hmset(String key, Map<String, String> hash) {
 		return invoke(new RedisInvocation<String>() {
