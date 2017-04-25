@@ -1,5 +1,7 @@
 package org.rapid.aliyun.service.sts;
 
+import org.rapid.aliyun.AliyunConfig;
+import org.rapid.aliyun.AliyunOptions;
 import org.rapid.aliyun.policy.Policy;
 import org.rapid.util.common.serializer.SerializeUtil;
 
@@ -14,15 +16,14 @@ import com.aliyuncs.sts.model.v20150401.AssumeRoleResponse;
 
 public class StsService {
 	
-	private String region;
-	private String version;
-	private String accessKeyId;
-	private String accessKeySecret;
-
+	private AliyunConfig config;
 	private DefaultAcsClient client;
 	
 	public void init() {
-		IClientProfile profile = DefaultProfile.getProfile(region, accessKeyId,  accessKeySecret);
+		IClientProfile profile = DefaultProfile.getProfile(
+				config.getConfig(AliyunOptions.STS_REGION), 
+				config.getConfig(AliyunOptions.ACCESS_KEY_ID),  
+				config.getConfig(AliyunOptions.ACCESS_KEY_SECRET));
 		this.client = new DefaultAcsClient(profile);
 	}
 	
@@ -68,7 +69,7 @@ public class StsService {
 	
 	private AssumeRoleRequest _request(String roleArn, String roleSessionName) {
 		AssumeRoleRequest request = new AssumeRoleRequest();
-		request.setVersion(version);
+		request.setVersion(config.getConfig(AliyunOptions.STS_VERSION));
 		request.setMethod(MethodType.POST);
 		request.setProtocol(ProtocolType.HTTPS);
 		request.setRoleArn(roleArn);
@@ -78,25 +79,9 @@ public class StsService {
 	
 	public void dispose() {
 		this.client = null;
-		this.region = null;
-		this.version = null;
-		this.accessKeyId = null;
-		this.accessKeySecret = null;
-	}
-
-	public void setRegion(String region) {
-		this.region = region;
-	}
-
-	public void setVersion(String version) {
-		this.version = version;
 	}
 	
-	public void setAccessKeyId(String accessKeyId) {
-		this.accessKeyId = accessKeyId;
-	}
-	
-	public void setAccessKeySecret(String accessKeySecret) {
-		this.accessKeySecret = accessKeySecret;
+	public void setConfig(AliyunConfig config) {
+		this.config = config;
 	}
 }

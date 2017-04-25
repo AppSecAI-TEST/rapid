@@ -230,6 +230,20 @@ public class Redis {
 		});
 	}
 	
+	/**
+	 * 如果指定的 key 中的数据没有失效则获取，否则会删除返回nil
+	 * 注意 field 对应的 value 必须是一个 json，且有一个 expire 字段
+	 * 
+	 * @param key
+	 * @param field
+	 * @param date
+	 * @return
+	 */
+	public <T> T hgetJsonValueIfNotExpire(String key, String field, long date, Class<T> clazz)  {
+		String value = invokeLua(LuaCmd.HGET_IF_NOT_EXPIRE, key, field, String.valueOf(date));
+		return null == value ? null : SerializeUtil.JsonUtil.GSON.fromJson(value, clazz);
+	}
+	
 	public String hgetAndRefresh(String key, String field, int expire) {
 		return invokeLua(LuaCmd.HGET_AND_REFRESH, key, field, String.valueOf(expire));
 	}

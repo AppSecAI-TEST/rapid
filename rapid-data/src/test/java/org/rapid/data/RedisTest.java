@@ -6,10 +6,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.rapid.data.storage.db.Table;
 import org.rapid.data.storage.redis.ILuaCmd;
 import org.rapid.data.storage.redis.Redis;
 import org.rapid.data.storage.redis.RedisOption.EXPX;
 import org.rapid.data.storage.redis.RedisOption.NXXX;
+import org.rapid.util.common.key.Pair;
 import org.rapid.util.common.serializer.SerializeUtil;
 import org.rapid.util.lang.DateUtils;
 
@@ -88,7 +90,9 @@ public class RedisTest extends BaseTest {
 	}
 	
 	public void test() { 
-		Object value = redis.invokeLua(ILuaCmd.LuaCmd.TEST, "hash:tenant:1000:apply", "1", "2", "ZREVRANGE");
+		System.out.println(System.currentTimeMillis());
+//		redis.hset("hash:test", "1", SerializeUtil.JsonUtil.GSON.toJson(new TestPojo(System.currentTimeMillis() + 30 * 1000, "haha", 10)));
+		Object value = redis.invokeLua(ILuaCmd.LuaCmd.TEST, "hash:test", "1", System.currentTimeMillis() + "");
 		System.out.println(value);
 	}
 }

@@ -12,7 +12,7 @@ import org.rapid.util.common.model.UniqueModel;
  * @param <KEY>
  * @param <ENTITY>
  */
-public abstract class DBMapper<KEY, ENTITY extends UniqueModel<KEY>, DAO extends Dao<KEY, ENTITY>> extends MemoryMapper<KEY, ENTITY> {
+public abstract class DBMapper<DATA, KEY, ENTITY extends UniqueModel<KEY>, DAO extends Dao<KEY, ENTITY>> extends MemoryMapper<DATA, KEY, ENTITY> {
 	
 	protected DAO dao;
 	protected Table table;

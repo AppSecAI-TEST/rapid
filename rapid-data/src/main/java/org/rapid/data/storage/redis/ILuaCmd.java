@@ -148,6 +148,13 @@ public interface ILuaCmd {
 			public int keyNum() {
 				return 2;
 			}
+		},
+		
+		HGET_IF_NOT_EXPIRE {
+			@Override
+			public int keyNum() {
+				return 1;
+			}
 		};
 		
 		@Override

@@ -10,7 +10,6 @@
 		<version>1.0</version>
 	</parent>
 
-	<groupId>rapid-aliyun</groupId>
 	<artifactId>rapid-aliyun</artifactId>
 	<name>rapid-aliyun</name>
 	<url>http://maven.apache.org</url>
