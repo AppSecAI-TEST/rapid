@@ -22,8 +22,8 @@ public class StsService {
 	public void init() {
 		IClientProfile profile = DefaultProfile.getProfile(
 				config.getConfig(AliyunOptions.STS_REGION), 
-				config.getConfig(AliyunOptions.ACCESS_KEY_ID),  
-				config.getConfig(AliyunOptions.ACCESS_KEY_SECRET));
+				config.getConfig(AliyunOptions.STS_ACCESS_KEY_ID),  
+				config.getConfig(AliyunOptions.STS_ACCESS_KEY_SECRET));
 		this.client = new DefaultAcsClient(profile);
 	}
 	
