@@ -3,7 +3,7 @@ package org.rapid.data.storage.mapper;
 import org.rapid.util.common.model.UniqueModel;
 import org.rapid.util.common.serializer.SerializeUtil;
 
-public class ProtostuffMemoryMapper<KEY, MODEL extends UniqueModel<KEY>> extends MemoryMapper<byte[], KEY, MODEL> {
+public class ProtostuffMemoryMapper<KEY, MODEL extends UniqueModel<KEY>> extends BinaryMemoryMapper<KEY, MODEL> {
 	
 	public ProtostuffMemoryMapper(String redisKey) {
 		super(redisKey);

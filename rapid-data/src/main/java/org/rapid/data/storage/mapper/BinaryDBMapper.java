@@ -12,12 +12,12 @@ import org.rapid.util.common.model.UniqueModel;
  * @param <KEY>
  * @param <ENTITY>
  */
-public abstract class DBMapper<DATA, KEY, ENTITY extends UniqueModel<KEY>, DAO extends Dao<KEY, ENTITY>> extends MemoryMapper<DATA, KEY, ENTITY> {
+public abstract class BinaryDBMapper<KEY, ENTITY extends UniqueModel<KEY>, DAO extends Dao<KEY, ENTITY>> extends BinaryMemoryMapper<KEY, ENTITY> {
 	
 	protected DAO dao;
 	protected Table table;
 	
-	protected DBMapper(Table table, String redisKey) {
+	protected BinaryDBMapper(Table table, String redisKey) {
 		super(redisKey);
 		this.table = table;
 	}

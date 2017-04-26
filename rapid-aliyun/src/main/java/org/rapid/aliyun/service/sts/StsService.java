@@ -7,6 +7,7 @@ import org.rapid.util.common.serializer.SerializeUtil;
 
 import com.aliyuncs.DefaultAcsClient;
 import com.aliyuncs.exceptions.ClientException;
+import com.aliyuncs.exceptions.ServerException;
 import com.aliyuncs.http.MethodType;
 import com.aliyuncs.http.ProtocolType;
 import com.aliyuncs.profile.DefaultProfile;
@@ -27,44 +28,28 @@ public class StsService {
 		this.client = new DefaultAcsClient(profile);
 	}
 	
-	public AssumeRoleResponse assumeRole(String roleArn, String roleSessionName) {
+	public AssumeRoleResponse assumeRole(String roleArn, String roleSessionName) throws ServerException, ClientException {
 		AssumeRoleRequest request = _request(roleArn, roleSessionName);
-		try {
-			return client.getAcsResponse(request);
-		} catch (ClientException e) {
-			throw new RuntimeException("Aliyun sts - AssumeRole invoke failure!", e);
-		}
+		return client.getAcsResponse(request);
 	}
 	
-	public AssumeRoleResponse assumeRole(String roleArn, String roleSessionName, int durationSeconds) {
-		AssumeRoleRequest request = _request(roleArn, roleSessionName);
+	public AssumeRoleResponse assumeRole(String roleArn, String roleSessionName, long durationSeconds) throws ServerException, ClientException {
+		AssumeRoleRequest request = _request(roleArn, roleSessionName, durationSeconds);
 		request.setDurationSeconds(Long.valueOf(durationSeconds));
-		try {
-			return client.getAcsResponse(request);
-		} catch (ClientException e) {
-			throw new RuntimeException("Aliyun sts - AssumeRole invoke failure!", e);
-		}
+		return client.getAcsResponse(request);
 	}
 
-	public AssumeRoleResponse assumeRole(String roleArn, String roleSessionName, Policy policy) {
+	public AssumeRoleResponse assumeRole(String roleArn, String roleSessionName, Policy policy) throws ServerException, ClientException {
 		AssumeRoleRequest request = _request(roleArn, roleSessionName);
 		request.setPolicy(SerializeUtil.JsonUtil.GSON.toJson(policy));
-		try {
-			return client.getAcsResponse(request);
-		} catch (ClientException e) {
-			throw new RuntimeException("Aliyun sts - AssumeRole invoke failure!", e);
-		}
+		return client.getAcsResponse(request);
 	}
 	
-	public AssumeRoleResponse assumeRole(String roleArn, String roleSessionName, Policy policy, int durationSeconds) {
-		AssumeRoleRequest request = _request(roleArn, roleSessionName);
+	public AssumeRoleResponse assumeRole(String roleArn, String roleSessionName, Policy policy, long durationSeconds) throws ServerException, ClientException {
+		AssumeRoleRequest request = _request(roleArn, roleSessionName, durationSeconds);
 		request.setPolicy(SerializeUtil.JsonUtil.GSON.toJson(policy));
 		request.setDurationSeconds(Long.valueOf(durationSeconds));
-		try {
-			return client.getAcsResponse(request);
-		} catch (ClientException e) {
-			throw new RuntimeException("Aliyun sts - AssumeRole invoke failure!", e);
-		}
+		return client.getAcsResponse(request);
 	}
 	
 	private AssumeRoleRequest _request(String roleArn, String roleSessionName) {
@@ -74,6 +59,12 @@ public class StsService {
 		request.setProtocol(ProtocolType.HTTPS);
 		request.setRoleArn(roleArn);
 		request.setRoleSessionName(roleSessionName);
+		return request;
+	}
+	
+	private AssumeRoleRequest _request(String roleArn, String roleSessionName, long durationSeconds) {
+		AssumeRoleRequest request = _request(roleArn, roleSessionName);
+		request.setDurationSeconds(durationSeconds);
 		return request;
 	}
 	
