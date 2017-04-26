@@ -27,7 +27,7 @@ public class HttpProxyTest {
 		
 		
 		AvailableInsuranceSubmit submit = new AvailableInsuranceSubmit();
-		submit.setUsername("18615756676");
+		submit.setUsername("cxdlzjcx");
 		submit.setPassword("111111");
 		submit.setProvince("四川");
 		String body = SerializeUtil.JsonUtil.GSON.toJson(submit);
@@ -43,7 +43,7 @@ public class HttpProxyTest {
 		post.setEntity(new UrlEncodedFormEntity(list, Charset.forName("UTF-8")));
 		String result = proxy.syncRequest(post, SyncStrRespHandler.INSTANCE);
 		System.out.println(result);
-		byte[] buffer = Base64.decodeBase64("ew0KICAiU3RhdGUiOiAwLA0KICAiTWVzc2FnZSI6ICLor7fmsYLmiqXmlofop6PmnpDlpLHotKXvvIEiDQp9");
+		byte[] buffer = Base64.decodeBase64("ew0KICAiU3RhdGUiOiAxLA0KICAiTWVzc2FnZSI6ICLmn6Xor6LmiJDlip8iLA0KICAiT3Blbkxpc3QiOiBbDQogICAgew0KICAgICAgIkluc0NweUlEIjogIjQ3MzMiLA0KICAgICAgIkluc0NweU5hbWUiOiAi5bmz5a6J6L2m6ZmpIiwNCiAgICAgICJQcm9kdWN0Q29kZSI6ICJQQVpZQ1giLA0KICAgICAgIklzT3BlbiI6IHRydWUNCiAgICB9DQogIF0NCn0=");
 		System.out.println(new String(buffer));
 	}
 }
