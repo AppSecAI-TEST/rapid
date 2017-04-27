@@ -359,6 +359,10 @@ public class Redis {
 		return invokeLua(LuaCmd.HKEYS_AND_REFRESH, key, String.valueOf(expire));
 	}
 	
+	public List<byte[]> hmgetByZsetKeys(byte[] zsetkey, byte[] hashkey, long start, long stop) { 
+		return invokeLua(LuaCmd.HMGET_BY_ZSET_KEYS, zsetkey, hashkey, SerializeUtil.RedisUtil.encode(start), SerializeUtil.RedisUtil.encode(stop));
+	}
+	
 	public List<byte[]> hvals(byte[] key) {
 		return invoke(new RedisInvocation<List<byte[]>>() {
 			@Override

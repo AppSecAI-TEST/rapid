@@ -1,5 +1,8 @@
 package org.rapid.utilt.net.http;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement(name = "content")
 public class AvailableInsuranceSubmit {
 
 	private String Username;

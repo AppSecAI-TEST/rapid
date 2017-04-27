@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -12,6 +13,7 @@ import java.util.Map.Entry;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import org.rapid.util.common.Constants;
@@ -62,6 +64,22 @@ public interface SerializeUtil {
 				throw new RuntimeException("Serial failure!", e);
 			}
 		}
+
+		public static String beanToXml(Object obj, String encoding) {
+			String strxml = null;
+			try {
+				JAXBContext context = JAXBContext.newInstance(obj.getClass());
+				Marshaller marshaller = context.createMarshaller();
+				marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+				marshaller.setProperty(Marshaller.JAXB_ENCODING, encoding);
+				StringWriter writer = new StringWriter();
+				marshaller.marshal(obj, writer);
+				strxml = writer.toString();
+			} catch (JAXBException e) {
+				e.printStackTrace();
+			}
+			return strxml;
+		}
 	}
 
 	class ProtostuffUtil {
@@ -106,18 +124,18 @@ public interface SerializeUtil {
 		public static final byte[] encode(Object value) {
 			return _encode(value.toString());
 		}
-		
-		public static final byte[][] encode(Object ...params) {
+
+		public static final byte[][] encode(Object... params) {
 			byte[][] buffer = new byte[params.length][];
 			for (int i = 0, len = params.length; i < len; i++) {
-				if (params[i] instanceof byte[]) 
+				if (params[i] instanceof byte[])
 					buffer[i] = (byte[]) params[i];
 				else
 					buffer[i] = _encode(params[i].toString());
 			}
 			return buffer;
 		}
-		
+
 		private static final byte[] _encode(String value) {
 			return value.getBytes(Constants.UTF_8);
 		}

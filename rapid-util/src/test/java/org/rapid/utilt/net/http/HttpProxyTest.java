@@ -26,6 +26,38 @@ public class HttpProxyTest {
 		proxy.init();
 		
 		
+		OfferSubmit submit = new OfferSubmit();
+		submit.setUsername("cxdlzjcx");
+		submit.setPassword("111111");
+		submit.setLicenseNo("鄂A34JR9");
+		submit.setVin("");
+		submit.setSyr("郑菊妹");
+		submit.setInsureProvince("四川");
+		submit.setCompanyID("2038");
+		submit.setProductCode("PAZYCX");
+		String body = SerializeUtil.XmlUtil.beanToXml(submit, "utf-8");
+		body = body.replace(" standalone=\"yes\"", "");
+		System.out.println(body);
+		body = DesUtil.EncryptDES(body, "68730531");
+		System.out.println(body);
+		HttpPost post = new HttpPost("http://123.56.130.87:8383/OpenAPI/CheXian.asmx/GetVehicleInByRenewl");
+		List<NameValuePair> list = new ArrayList<NameValuePair>();
+		list.add(new BasicNameValuePair("xmlData", body));
+		post.setEntity(new UrlEncodedFormEntity(list, Charset.forName("UTF-8")));
+		String result = proxy.syncRequest(post, SyncStrRespHandler.INSTANCE);
+		System.out.println(result);
+		byte[] buffer = Base64.decodeBase64("PFJFVFVSTj48TUVTU0FHRT48VkFMVUU+6K+35rGC5oql5paH6Kej5p6Q5aSx6LSl77yBPC9WQUxVRT48VElNRT4yMDE3LTA0LTI2IDE4OjM0OjEzPC9USU1FPjwvTUVTU0FHRT48L1JFVFVSTj4=");
+		System.out.println(new String(buffer));
+	}
+	
+	public static void availableInsurance() throws Exception { 
+		HttpProxy proxy = new HttpProxy();
+		
+		SyncHttpAdapter adapter = new SyncHttpAdapter();
+		proxy.setSyncHttp(adapter);
+		proxy.init();
+		
+		
 		AvailableInsuranceSubmit submit = new AvailableInsuranceSubmit();
 		submit.setUsername("cxdlzjcx");
 		submit.setPassword("111111");

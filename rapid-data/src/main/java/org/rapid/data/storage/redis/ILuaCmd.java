@@ -140,6 +140,13 @@ public interface ILuaCmd {
 			}
 		},
 		
+		HMGET_BY_ZSET_KEYS {
+			@Override
+			public int keyNum() {
+				return 2;
+			}
+		},
+		
 		/**
 		 * hash 分页：数据存放在 hash 中，sorted set 中只存放 hash 的 各个 field
 		 */
