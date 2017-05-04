@@ -1,5 +1,6 @@
 package org.rapid.utilt.net.http;
 
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "VehicleData")
@@ -18,6 +19,7 @@ public class OfferSubmit {
 		return Username;
 	}
 
+	@XmlElement(name = "Username")
 	public void setUsername(String username) {
 		Username = username;
 	}
@@ -26,6 +28,7 @@ public class OfferSubmit {
 		return Password;
 	}
 
+	@XmlElement(name = "Password")
 	public void setPassword(String password) {
 		Password = password;
 	}
@@ -34,6 +37,7 @@ public class OfferSubmit {
 		return LicenseNo;
 	}
 
+	@XmlElement(name = "LicenseNo")
 	public void setLicenseNo(String licenseNo) {
 		LicenseNo = licenseNo;
 	}
@@ -41,7 +45,8 @@ public class OfferSubmit {
 	public String getVin() {
 		return Vin;
 	}
-
+	
+	@XmlElement(name = "Vin")
 	public void setVin(String vin) {
 		Vin = vin;
 	}
@@ -50,6 +55,7 @@ public class OfferSubmit {
 		return Syr;
 	}
 
+	@XmlElement(name = "Syr")
 	public void setSyr(String syr) {
 		Syr = syr;
 	}
@@ -58,6 +64,7 @@ public class OfferSubmit {
 		return InsureProvince;
 	}
 
+	@XmlElement(name = "InsureProvince")
 	public void setInsureProvince(String insureProvince) {
 		InsureProvince = insureProvince;
 	}
@@ -66,6 +73,7 @@ public class OfferSubmit {
 		return CompanyID;
 	}
 
+	@XmlElement(name = "CompanyID")
 	public void setCompanyID(String companyID) {
 		CompanyID = companyID;
 	}
@@ -74,6 +82,7 @@ public class OfferSubmit {
 		return ProductCode;
 	}
 
+	@XmlElement(name = "ProductCode")
 	public void setProductCode(String productCode) {
 		ProductCode = productCode;
 	}

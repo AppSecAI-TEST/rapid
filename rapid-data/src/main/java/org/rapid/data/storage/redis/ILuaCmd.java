@@ -26,7 +26,40 @@ public interface ILuaCmd {
 		TEST {
 			@Override
 			public int keyNum() {
-				return 1;
+				return 2;
+			}
+		},
+		
+		/**
+		 * 将一个对象写入 hash 中，并且将主键写入多个 set 中(可能的话)
+		 */
+		CACHE_FLUSH {
+			@Override
+			public int keyNum() {
+				throw new UnsupportedOperationException("CACHE_FLUSH has no fixed keys!");
+			}
+		},
+		
+		/**
+		 * 一次性将多个对象存入 hash 中，并且将 field 写入一个 set 中
+		 * 如果 set 已经缓存过了则不会再次触发上面的操作
+		 * 
+		 */
+		CACHE_LIST_FLUSH {
+			@Override
+			public int keyNum() {
+				return 3;
+			}
+		},
+		
+		/**
+		 * 获取缓存列表数据，如果缓存还没设置则返回 nil，如果缓存设置了但是缓存列表数据为空，则返回空列表；
+		 * 
+		 */
+		CACHE_LIST_LOAD {
+			@Override
+			public int keyNum() {
+				throw new UnsupportedOperationException("CACHE_FLUSH has no fixed keys!");
 			}
 		},
 		
@@ -161,6 +194,20 @@ public interface ILuaCmd {
 			@Override
 			public int keyNum() {
 				return 1;
+			}
+		},
+		
+		TOKEN_REPLACE {
+			@Override
+			public int keyNum() {
+				return 2;
+			}
+		},
+		
+		TOKEN_REMOVE {
+			@Override
+			public int keyNum() {
+				return 2;
 			}
 		};
 		

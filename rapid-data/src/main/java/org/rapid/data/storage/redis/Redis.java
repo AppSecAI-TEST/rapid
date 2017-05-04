@@ -3,6 +3,7 @@ package org.rapid.data.storage.redis;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -15,6 +16,8 @@ import org.rapid.data.storage.redis.ILuaCmd.LuaCmd;
 import org.rapid.data.storage.redis.RedisOption.EXPX;
 import org.rapid.data.storage.redis.RedisOption.NXXX;
 import org.rapid.util.common.Callback;
+import org.rapid.util.common.RapidSecurity;
+import org.rapid.util.common.model.UniqueModel;
 import org.rapid.util.common.serializer.SerializeUtil;
 import org.rapid.util.common.uuid.AlternativeJdkIdGenerator;
 import org.rapid.util.io.FileReader;
@@ -58,8 +61,7 @@ public class Redis {
 		}, new Callback<File, Void>() {
 			@Override
 			public Void invoke(File file) throws Exception {
-				_addLuaScript(file.getName().replaceAll(LUA_SCRIPT_SUFFIX, StringUtils.EMPTY),
-						new String(FileReader.bufferRead(file)));
+				_addLuaScript(file.getName().replaceAll(LUA_SCRIPT_SUFFIX, StringUtils.EMPTY), new String(FileReader.bufferRead(file)));
 				return null;
 			}
 		});
@@ -274,6 +276,15 @@ public class Redis {
 			}
 		});
 	}
+	
+	public List<String> hmget(String key, String ... fields) {
+		return invoke(new RedisInvocation<List<String>>() {
+			@Override
+			public List<String> invok(Jedis jedis) {
+				return jedis.hmget(key, fields);
+			}
+		});
+	}
 
 	public String hmset(String key, Map<String, String> hash) {
 		return invoke(new RedisInvocation<String>() {
@@ -289,6 +300,18 @@ public class Redis {
 			@Override
 			public String invok(Jedis jedis) {
 				return jedis.hmset(key, hash);
+			}
+		});
+	}
+	
+	public <KEY, T extends UniqueModel<KEY>> String hmsetProtostuff(byte[] key, List<T> list) {
+		return invoke(new RedisInvocation<String>() {
+			@Override
+			public String invok(Jedis jedis) {
+				Map<byte[], byte[]> map = new HashMap<byte[], byte[]>(list.size() * 2);
+				for (T t : list)
+					map.put(SerializeUtil.RedisUtil.encode(t.key()), SerializeUtil.ProtostuffUtil.serial(t));
+				return jedis.hmset(key, map);
 			}
 		});
 	}
@@ -583,6 +606,83 @@ public class Redis {
 		String shalKey = DigestUtils.sha1Hex(content);
 		if (null != scripts.putIfAbsent(key, new LuaScript(shalKey, content)))
 			logger.warn("Lua script - {}:{} already exist!", key, content);
+	}
+	
+	/**
+	 * 成功刷新列表之后将 key 列表返回
+	 * 
+	 * @param cacheControllerKey
+	 * @param hashKey
+	 * @param setKey
+	 * @param cacheControllerVal
+	 * @param models
+	 * @return
+	 */
+	public void protostuffCacheListFlush(String cacheControllerKey, byte[] hashKey, String setKey, String cacheControllerVal, List<? extends UniqueModel<?>> models) {
+		byte[][] params = new byte[models.size() * 2 + 4][];
+		int index = 0;
+		params[index++] = SerializeUtil.RedisUtil.encode(cacheControllerKey);
+		params[index++] = hashKey;
+		params[index++] = SerializeUtil.RedisUtil.encode(setKey);
+		params[index++] = SerializeUtil.RedisUtil.encode(cacheControllerVal);
+		for (UniqueModel<?> model : models) {
+			params[index++] = SerializeUtil.RedisUtil.encode(model.key());
+			params[index++] = SerializeUtil.ProtostuffUtil.serial(model);
+		}
+		invokeLua(LuaCmd.CACHE_LIST_FLUSH, params);
+	}
+	
+	/**
+	 * 仅仅返回列表中数据实体的 key
+	 * 
+	 * @param cacheControllerKey
+	 * @param setKey
+	 * @param cacheControllerVal
+	 * @return
+	 */
+	public List<String> cacheListLoad(String cacheControllerKey, String setKey, String cacheControllerVal) {
+		return invokeLua(LuaCmd.CACHE_LIST_LOAD, 2, SerializeUtil.RedisUtil.encode(
+				cacheControllerKey, setKey, cacheControllerKey));
+	}
+	
+	/**
+	 * 返回列表中的数据实体
+	 * 
+	 * @param cacheControllerKey
+	 * @param setKey
+	 * @param hashKey
+	 * @param cacheControllerVal
+	 * @return
+	 */
+	public List<byte[]> protostuffCacheListLoadWithData(String cacheControllerKey, String setKey, byte[] hashKey, String cacheControllerVal) {
+		return invokeLua(LuaCmd.CACHE_LIST_LOAD, 3, SerializeUtil.RedisUtil.encode(
+				cacheControllerKey, setKey, hashKey, cacheControllerKey));
+	}
+	
+	public <T extends UniqueModel<?>> void protostuffCacheFlush(byte[] hashKey, T model, String... setKeys) {
+		int keyNum = setKeys.length + 1;
+		byte[][] params = new byte[keyNum + 2][];
+		int index = 0;
+		params[index++] = hashKey;
+		for (String setKey : setKeys)
+			params[index++] = SerializeUtil.RedisUtil.encode(setKey);
+		params[index++] = SerializeUtil.RedisUtil.encode(model.key());
+		params[index++] = SerializeUtil.ProtostuffUtil.serial(model);
+		invokeLua(LuaCmd.CACHE_FLUSH, keyNum, params);
+	}
+	
+	public String tokenReplace(String userTokenKey, String tokenUserKey, int uid) {
+		String token = RapidSecurity.encodeToken(String.valueOf(uid));
+		invokeLua(LuaCmd.TOKEN_REPLACE, userTokenKey, tokenUserKey, String.valueOf(uid), token);
+		return token;
+	}
+	
+	public long tokenRemove(String userTokenKey, String tokenUserKey, String token, String userLockKey, String lockId, int lockExpire) {
+		return invokeLua(LuaCmd.TOKEN_REMOVE, userTokenKey, tokenUserKey, token, userLockKey, lockId, String.valueOf(lockExpire));
+	}
+	
+	public long tokenRemove(String userTokenKey, String tokenUserKey, String token) {
+		return invokeLua(LuaCmd.TOKEN_REMOVE, userTokenKey, tokenUserKey, token);
 	}
 
 	/**

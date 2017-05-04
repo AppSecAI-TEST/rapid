@@ -3,7 +3,6 @@ package org.rapid.util.common.region;
 public enum RegionType {
 
 	COUNTRY(1){
-		// 最后两位是 "00 的必是县级行政区划"
 		@Override
 		protected boolean _match(int code) {
 			String str = String.valueOf(code).substring(1);
@@ -16,7 +15,6 @@ public enum RegionType {
 	},
 	
 	PROVINCE(2){
-		// 最后两位是 "00 的必是县级行政区划"
 		@Override
 		protected boolean _match(int code) {
 			String str = String.valueOf(code).substring(2);
@@ -30,7 +28,6 @@ public enum RegionType {
 	},
 	
 	CITY(3) {
-		// 最后两位是 "00 的必是县级行政区划"
 		@Override
 		protected boolean _match(int code) {
 			String str = String.valueOf(code).substring(4);

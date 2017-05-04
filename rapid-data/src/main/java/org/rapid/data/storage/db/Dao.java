@@ -19,6 +19,13 @@ public interface Dao<KEY, ENTITY extends UniqueModel<KEY>> {
 	 * @return
 	 */
 	List<ENTITY> selectAll();
+	
+	/**
+	 * 读取表中主键在指定的列表中的数据
+	 * 
+	 * @return
+	 */
+	List<ENTITY> selectWithinKey(List<KEY> keys);
 
 	/**
 	 * 通过主键获取唯一数据

@@ -1,5 +1,7 @@
 package org.rapid.data.storage.mapper;
 
+import java.util.List;
+
 import org.rapid.util.common.model.UniqueModel;
 
 /**
@@ -25,6 +27,13 @@ public interface IMapper<KEY, MODEL extends UniqueModel<KEY>>  {
 	 * @return
 	 */
 	MODEL getByKey(KEY key);
+	
+	/**
+	 * 获取多个指定主键的对象
+	 * 
+	 * @return
+	 */
+	List<MODEL> getWithinKey(List<KEY> keys);
 	
 	/**
 	 * 更新数据

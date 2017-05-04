@@ -1,8 +1,13 @@
 package org.rapid.data.storage.mapper;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.rapid.util.common.model.UniqueModel;
 import org.rapid.util.common.serializer.SerializeUtil;
 
+@SuppressWarnings("unchecked")
 public abstract class BinaryMemoryMapper<KEY, MODEL extends UniqueModel<KEY>> extends Mapper<byte[], KEY, MODEL> {
 	
 	public BinaryMemoryMapper(String redisKey) {
@@ -19,6 +24,21 @@ public abstract class BinaryMemoryMapper<KEY, MODEL extends UniqueModel<KEY>> ex
 	public MODEL getByKey(KEY key) {
 		byte[] data = redis.hget(redisKey, SerializeUtil.RedisUtil.encode(key));
 		return null == data ? null : deserial(data);
+	}
+	
+	@Override
+	public List<MODEL> getWithinKey(List<KEY> keys) {
+		if (null == keys || keys.isEmpty())
+			return Collections.EMPTY_LIST;
+		byte[][] fields = new byte[keys.size()][];
+		int index = 0;
+		for (KEY key : keys)
+			fields[index++] = SerializeUtil.RedisUtil.encode(key);
+		List<byte[]> datas = redis.hmget(redisKey, fields);
+		List<MODEL> models = new ArrayList<MODEL>();
+		for (byte[] data : datas) 
+			models.add(deserial(data));
+		return models;
 	}
 
 	@Override

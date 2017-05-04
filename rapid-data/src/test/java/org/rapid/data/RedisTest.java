@@ -90,9 +90,11 @@ public class RedisTest extends BaseTest {
 	}
 	
 	public void test() { 
-		System.out.println(System.currentTimeMillis());
 //		redis.hset("hash:test", "1", SerializeUtil.JsonUtil.GSON.toJson(new TestPojo(System.currentTimeMillis() + 30 * 1000, "haha", 10)));
-		Object value = redis.invokeLua(ILuaCmd.LuaCmd.TEST, "hash:test", "1", System.currentTimeMillis() + "");
+		Object value = redis.invokeLua(ILuaCmd.LuaCmd.TEST, 2, 
+				SerializeUtil.RedisUtil.encode("hash:employee:data"), 
+				SerializeUtil.RedisUtil.encode("set:employee:list:1"),
+				SerializeUtil.ProtostuffUtil.serial(new Pair<Integer, Integer>(1, 2)));
 		System.out.println(value);
 	}
 }
