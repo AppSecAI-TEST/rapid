@@ -100,4 +100,8 @@ public class AsyncHttpAdapter extends HttpAdapter {
 	public void setKeepAlive(boolean keepAlive) {
 		this.keepAlive = keepAlive;
 	}
+	
+	public void setConnectTimeout(int connectTimeout) {
+		this.connectTimeout = connectTimeout;
+	}
 }

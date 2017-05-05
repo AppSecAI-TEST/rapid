@@ -41,6 +41,8 @@
 		<paho.version>1.1.0</paho.version>
 		<!-- aliyun -->
 		<ons.version>1.2.7.Final</ons.version>
+		<!-- yunpian -->
+		<yunpian.version>1.2.3</yunpian.version>
 
 		<servlet.version>2.5</servlet.version>
 		<janino.version>3.0.6</janino.version>
@@ -416,6 +418,30 @@
 					<exclusion>
 						<groupId>org.jdom</groupId>
 						<artifactId>jdom</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+
+			<dependency>
+				<groupId>com.yunpian.sdk</groupId>
+				<artifactId>yunpian-java-sdk</artifactId>
+				<version>${yunpian.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.slf4j</groupId>
+						<artifactId>slf4j-api</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>com.google.code.gson</groupId>
+						<artifactId>gson</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.apache.httpcomponents</groupId>
+						<artifactId>httpasyncclient</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.apache.httpcomponents</groupId>
+						<artifactId>httpasyncclient-cache</artifactId>
 					</exclusion>
 				</exclusions>
 			</dependency>
