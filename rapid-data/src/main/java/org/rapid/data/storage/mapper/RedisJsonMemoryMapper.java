@@ -3,9 +3,9 @@ package org.rapid.data.storage.mapper;
 import org.rapid.util.common.model.UniqueModel;
 import org.rapid.util.common.serializer.SerializeUtil;
 
-public class JsonMemoryMapper<KEY, MODEL extends UniqueModel<KEY>> extends RawMemoryMapper<KEY, MODEL> {
+public class RedisJsonMemoryMapper<KEY, MODEL extends UniqueModel<KEY>> extends RedisRawMemoryMapper<KEY, MODEL> {
 
-	public JsonMemoryMapper(String redisKey) {
+	public RedisJsonMemoryMapper(String redisKey) {
 		super(redisKey);
 	}
 

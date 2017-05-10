@@ -6,9 +6,9 @@ import java.util.List;
 
 import org.rapid.util.common.model.UniqueModel;
 
-public abstract class RawMemoryMapper<KEY, MODEL extends UniqueModel<KEY>> extends Mapper<String, KEY, MODEL> {
+public abstract class RedisRawMemoryMapper<KEY, MODEL extends UniqueModel<KEY>> extends RedisMapper<String, KEY, MODEL> {
 
-	public RawMemoryMapper(String redisKey) {
+	public RedisRawMemoryMapper(String redisKey) {
 		this.redisKey = redisKey;
 	}
 	

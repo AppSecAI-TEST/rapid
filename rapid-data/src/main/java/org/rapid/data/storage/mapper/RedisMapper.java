@@ -8,7 +8,7 @@ import javax.annotation.Resource;
 import org.rapid.data.storage.redis.Redis;
 import org.rapid.util.common.model.UniqueModel;
 
-public abstract class Mapper<DATA, KEY, MODEL extends UniqueModel<KEY>> implements IMapper<KEY, MODEL> {
+public abstract class RedisMapper<DATA, KEY, MODEL extends UniqueModel<KEY>> implements IMapper<KEY, MODEL> {
 
 	@Resource
 	protected Redis redis;
@@ -16,7 +16,7 @@ public abstract class Mapper<DATA, KEY, MODEL extends UniqueModel<KEY>> implemen
 	protected Class<MODEL> clazz;
 	
 	@SuppressWarnings("unchecked")
-	public Mapper() {
+	public RedisMapper() {
 		Type superType = getClass().getGenericSuperclass();   
 		Type[] generics = ((ParameterizedType) superType).getActualTypeArguments();  
 		clazz = (Class<MODEL>) generics[1];

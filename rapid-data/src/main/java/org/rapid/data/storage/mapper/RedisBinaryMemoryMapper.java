@@ -8,9 +8,9 @@ import org.rapid.util.common.model.UniqueModel;
 import org.rapid.util.common.serializer.SerializeUtil;
 
 @SuppressWarnings("unchecked")
-public abstract class BinaryMemoryMapper<KEY, MODEL extends UniqueModel<KEY>> extends Mapper<byte[], KEY, MODEL> {
+public abstract class RedisBinaryMemoryMapper<KEY, MODEL extends UniqueModel<KEY>> extends RedisMapper<byte[], KEY, MODEL> {
 	
-	public BinaryMemoryMapper(String redisKey) {
+	public RedisBinaryMemoryMapper(String redisKey) {
 		this.redisKey = SerializeUtil.RedisUtil.encode(redisKey);
 	}
 	

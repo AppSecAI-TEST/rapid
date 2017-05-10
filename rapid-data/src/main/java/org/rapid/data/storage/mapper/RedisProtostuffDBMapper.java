@@ -14,9 +14,9 @@ import org.rapid.util.common.serializer.SerializeUtil;
  * @param <ENTITY>
  * @param <DAO>
  */
-public class ProtostuffDBMapper<KEY, ENTITY extends UniqueModel<KEY>, DAO extends Dao<KEY, ENTITY>> extends BinaryDBMapper<KEY, ENTITY, DAO> {
+public class RedisProtostuffDBMapper<KEY, ENTITY extends UniqueModel<KEY>, DAO extends Dao<KEY, ENTITY>> extends RedisBinaryDBMapper<KEY, ENTITY, DAO> {
 
-	public ProtostuffDBMapper(Table table, String redisKey) {
+	public RedisProtostuffDBMapper(Table table, String redisKey) {
 		super(table, redisKey);
 	}
 

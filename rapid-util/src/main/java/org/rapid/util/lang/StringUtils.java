@@ -1,9 +1,25 @@
 package org.rapid.util.lang;
 
 public class StringUtils {
-	
+
 	public static final String EMPTY = "";
-	
+
+	/**
+	 * 获取字符串的长度，如果汉子则为2个字符长度
+	 */
+	public static int getLength(String string) {
+		int length = 0;
+		for (int i = 0; i < string.length(); i++) {
+			int ascii = Character.codePointAt(string, i);
+			if (ascii >= 0 && ascii <= 255)
+				length++;
+			else
+				length += 2;
+
+		}
+		return length;
+	}
+
 	/**
 	 * 去掉字符串的头尾空格，任何空格都算，比如制表符，换行符，回车，全角空格等
 	 * 
@@ -20,7 +36,7 @@ public class StringUtils {
 			sb.deleteCharAt(sb.length() - 1);
 		return sb.toString();
 	}
-	
+
 	/**
 	 * @see #hasLength(CharSequence)
 	 * @param str
@@ -29,7 +45,7 @@ public class StringUtils {
 	public static boolean hasLength(String str) {
 		return hasLength((CharSequence) str);
 	}
-	
+
 	/**
 	 * 任何空格都算在内
 	 * 
@@ -43,7 +59,7 @@ public class StringUtils {
 	public static boolean hasText(String str) {
 		return hasText((CharSequence) str);
 	}
-	
+
 	public static boolean hasText(CharSequence str) {
 		if (!hasLength(str))
 			return false;
@@ -54,7 +70,7 @@ public class StringUtils {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * 替换字符串
 	 * 

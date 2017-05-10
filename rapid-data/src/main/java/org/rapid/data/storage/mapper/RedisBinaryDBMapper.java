@@ -17,12 +17,12 @@ import org.rapid.util.common.serializer.SerializeUtil;
  * @param <KEY>
  * @param <ENTITY>
  */
-public abstract class BinaryDBMapper<KEY, ENTITY extends UniqueModel<KEY>, DAO extends Dao<KEY, ENTITY>> extends BinaryMemoryMapper<KEY, ENTITY> {
+public abstract class RedisBinaryDBMapper<KEY, ENTITY extends UniqueModel<KEY>, DAO extends Dao<KEY, ENTITY>> extends RedisBinaryMemoryMapper<KEY, ENTITY> {
 	
 	protected DAO dao;
 	protected Table table;
 	
-	protected BinaryDBMapper(Table table, String redisKey) {
+	protected RedisBinaryDBMapper(Table table, String redisKey) {
 		super(redisKey);
 		this.table = table;
 	}
