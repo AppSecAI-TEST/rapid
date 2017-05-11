@@ -1,7 +1,5 @@
 package org.rapid.data.storage.mongo;
 
-import javax.annotation.PostConstruct;
-
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
@@ -18,8 +16,8 @@ public class Mongo {
 	private MongoClient mongo;
 	private MongoDatabase connection;
 	
-	@PostConstruct
-	public void init() {
+	@SuppressWarnings("unused")
+	private void init() {
 		this.mongo = new MongoClient(host);
 		this.connection = mongo.getDatabase(db);
 	}

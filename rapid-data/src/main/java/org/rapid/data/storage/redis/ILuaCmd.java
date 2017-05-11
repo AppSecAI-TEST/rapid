@@ -23,13 +23,6 @@ public interface ILuaCmd {
 
 	enum LuaCmd implements ILuaCmd {
 		
-		TEST {
-			@Override
-			public int keyNum() {
-				return 2;
-			}
-		},
-		
 		/**
 		 * 将一个对象写入 hash 中，并且将主键写入多个 set 中(可能的话)
 		 */
