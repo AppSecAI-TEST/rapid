@@ -51,6 +51,11 @@ public class Mongo {
 		return list;
 	}
 	
+	public long count(String collectionName, Bson filter) {
+		MongoCollection<Document> collection = connection.getCollection(collectionName);
+		return collection.count(filter);
+	}
+	
 	public Document findOne(String collectionName, Bson filter) { 
 		MongoCollection<Document> collection = connection.getCollection(collectionName);
 		FindIterable<Document> iterable = collection.find(filter);
