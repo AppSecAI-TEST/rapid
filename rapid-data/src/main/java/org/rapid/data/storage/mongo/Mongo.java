@@ -44,11 +44,57 @@ public class Mongo {
 	public <T> List<T> find(String collectionName, Bson filter, Class<T> clazz) { 
 		MongoCollection<Document> collection = connection.getCollection(collectionName);
 		FindIterable<Document> iterable = collection.find(filter);
-		List<T> list = new ArrayList<T>(4);
+		List<T> list = new ArrayList<T>();
 		MongoCursor<Document> cursor = iterable.iterator();
 		while (cursor.hasNext()) 
 			list.add(SerializeUtil.JsonUtil.GSON.fromJson(cursor.next().toJson(), clazz));
 		return list;
+	}
+	
+	/**
+	 * 分页显示：排序
+	 * 
+	 * @param collectionName
+	 * @param filter
+	 * @param sort
+	 * @param clazz
+	 * @param start
+	 * @param pageSize
+	 * @return
+	 */
+	public <T> List<T> paging(String collectionName, Bson filter, Bson sort, int start, int pageSize, Class<T> clazz) {
+		MongoCollection<Document> collection = connection.getCollection(collectionName);
+		FindIterable<Document> iterable = collection.find(filter).sort(sort).skip(start).limit(pageSize);
+		List<T> list = new ArrayList<T>(0);
+		MongoCursor<Document> cursor = iterable.iterator();
+		while (cursor.hasNext()) 
+			list.add(SerializeUtil.JsonUtil.GSON.fromJson(cursor.next().toJson(), clazz));
+		return list;
+	}
+	
+	/**
+	 * 分页显示：不排序
+	 * 
+	 * @param collectionName
+	 * @param filter
+	 * @param start
+	 * @param pageSize
+	 * @param clazz
+	 * @return
+	 */
+	public <T> List<T> paging(String collectionName, Bson filter, int start, int pageSize, Class<T> clazz) {
+		MongoCollection<Document> collection = connection.getCollection(collectionName);
+		FindIterable<Document> iterable = collection.find(filter).skip(start).limit(pageSize);
+		List<T> list = new ArrayList<T>(0);
+		MongoCursor<Document> cursor = iterable.iterator();
+		while (cursor.hasNext()) 
+			list.add(SerializeUtil.JsonUtil.GSON.fromJson(cursor.next().toJson(), clazz));
+		return list;
+	}
+	
+	public long count(String collectionName, Bson filter) {
+		MongoCollection<Document> collection = connection.getCollection(collectionName);
+		return collection.count(filter);
 	}
 	
 	public Document findOne(String collectionName, Bson filter) { 
