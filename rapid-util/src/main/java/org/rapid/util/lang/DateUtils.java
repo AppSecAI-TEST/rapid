@@ -44,7 +44,7 @@ public final class DateUtils {
 	}
 	
 	/**
-	 * 获取 date1 和 date2 之间的时间差值
+	 * 获取 date1 和 date2 之间的时间差值:毫秒单位
 	 * 
 	 * @param date1
 	 * @param date2
