@@ -4,7 +4,9 @@ import java.nio.charset.Charset;
 
 public interface Constants {
 
-	public static final Charset UTF_8						= Charset.forName("UTF-8");
+	final Charset UTF_8						= Charset.forName("UTF-8");
+	final String SYMBOL_EQUAL				= "=";
+	final String SYMBOL_AND					= "&";
 	
 	interface MimeType {
 		

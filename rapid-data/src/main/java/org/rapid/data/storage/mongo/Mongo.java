@@ -62,9 +62,19 @@ public class Mongo {
 	 * @param pageSize
 	 * @return
 	 */
-	public <T> List<T> paging(String collectionName, Bson filter, Bson sort, int start, int pageSize, Class<T> clazz) {
+	public <T> List<T> pagingAndSort(String collectionName, Bson filter, Bson sort, int start, int pageSize, Class<T> clazz) {
 		MongoCollection<Document> collection = connection.getCollection(collectionName);
 		FindIterable<Document> iterable = collection.find(filter).sort(sort).skip(start).limit(pageSize);
+		List<T> list = new ArrayList<T>(0);
+		MongoCursor<Document> cursor = iterable.iterator();
+		while (cursor.hasNext()) 
+			list.add(SerializeUtil.JsonUtil.GSON.fromJson(cursor.next().toJson(), clazz));
+		return list;
+	}
+	
+	public <T> List<T> pagingAndSort(String collectionName, Bson sort, int start, int pageSize, Class<T> clazz) {
+		MongoCollection<Document> collection = connection.getCollection(collectionName);
+		FindIterable<Document> iterable = collection.find().sort(sort).skip(start).limit(pageSize);
 		List<T> list = new ArrayList<T>(0);
 		MongoCursor<Document> cursor = iterable.iterator();
 		while (cursor.hasNext()) 
@@ -92,9 +102,24 @@ public class Mongo {
 		return list;
 	}
 	
+	public <T> List<T> paging(String collectionName, int start, int pageSize, Class<T> clazz) {
+		MongoCollection<Document> collection = connection.getCollection(collectionName);
+		FindIterable<Document> iterable = collection.find().skip(start).limit(pageSize);
+		List<T> list = new ArrayList<T>(0);
+		MongoCursor<Document> cursor = iterable.iterator();
+		while (cursor.hasNext()) 
+			list.add(SerializeUtil.JsonUtil.GSON.fromJson(cursor.next().toJson(), clazz));
+		return list;
+	}
+	
 	public long count(String collectionName, Bson filter) {
 		MongoCollection<Document> collection = connection.getCollection(collectionName);
 		return collection.count(filter);
+	}
+	
+	public long count(String collectionName) {
+		MongoCollection<Document> collection = connection.getCollection(collectionName);
+		return collection.count();
 	}
 	
 	public Document findOne(String collectionName, Bson filter) { 
