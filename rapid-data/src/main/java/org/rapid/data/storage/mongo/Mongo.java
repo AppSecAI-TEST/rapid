@@ -13,6 +13,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.FindOneAndUpdateOptions;
+import com.mongodb.client.model.UpdateOptions;
 
 public class Mongo {
 	
@@ -128,9 +129,19 @@ public class Mongo {
 		return iterable.first();
 	}
 	
-	public void replace(String collectionName, Bson filter, Document document) { 
+	public void replaceOne(String collectionName, Bson filter, Document replacement) { 
 		MongoCollection<Document> collection = connection.getCollection(collectionName);
-		collection.replaceOne(filter, document);
+		collection.replaceOne(filter, replacement);
+	}
+	
+	public void replaceOne(String collectionName, Bson filter, Document replacement, UpdateOptions options) { 
+		MongoCollection<Document> collection = connection.getCollection(collectionName);
+		collection.replaceOne(filter, replacement, options);
+	}
+	
+	public Document findOneAndUpdate(String collectionName, Bson filter, Bson update) { 
+		MongoCollection<Document> collection = connection.getCollection(collectionName);
+		return collection.findOneAndUpdate(filter, update);
 	}
 
 	public Document findOneAndUpdate(String collectionName, Bson filter, Bson update, FindOneAndUpdateOptions options) { 

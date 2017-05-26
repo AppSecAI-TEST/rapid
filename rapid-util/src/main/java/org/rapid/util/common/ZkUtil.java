@@ -21,11 +21,11 @@ public class ZkUtil {
 			logger.warn("Zookeeper {} has no data to read!", path);
 			return null;
 		}
-		return SerializeUtil.JsonUtil.GSON.fromJson(new String(buffer, Constants.UTF_8), clazz);
+		return SerializeUtil.JsonUtil.GSON.fromJson(new String(buffer, Consts.UTF_8), clazz);
 	}
 	
 	public static void writeJson(ZkClient zkClient, Object config, String path) {
-		byte[] data = SerializeUtil.JsonUtil.GSON.toJson(config).getBytes(Constants.UTF_8);
+		byte[] data = SerializeUtil.JsonUtil.GSON.toJson(config).getBytes(Consts.UTF_8);
 		if (!zkClient.exists(path))
 			zkClient.create(path, data, CreateMode.PERSISTENT);
 		else

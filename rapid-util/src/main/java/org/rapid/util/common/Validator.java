@@ -1,13 +1,24 @@
 package org.rapid.util.common;
 
+import java.util.Locale;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.google.i18n.phonenumbers.NumberParseException;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber;
 
 public class Validator {
 	
 	/**
      * 正则表达式：验证身份证
      */
-    private static final String IDENTITY = "(\\d{14}[0-9a-zA-Z])|(\\d{17}[0-9a-zA-Z])";
+    private static final Pattern IDENTITY = Pattern.compile("(\\d{14}[0-9a-zA-Z])|(\\d{17}[0-9a-zA-Z])");
+    
+    /**
+     * 正则表达式：车牌号
+     */
+    private static final Pattern VEHICLE_LICENSE = Pattern.compile("^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[A-Z0-9]{4}[A-Z0-9挂学警港澳]{1}$");
     
     /**
      * 校验身份证
@@ -16,6 +27,37 @@ public class Validator {
      * @return 校验通过返回true，否则返回false
      */
     public static boolean isIdentity(String identity) {
-        return Pattern.matches(IDENTITY, identity);
+    	return _matches(IDENTITY, identity);
+    }
+    
+    /**
+     * 校验车牌号
+     * 
+     * @param license
+     * @return
+     */
+    public static boolean isVehicleLisense(String license) {
+    	return _matches(VEHICLE_LICENSE, license);
+    }
+    
+    /**
+     * 检验手机号
+     * 
+     * @param mobile
+     * @return
+     */
+    public static boolean isMobile(String mobile) {
+    	PhoneNumberUtil util = PhoneNumberUtil.getInstance();
+		try {
+			PhoneNumber number = util.parse(mobile, Locale.getDefault().getCountry());
+			return util.isValidNumber(number);
+		} catch (NumberParseException e) {
+			return false;
+		}
+    }
+    
+    private static boolean _matches(Pattern pattern, CharSequence input) {
+    	Matcher m = pattern.matcher(input);
+    	return m.matches();
     }
 }

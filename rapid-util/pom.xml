@@ -80,5 +80,11 @@
 			<artifactId>commons-codec</artifactId>
 			<optional>true</optional>
 		</dependency>
+
+		<dependency>
+			<groupId>com.googlecode.libphonenumber</groupId>
+			<artifactId>libphonenumber</artifactId>
+			<optional>true</optional>
+		</dependency>
 	</dependencies>
 </project>

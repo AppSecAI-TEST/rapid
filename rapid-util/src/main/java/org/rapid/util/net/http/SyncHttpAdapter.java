@@ -13,6 +13,7 @@ import javax.net.ssl.SSLException;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpRequestRetryHandler;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.config.RegistryBuilder;
@@ -35,13 +36,18 @@ public class SyncHttpAdapter extends HttpAdapter {
 	
 	private static final Logger logger = LoggerFactory.getLogger(SyncHttpAdapter.class);
 	
-	private CloseableHttpClient httpClients;
+	private CloseableHttpClient httpClient;
 	private PoolingHttpClientConnectionManager cm;
 	private int retryCount = 3;
 	
 	@Override
 	void init() throws Exception { 
 		HttpClientBuilder builder = HttpClients.custom();
+		
+		RequestConfig requestConfig = RequestConfig.custom()
+				.setConnectTimeout(connectTimeout)
+				.setSocketTimeout(soTimeout)
+				.build();
 		
 		// 设置连接池
 		this.cm = connManager();
@@ -50,7 +56,9 @@ public class SyncHttpAdapter extends HttpAdapter {
 		builder.setKeepAliveStrategy(keepAliveStrategy());
 		// 设置失败重发handler
 		builder.setRetryHandler(retryHandler());
-		this.httpClients = builder.build();
+		// 设置默认的请求配置
+		builder.setDefaultRequestConfig(requestConfig);
+		this.httpClient = builder.build();
 	}
 	
 	void idleExpireClear() {
@@ -119,16 +127,16 @@ public class SyncHttpAdapter extends HttpAdapter {
 	public void close() { 
 		try {
 			this.cm.close();
-			this.httpClients.close();
+			this.httpClient.close();
 		} catch (IOException e) {
 			logger.warn("HttpClients close exception {}.", e);
 		}
 		this.cm = null;
-		this.httpClients = null;
+		this.httpClient = null;
 	}
 	
 	public <T> T execute(HttpUriRequest request, SyncRespHandler<T> responseHandler) throws ClientProtocolException, IOException {
-		return httpClients.execute(request, responseHandler);
+		return httpClient.execute(request, responseHandler);
 	}
 	
 	public void setRetryCount(int retryCount) {

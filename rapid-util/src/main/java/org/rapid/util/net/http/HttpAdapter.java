@@ -9,6 +9,8 @@ public abstract class HttpAdapter {
 	protected int keepAliveTime = 5000;
 	protected int maxConn = 200;
 	protected int maxConnPerRoute = 200;
+	protected int connectTimeout = 3000;
+	protected int soTimeout = 3000;
 	protected boolean sslEnabled;
 
 	/**
@@ -44,6 +46,14 @@ public abstract class HttpAdapter {
 	}
 
 	abstract void init() throws Exception;
+	
+	public void setConnectTimeout(int connectTimeout) {
+		this.connectTimeout = connectTimeout;
+	}
+	
+	public void setSoTimeout(int soTimeout) {
+		this.soTimeout = soTimeout;
+	}
 
 	public void setMaxConn(int maxConn) {
 		this.maxConn = maxConn;

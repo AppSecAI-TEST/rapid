@@ -16,7 +16,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import org.rapid.util.common.Constants;
+import org.rapid.util.common.Consts;
 import org.rapid.util.common.converter.StrConverter;
 import org.rapid.util.common.converter.str.Str2BoolConverter;
 import org.rapid.util.common.converter.str.Str2ByteConverter;
@@ -137,11 +137,11 @@ public interface SerializeUtil {
 		}
 
 		private static final byte[] _encode(String value) {
-			return value.getBytes(Constants.UTF_8);
+			return value.getBytes(Consts.UTF_8);
 		}
 
 		public static final String decode(byte[] buffer) {
-			return new String(buffer, Constants.UTF_8);
+			return new String(buffer, Consts.UTF_8);
 		}
 	}
 

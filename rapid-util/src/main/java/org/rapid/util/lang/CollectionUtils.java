@@ -27,4 +27,24 @@ public class CollectionUtils {
 			temp.add(Integer.valueOf(str));
 		return temp;
 	}
+	
+	/**
+	 * null 或者没有元素都为true
+	 * 
+	 * @param collection
+	 * @return
+	 */
+	public static final boolean isEmpty(Collection<?> collection) {
+		return null == collection || collection.isEmpty();
+	}
+	
+	/**
+	 * null 或者没有元素都为0
+	 * 
+	 * @param collection
+	 * @return
+	 */
+	public static final int size(Collection<?> collection) {
+		return isEmpty(collection) ? 0 : collection.size();
+	}
 }

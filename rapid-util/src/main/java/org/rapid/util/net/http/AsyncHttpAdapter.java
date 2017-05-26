@@ -22,11 +22,9 @@ import org.rapid.util.net.http.handler.AsyncRespHandler;
 public class AsyncHttpAdapter extends HttpAdapter {
 
 	private int workerCount = 10;
-	private int connectTimeout = 3000;
-	private int soTimeout = 3000;
 	private boolean tcpNoDelay = true;
 	private boolean keepAlive = true;
-	private CloseableHttpAsyncClient httpClients;
+	private CloseableHttpAsyncClient httpClient;
 	private PoolingNHttpClientConnectionManager cm;
 
 	@Override
@@ -39,8 +37,8 @@ public class AsyncHttpAdapter extends HttpAdapter {
 		// 设置keep alive
 		builder.setKeepAliveStrategy(keepAliveStrategy());
 		
-		this.httpClients = builder.build();
-		this.httpClients.start();
+		this.httpClient = builder.build();
+		this.httpClient.start();
 	}
 
 	@Override
@@ -53,12 +51,12 @@ public class AsyncHttpAdapter extends HttpAdapter {
 	void close() {
 		try {
 			this.cm.shutdown();
-			this.httpClients.close();
+			this.httpClient.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		this.cm = null;
-		this.httpClients = null;
+		this.httpClient = null;
 	}
 	
 	private PoolingNHttpClientConnectionManager connManager() throws IOReactorException {
@@ -82,7 +80,7 @@ public class AsyncHttpAdapter extends HttpAdapter {
 	}
 	
 	public void execute(HttpUriRequest request, AsyncRespHandler respHandler) {
-		this.httpClients.execute(request, respHandler);
+		this.httpClient.execute(request, respHandler);
 	}
 
 	public void setTcpNoDelay(boolean tcpNoDelay) {

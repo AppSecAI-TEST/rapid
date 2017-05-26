@@ -9,6 +9,8 @@ import org.rapid.data.storage.mongo.Mongo;
 import org.rapid.util.common.model.UniqueModel;
 import org.rapid.util.common.serializer.SerializeUtil;
 
+import com.mongodb.client.model.Filters;
+
 /**
  * MongoDB 的 映射类
  * 
@@ -46,18 +48,20 @@ public class MongoMapper<KEY, MODEL extends UniqueModel<KEY>> implements IMapper
 
 	@Override
 	public MODEL getByKey(KEY key) {
-		return null;
+		Document document = mongo.findOne(collection, Filters.eq(FIELD_ID, key));
+		return null == document ? null : deserial(document);
 	}
 
 	@Override
 	public List<MODEL> getWithinKey(List<KEY> keys) {
 		return null;
 	}
-
+	
 	@Override
 	public void update(MODEL model) {
+		mongo.replaceOne(collection, Filters.eq(FIELD_ID, model.key()), serial(model));
 	}
-	
+
 	protected Document serial(MODEL model) {
 		return Document.parse(SerializeUtil.JsonUtil.GSON.toJson(model));
 	}
