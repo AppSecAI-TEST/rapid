@@ -70,6 +70,20 @@ public class StringUtils {
 		}
 		return false;
 	}
+	
+	/**
+	 * 只要有一个字符串是 null 或者空就返回false
+	 * 
+	 * @param strs
+	 * @return
+	 */
+	public static boolean hasText(String ...strs) {
+		for (String str : strs) {
+			if (!hasText(str))
+				return false;
+		}
+		return true;
+	}
 
 	/**
 	 * 替换字符串

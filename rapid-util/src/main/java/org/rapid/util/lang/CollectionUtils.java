@@ -47,4 +47,23 @@ public class CollectionUtils {
 	public static final int size(Collection<?> collection) {
 		return isEmpty(collection) ? 0 : collection.size();
 	}
+	
+	/**
+	 * 判断 src2 是否是 src1 的子集
+	 * 
+	 * @param src1
+	 * @param src2
+	 * @return
+	 */
+	public static final boolean isSubSet(Collection<?> src1, Collection<?> src2) {
+		if (null == src1)
+			return null == src2;
+		if (null != src2) {
+			for (Object obj : src2) {
+				if (!src1.contains(obj))
+					return false;
+			}
+		}
+		return true;
+	}
 }

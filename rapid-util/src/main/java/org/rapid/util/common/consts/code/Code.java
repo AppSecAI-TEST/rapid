@@ -85,7 +85,12 @@ public enum Code implements ICode {
 	/**
 	 * 身份证已经存在了
 	 */
-	IDENTITY_ALREADY_EXIST(106, "identity already exist");
+	IDENTITY_ALREADY_EXIST(106, "identity already exist"),
+	
+	/**
+	 * 请求失败：一般用在网络请求中
+	 */
+	REQUEST_FAILURE(107, "request failure!");
 	
 	private int code;
 	private String desc;
