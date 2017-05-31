@@ -25,6 +25,6 @@ public interface Consts {
 	}
 	
 	interface RESULT {
-		Result<?> OK = Result.result(Code.OK);
+		Result OK = Result.result(Code.OK);
 	}
 }
