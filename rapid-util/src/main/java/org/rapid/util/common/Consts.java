@@ -25,6 +25,12 @@ public interface Consts {
 	}
 	
 	interface RESULT {
-		Result OK = Result.result(Code.OK);
+		Result OK 								= Result.result(Code.OK);
+		Result FORBID							= Result.result(Code.FORBID);
+		Result CAPTCHA_ERROR					= Result.result(Code.CAPTCHA_ERROR);
+		Result USER_NOT_EXIST					= Result.result(Code.USER_NOT_EXIST);
+		Result USER_STATUS_CHANGED				= Result.result(Code.USER_STATUS_CHANGED);
+		Result SORT_FIELD_NOT_EXIST	 			= Result.result(Code.SORT_FIELD_NOT_EXIST);
+		Result REGION_OUT_OF_BOUNDARY			= Result.result(Code.REGION_OUT_OF_BOUNDARY);
 	}
 }

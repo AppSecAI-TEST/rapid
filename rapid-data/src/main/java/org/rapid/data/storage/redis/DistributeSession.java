@@ -44,6 +44,10 @@ public class DistributeSession {
 		this.sessionKey = SerializeUtil.RedisUtil.encode(MessageFormat.format(SESSION_KEY, this.sessionId));
 	}
 	
+	public String put(String key, int value) {
+		return put(key, String.valueOf(value));
+	}
+	
 	public String put(String key, String value) {
 		byte[] buffer = put(SerializeUtil.RedisUtil.encode(key), SerializeUtil.RedisUtil.encode(value));
 		return null == buffer ? null : SerializeUtil.RedisUtil.decode(buffer);

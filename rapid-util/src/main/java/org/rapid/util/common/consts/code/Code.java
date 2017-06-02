@@ -90,7 +90,12 @@ public enum Code implements ICode {
 	/**
 	 * 请求失败：一般用在网络请求中
 	 */
-	REQUEST_FAILURE(107, "request failure!");
+	REQUEST_FAILURE(107, "request failure!"),
+	
+	/**
+	 * 排序字段不存在
+	 */
+	SORT_FIELD_NOT_EXIST(108, "sort field not exist!");
 	
 	private int code;
 	private String desc;

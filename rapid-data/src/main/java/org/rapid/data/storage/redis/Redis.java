@@ -154,6 +154,15 @@ public class Redis {
 		});
 	}
 	
+	public long setnx(String key, String value) {
+		return invoke(new RedisInvocation<Long>() {
+			@Override
+			public Long invok(Jedis jedis) {
+				return jedis.setnx(key, value);
+			}
+		});
+	}
+	
 	public String set(byte[] key, byte[] value) {
 		return invoke(new RedisInvocation<String>() {
 			@Override
