@@ -471,6 +471,15 @@ public class Redis {
 	
 	// ******************************** sorted set ********************************
 	
+	public long zadd(String key, double score, String member) { 
+		return invoke(new RedisInvocation<Long>() {
+			@Override
+			public Long invok(Jedis jedis) {
+				return jedis.zadd(key, score, member);
+			}
+		});
+	}
+	
 	public long zadd(String key, Map<String, Double> scoreMembers) { 
 		return invoke(new RedisInvocation<Long>() {
 			@Override
