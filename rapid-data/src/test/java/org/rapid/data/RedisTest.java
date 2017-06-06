@@ -1,19 +1,11 @@
 package org.rapid.data;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.rapid.data.storage.db.Table;
-import org.rapid.data.storage.redis.ILuaCmd;
 import org.rapid.data.storage.redis.Redis;
 import org.rapid.data.storage.redis.RedisOption.EXPX;
 import org.rapid.data.storage.redis.RedisOption.NXXX;
-import org.rapid.util.common.key.Pair;
 import org.rapid.util.common.serializer.SerializeUtil;
-import org.rapid.util.lang.DateUtils;
 
 @SuppressWarnings("all")
 public class RedisTest extends BaseTest {
@@ -79,13 +71,17 @@ public class RedisTest extends BaseTest {
 	
 	public void testHpaging() {
 		List<byte[]> list = redis.hpaging(
-				SerializeUtil.RedisUtil.encode("testset"), 
-				SerializeUtil.RedisUtil.encode("testmap"), 
-				SerializeUtil.RedisUtil.encode("1"), 
-				SerializeUtil.RedisUtil.encode("2"), 
+				SerializeUtil.RedisUtil.encode("set:article:time:1"), 
+				SerializeUtil.RedisUtil.encode(new byte[]{104, 97, 115, 104, 58, 100, 98, 58, 97, 114, 116, 105, 99, 108, 101}), 
+				SerializeUtil.RedisUtil.encode(0), 
+				SerializeUtil.RedisUtil.encode(10), 
 				SerializeUtil.RedisUtil.encode("ZREVRANGE"));
-		for (byte[] buffer : list) {
-			System.out.println(new String(buffer));
-		}
+		if (null == list)
+			System.out.println("null");
+		int total = Integer.valueOf(new String(list.remove(0)));
+		System.out.println(total);
+		System.out.println(list.size());
+		for (byte[] buffer : list)
+			System.out.println(buffer);
 	}
 }

@@ -1,5 +1,9 @@
 local page = tonumber(ARGV[1])
 local pageSize = tonumber(ARGV[2])
+if (0 == pageSize)
+then
+	return nil
+end
 local total = redis.call("zcard", KEYS[1])
 if (0 == total)
 then

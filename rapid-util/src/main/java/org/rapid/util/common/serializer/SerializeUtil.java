@@ -122,7 +122,7 @@ public interface SerializeUtil {
 
 	class RedisUtil {
 		public static final byte[] encode(Object value) {
-			return _encode(value.toString());
+			return (value instanceof byte[]) ? (byte[]) value : _encode(value.toString());
 		}
 
 		public static final byte[][] encode(Object... params) {
