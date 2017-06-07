@@ -489,6 +489,15 @@ public class Redis {
 		});
 	}
 	
+	public long zcard(String key) {
+		return invoke(new RedisInvocation<Long>() {
+			@Override
+			public Long invok(Jedis jedis) {
+				return jedis.zcard(key);
+			}
+		});
+	}
+	
 	// ******************************** server command ********************************
 
 	public String flushAll() {
