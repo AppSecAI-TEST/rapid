@@ -8,8 +8,9 @@ import java.util.TimeZone;
 
 public final class DateUtils {
 	
-	public static final String ISO8601_UTC 		= "yyyy-MM-dd'T'HH:mm:ss'Z'";
-	public static final TimeZone TIMEZONE_UTC	= TimeZone.getTimeZone("UTC");
+	public static final String ISO8601_UTC 				= "yyyy-MM-dd'T'HH:mm:ss'Z'";
+	public static final String YYYY_MM_DD_HH_MM_SS		= "yyyy-MM-dd HH:mm:ss";
+	public static final TimeZone TIMEZONE_UTC			= TimeZone.getTimeZone("UTC");
 
 	/**
 	 * 一天的毫秒数

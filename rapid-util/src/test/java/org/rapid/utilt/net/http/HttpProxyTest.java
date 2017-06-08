@@ -6,12 +6,17 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.http.HttpHeaders;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicNameValuePair;
 import org.rapid.util.common.serializer.SerializeUtil;
 import org.rapid.util.crypto.DesUtil;
+import org.rapid.util.lang.DateUtils;
 import org.rapid.util.net.http.HttpProxy;
 import org.rapid.util.net.http.SyncHttpAdapter;
 import org.rapid.util.net.http.handler.SyncStrRespHandler;
@@ -19,7 +24,40 @@ import org.rapid.util.net.http.handler.SyncStrRespHandler;
 public class HttpProxyTest {
 
 	public static void main(String[] args) throws Exception {
-		getVehicleInByRenewl();
+//		getVehicleInByRenewl();
+		addUser();
+	}
+	
+	public static void addUser() throws Exception {
+		HttpProxy proxy = new HttpProxy();
+		
+		SyncHttpAdapter adapter = new SyncHttpAdapter();
+		proxy.setSyncHttp(adapter);
+		proxy.init();
+		
+		long timestamp = DateUtils.currentTime();
+		StringBuilder builder = new StringBuilder();
+		builder.append(timestamp).append("000000").append(timestamp).append("CarCorder");
+		String sign = DigestUtils.md5Hex(builder.toString()).toUpperCase();
+		
+		JianJieUser jianJieUser = new JianJieUser();
+		jianJieUser.setChineseName("张辛林");
+		jianJieUser.setLoginName("张辛林");
+		jianJieUser.setPhone("13105716369");
+		jianJieUser.setIdentityNo("33012719870603341X");
+		String json = SerializeUtil.JsonUtil.GSON.toJson(jianJieUser);
+		URIBuilder uri = new URIBuilder();
+		uri.setScheme("http");
+		uri.setHost("120.26.118.161");
+		uri.setPort(10606);
+		uri.setPath("/Service/CustomerInterface/AddUser.ashx");
+		uri.setParameter("Timestamp", String.valueOf(timestamp));
+		uri.setParameter("Sign", sign);
+		HttpPost post = new HttpPost(uri.build());
+		post.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
+		post.setEntity(new StringEntity(json));
+		String result = proxy.syncRequest(post, SyncStrRespHandler.INSTANCE);
+		System.out.println(result);
 	}
 	
 	public static void availableInsurance() throws Exception { 
