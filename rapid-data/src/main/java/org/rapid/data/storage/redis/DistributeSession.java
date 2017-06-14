@@ -58,7 +58,7 @@ public class DistributeSession {
 	}
 	
 	public void putAll(Map<byte[], byte[]> map) {
-		byte[][] data = new byte[map.size() + 2][];
+		Object[] data = new Object[map.size() + 2];
 		int index = 0;
 		data[index++] = sessionKey;
 		data[index++] = inactiveInterval;

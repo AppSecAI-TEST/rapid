@@ -149,6 +149,11 @@ public class Mongo {
 		return collection.findOneAndUpdate(filter, update, options);
 	}
 	
+	public void deleteMany(String collectionName, Bson filter) {
+		MongoCollection<Document> collection = connection.getCollection(collectionName);
+		collection.deleteMany(filter);
+	}
+	
 	public void setDb(String db) {
 		this.db = db;
 	}

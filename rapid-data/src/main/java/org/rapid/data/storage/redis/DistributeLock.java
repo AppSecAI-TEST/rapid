@@ -20,7 +20,7 @@ public class DistributeLock {
 	
 	public String tryLock(String lock) { 
 		String lockId = lockIdGenerator.generateId().toString();
-		String result = redis.setwithoptions(lock, lockId, NXXX.NX, EXPX.PX, lockTimeout);
+		String result = redis.set(lock, lockId, NXXX.NX, EXPX.PX, lockTimeout);
 		if (null != result && result.equalsIgnoreCase(RedisConsts.OK))
 			return lockId;
 		return null;

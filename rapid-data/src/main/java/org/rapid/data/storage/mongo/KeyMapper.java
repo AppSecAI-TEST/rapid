@@ -18,8 +18,8 @@ public class KeyMapper extends MongoMapper<String, MongoKey> {
 		super("keys");
 	}
 	
-	public long getAndInc(String key) { 
-		Document document = mongo.findOneAndUpdate(collection, Filters.eq(NAME, key), Updates.inc(VALUE, 1), 
+	public long getAndInc(String key, Number number) { 
+		Document document = mongo.findOneAndUpdate(collection, Filters.eq(NAME, key), Updates.inc(VALUE, number), 
 				new FindOneAndUpdateOptions().upsert(true).returnDocument(ReturnDocument.AFTER).projection(Projections.excludeId()));
 		return deserial(document).getValue();
 	}

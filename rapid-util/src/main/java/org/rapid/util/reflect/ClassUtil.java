@@ -75,4 +75,36 @@ public class ClassUtil {
 			}
 		}
 	}
+	
+	public static boolean isString(Object value) {
+		return value.getClass() == String.class;
+	}
+	
+	public static boolean isInteger(Object value) {
+		return value.getClass() == int.class || value.getClass() == Integer.class;
+	}
+	
+	public static boolean isDouble(Object value) {
+		return value.getClass() == double.class || value.getClass() == Double.class;
+	}
+	
+	public static boolean isByte(Object value) {
+		return value.getClass() == byte.class || value.getClass() == Byte.class;
+	}
+	
+	public static boolean isFloat(Object value) {
+		return value.getClass() == float.class || value.getClass() == Float.class;
+	}
+	
+	public static boolean isShort(Object value) {
+		return value.getClass() == short.class || value.getClass() == Short.class;
+	}
+	
+	public static boolean isLong(Object value) {
+		return value.getClass() == long.class || value.getClass() == Long.class;
+	}
+	
+	public static boolean isNumber(Object value) {
+		return isByte(value) || isDouble(value) || isByte(value) || isFloat(value) || isShort(value) || isLong(value);
+	}
 }

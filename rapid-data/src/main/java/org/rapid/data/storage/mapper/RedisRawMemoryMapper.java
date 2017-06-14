@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.rapid.util.common.converter.binary.Byte2StrConverter;
 import org.rapid.util.common.model.UniqueModel;
 
 public abstract class RedisRawMemoryMapper<KEY, MODEL extends UniqueModel<KEY>> extends RedisMapper<String, KEY, MODEL> {
@@ -20,7 +21,7 @@ public abstract class RedisRawMemoryMapper<KEY, MODEL extends UniqueModel<KEY>> 
 	
 	@Override
 	public MODEL getByKey(KEY key) {
-		String data = redis.hget(redisKey, key.toString());
+		String data = redis.hget(redisKey, key.toString(), Byte2StrConverter.INSTANCE);
 		return null == data ? null : deserial(data);
 	}
 	

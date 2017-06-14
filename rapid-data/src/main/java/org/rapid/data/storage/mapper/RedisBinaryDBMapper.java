@@ -7,7 +7,6 @@ import java.util.List;
 import org.rapid.data.storage.db.Dao;
 import org.rapid.data.storage.db.Table;
 import org.rapid.util.common.model.UniqueModel;
-import org.rapid.util.common.serializer.SerializeUtil;
 
 /**
  * Redis 数据库映射器，将数据库表映射存储到 redis 中
@@ -50,10 +49,10 @@ public abstract class RedisBinaryDBMapper<KEY, ENTITY extends UniqueModel<KEY>, 
 	public List<ENTITY> getWithinKey(List<KEY> keys) {
 		if (null == keys || keys.isEmpty())
 			return Collections.EMPTY_LIST;
-		byte[][] fields = new byte[keys.size()][];
+		Object[] fields = new Object[keys.size()];
 		int index = 0;
 		for (KEY key : keys)
-			fields[index++] = SerializeUtil.RedisUtil.encode(key);
+			fields[index++] = key;
 		List<byte[]> datas = redis.hmget(redisKey, fields);
 		List<KEY> missed = new ArrayList<KEY>();
 		List<ENTITY> entities = new ArrayList<ENTITY>();

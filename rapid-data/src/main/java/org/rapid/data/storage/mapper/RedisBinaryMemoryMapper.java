@@ -22,7 +22,7 @@ public abstract class RedisBinaryMemoryMapper<KEY, MODEL extends UniqueModel<KEY
 
 	@Override
 	public MODEL getByKey(KEY key) {
-		byte[] data = redis.hget(redisKey, SerializeUtil.RedisUtil.encode(key));
+		byte[] data = redis.hget(redisKey, key);
 		return null == data ? null : deserial(data);
 	}
 	

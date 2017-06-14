@@ -6,10 +6,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.rapid.data.storage.redis.ILuaCmd.LuaCmd;
@@ -17,9 +14,9 @@ import org.rapid.data.storage.redis.RedisOption.EXPX;
 import org.rapid.data.storage.redis.RedisOption.NXXX;
 import org.rapid.util.common.Callback;
 import org.rapid.util.common.RapidSecurity;
+import org.rapid.util.common.converter.Converter;
 import org.rapid.util.common.model.UniqueModel;
 import org.rapid.util.common.serializer.SerializeUtil;
-import org.rapid.util.common.uuid.AlternativeJdkIdGenerator;
 import org.rapid.util.io.FileReader;
 import org.rapid.util.lang.StringUtils;
 import org.slf4j.Logger;
@@ -69,31 +66,6 @@ public class Redis {
 
 	// ******************************** key ********************************
 	
-	public long pexpire(String key, int milliseconds) {
-		return invoke(new RedisInvocation<Long>() {
-			@SuppressWarnings("deprecation")
-			@Override
-			public Long invok(Jedis jedis) {
-				return jedis.pexpire(key, milliseconds);
-			}
-		});
-	}
-
-	/**
-	 * 以秒为单位返回 key 的生存时间
-	 * 
-	 * @param key
-	 * @return 如果 key 不存在则返回 -2；如果 key 存在但是没有设置生存时间则返回 -1；返回 key 的正数生存时间
-	 */
-	public long ttl(String key) {
-		return invoke(new RedisInvocation<Long>() {
-			@Override
-			public Long invok(Jedis jedis) {
-				return jedis.ttl(key);
-			}
-		});
-	}
-
 	// ******************************** string ********************************
 
 	/**
@@ -102,141 +74,54 @@ public class Redis {
 	 * @param keys
 	 * @return 返回成功删除的 key 的数量
 	 */
-	public long del(String... keys) {
+	public long del(Object... keys) {
 		return invoke(new RedisInvocation<Long>() {
 			@Override
 			public Long invok(Jedis jedis) {
-				return jedis.del(keys);
+				return jedis.del(SerializeUtil.RedisUtil.encode(keys));
 			}
 		});
 	}
 	
-	public long del(byte[]... keys) {
-		return invoke(new RedisInvocation<Long>() {
-			@Override
-			public Long invok(Jedis jedis) {
-				return jedis.del(keys);
-			}
-		});
-	}
-
-	public String get(String key) {
+	public String set(Object key, Object value, NXXX nxxx, EXPX expx, int time) {
 		return invoke(new RedisInvocation<String>() {
 			@Override
 			public String invok(Jedis jedis) {
-				return jedis.get(key);
-			}
-		});
-	}
-
-	public long incr(String key) {
-		return invoke(new RedisInvocation<Long>() {
-			@Override
-			public Long invok(Jedis jedis) {
-				return jedis.incr(key);
-			}
-		});
-	}
-
-	/**
-	 * 设置 key 的值为 value
-	 * 
-	 * @param key
-	 * @param value
-	 * @return 永远返回字符串 "OK"
-	 */
-	public String set(String key, String value) {
-		return invoke(new RedisInvocation<String>() {
-			@Override
-			public String invok(Jedis jedis) {
-				return jedis.set(key, value);
-			}
-		});
-	}
-	
-	public long setnx(String key, String value) {
-		return invoke(new RedisInvocation<Long>() {
-			@Override
-			public Long invok(Jedis jedis) {
-				return jedis.setnx(key, value);
-			}
-		});
-	}
-	
-	public String set(byte[] key, byte[] value) {
-		return invoke(new RedisInvocation<String>() {
-			@Override
-			public String invok(Jedis jedis) {
-				return jedis.set(key, value);
-			}
-		});
-	}
-	
-	public String setwithoptions(byte[] key, byte[] value, NXXX nxxx, EXPX expx, int time) {
-		return invoke(new RedisInvocation<String>() {
-			@Override
-			public String invok(Jedis jedis) {
-				return jedis.set(key, value, nxxx.binary(), expx.binary(), time);
-			}
-		});
-	}
-	
-	public String setwithoptions(String key, String value, NXXX nxxx, EXPX expx, int time) {
-		return invoke(new RedisInvocation<String>() {
-			@Override
-			public String invok(Jedis jedis) {
-				return jedis.set(key, value, nxxx.name(), expx.name(), time);
-			}
-		});
-	}
-
-	/**
-	 * 设置 key 的值为 value
-	 * 
-	 * @param key
-	 * @param value
-	 * @param nxxx
-	 *            {@link NXXX}
-	 * @param expx
-	 *            {@link EXPX}
-	 * @param expire
-	 *            过期时间
-	 * @return 如果不满足 {@link NXXX} 条件而失败则返回 null，否则返回字符串 "OK"
-	 */
-	public String set(String key, String value, NXXX nxxx, EXPX expx, long expire) {
-		return invoke(new RedisInvocation<String>() {
-			@Override
-			public String invok(Jedis jedis) {
-				return jedis.set(key, value, nxxx.name(), expx.name(), expire);
+				return jedis.set(SerializeUtil.RedisUtil.encode(key), SerializeUtil.RedisUtil.encode(value), 
+						SerializeUtil.RedisUtil.encode(nxxx.name()), 
+						SerializeUtil.RedisUtil.encode(expx.name()), time);
 			}
 		});
 	}
 
 	// ******************************** hash ********************************
 	
-	public boolean hexist(String key, String field) {
-		return invoke(new RedisInvocation<Boolean>() {
-			@Override
-			public Boolean invok(Jedis jedis) {
-				return jedis.hexists(key, field);
-			}
-		});
-	}
-
-	public byte[] hget(byte[] key, byte[] field) {
-		return invoke(new RedisInvocation<byte[]>() {
+	public <T> T hget(Object key, Object field, Converter<byte[], T>... converters) {
+		byte[] buffer = invoke(new RedisInvocation<byte[]>() {
 			@Override
 			public byte[] invok(Jedis jedis) {
-				return jedis.hget(key, field);
+				return jedis.hget(SerializeUtil.RedisUtil.encode(key), SerializeUtil.RedisUtil.encode(field));
+			}
+		});
+		if (null == buffer || null == converters || converters.length == 0)
+			return (T) buffer;
+		return converters[0].convert(buffer);
+	}
+	
+	public List<byte[]> hmget(Object key, Object... fields) {
+		return invoke(new RedisInvocation<List<byte[]>>() {
+			@Override
+			public List<byte[]> invok(Jedis jedis) {
+				return jedis.hmget(SerializeUtil.RedisUtil.encode(key), SerializeUtil.RedisUtil.encode(fields));
 			}
 		});
 	}
 	
-	public String hget(String key, String field) {
-		return invoke(new RedisInvocation<String>() {
+	public List<String> hmget(String key, String ... fields) {
+		return invoke(new RedisInvocation<List<String>>() {
 			@Override
-			public String invok(Jedis jedis) {
-				return jedis.hget(key, field);
+			public List<String> invok(Jedis jedis) {
+				return jedis.hmget(key, fields);
 			}
 		});
 	}
@@ -257,60 +142,6 @@ public class Redis {
 	
 	public String hgetAndRefresh(String key, String field, int expire) {
 		return invokeLua(LuaCmd.HGET_AND_REFRESH, key, field, String.valueOf(expire));
-	}
-	
-	public Map<String, String> hgetAll(String key) {
-		return invoke(new RedisInvocation<Map<String, String>>() {
-			@Override
-			public Map<String, String> invok(Jedis jedis) {
-				return jedis.hgetAll(key);
-			}
-		});
-	}
-	
-	public Map<byte[], byte[]> hgetAll(byte[] key) {
-		return invoke(new RedisInvocation<Map<byte[], byte[]>>() {
-			@Override
-			public Map<byte[], byte[]> invok(Jedis jedis) {
-				return jedis.hgetAll(key);
-			}
-		});
-	}
-	
-	public List<byte[]> hmget(byte[] key, byte[]... fields) {
-		return invoke(new RedisInvocation<List<byte[]>>() {
-			@Override
-			public List<byte[]> invok(Jedis jedis) {
-				return jedis.hmget(key, fields);
-			}
-		});
-	}
-	
-	public List<String> hmget(String key, String ... fields) {
-		return invoke(new RedisInvocation<List<String>>() {
-			@Override
-			public List<String> invok(Jedis jedis) {
-				return jedis.hmget(key, fields);
-			}
-		});
-	}
-
-	public String hmset(String key, Map<String, String> hash) {
-		return invoke(new RedisInvocation<String>() {
-			@Override
-			public String invok(Jedis jedis) {
-				return jedis.hmset(key, hash);
-			}
-		});
-	}
-
-	public String hmset(byte[] key, Map<byte[], byte[]> hash) {
-		return invoke(new RedisInvocation<String>() {
-			@Override
-			public String invok(Jedis jedis) {
-				return jedis.hmset(key, hash);
-			}
-		});
 	}
 	
 	public <KEY, T extends UniqueModel<KEY>> String hmsetProtostuff(byte[] key, List<T> list) {
@@ -338,28 +169,6 @@ public class Redis {
 		});
 	}
 	
-	public void delAndHmset(byte[] key, Map<byte[], byte[]> params) {
-		byte[][] buffer = new byte[params.size() * 2 + 1][];
-		int index = 0;
-		buffer[index++] = key;
-		for (Entry<byte[], byte[]> entry : params.entrySet()) {
-			buffer[index++] = entry.getKey();
-			buffer[index++] = (entry.getValue());
-		}
-		invokeLua(LuaCmd.DEL_AND_HMSET, buffer);
-	}
-	
-	public void delAndHmset(String key, Map<String, String> params) {
-		String[] buffer = new String[params.size() * 2 + 1];
-		int index = 0;
-		buffer[index++] = key;
-		for (Entry<String, String> entry : params.entrySet()) {
-			buffer[index++] = entry.getKey();
-			buffer[index++] = (entry.getValue());
-		}
-		invokeLua(LuaCmd.DEL_AND_HMSET, buffer);
-	}
-	
 	public long hset(String key, String field, String value) { 
 		return invoke(new RedisInvocation<Long>() {
 			@Override
@@ -378,96 +187,11 @@ public class Redis {
 		});
 	}
 	
-	public Set<String> hkeys(String key) {
-		return invoke(new RedisInvocation<Set<String>>() {
-			@Override
-			public Set<String> invok(Jedis jedis) {
-				return jedis.hkeys(key);
-			}
-		});
-	}
-	
-	public List<String> hkeysAndRefresh(String key, int expire) { 
-		return invokeLua(LuaCmd.HKEYS_AND_REFRESH, key, String.valueOf(expire));
-	}
-	
 	public List<byte[]> hmgetByZsetKeys(byte[] zsetkey, byte[] hashkey, long start, long stop) { 
-		return invokeLua(LuaCmd.HMGET_BY_ZSET_KEYS, zsetkey, hashkey, SerializeUtil.RedisUtil.encode(start), SerializeUtil.RedisUtil.encode(stop));
-	}
-	
-	public List<byte[]> hvals(byte[] key) {
-		return invoke(new RedisInvocation<List<byte[]>>() {
-			@Override
-			public List<byte[]> invok(Jedis jedis) {
-				return jedis.hvals(key);
-			}
-		});
-	}
-	
-	public List<String> hvals(String key) {
-		return invoke(new RedisInvocation<List<String>>() {
-			@Override
-			public List<String> invok(Jedis jedis) {
-				return jedis.hvals(key);
-			}
-		});
+		return invokeLua(LuaCmd.HMGET_BY_ZSET_KEYS, zsetkey, hashkey, start, stop);
 	}
 	
 	// ******************************** set ********************************
-	
-	public long sadd(String key, String... members) { 
-		return invoke(new RedisInvocation<Long>() {
-			@Override
-			public Long invok(Jedis jedis) {
-				return jedis.sadd(key, members);
-			}
-		});
-	}
-	
-	public long delAndSadd(String key, String... members) { 
-		if (null == key || members.length == 0) {
-			del(key);
-			return 0;
-		}
-		String[] params = new String[members.length + 1];
-		params[0] = key;
-		System.arraycopy(members, 0, params, 1, members.length);
-		return invokeLua(LuaCmd.DEL_AND_SADD, params);
-	}
-	
-	public long delAndSadd(String key, Set<String> members) { 
-		if (null == members || members.isEmpty()) {
-			del(key);
-			return 0;
-		}
-		String[] params = new String[members.size() + 1];
-		params[0] = key;
-		System.arraycopy(members.toArray(), 0, params, 1, members.size());
-		return invokeLua(LuaCmd.DEL_AND_SADD, params);
-	}
-	
-	public Set<byte[]> smembers(byte[] key) {
-		return invoke(new RedisInvocation<Set<byte[]>>() {
-			@Override
-			public Set<byte[]> invok(Jedis jedis) {
-				return jedis.smembers(key);
-			}
-		});
-	}
-
-	public List<byte[]> smembersAndRefresh(String key) { 
-		return invokeLua(LuaCmd.SMEMBERS_AND_REFRESH, SerializeUtil.RedisUtil.encode(key));
-	}
-	
-	public void saddAndRefresh(String key, int expire, String... members) {
-		String[] params = new String[members.length + 2];
-		int index = 0;
-		params[index++] = key;
-		params[index++] = String.valueOf(expire);
-		for (String buffer : members)
-			params[index++] = buffer;
-		invokeLua(LuaCmd.SADD_AND_REFRESH, params);
-	}
 	
 	// ******************************** sorted set ********************************
 	
@@ -489,74 +213,7 @@ public class Redis {
 		});
 	}
 	
-	public long zcard(String key) {
-		return invoke(new RedisInvocation<Long>() {
-			@Override
-			public Long invok(Jedis jedis) {
-				return jedis.zcard(key);
-			}
-		});
-	}
-	
 	// ******************************** server command ********************************
-
-	public String flushAll() {
-		return invoke(new RedisInvocation<String>() {
-			@Override
-			public String invok(Jedis jedis) {
-				return jedis.flushAll();
-			}
-		});
-	}
-
-	// ******************************** function command ********************************
-
-	/**
-	 * 分布式锁：只获取一次
-	 * 
-	 * @param lock
-	 * @param expire
-	 * @return 成功则返回分布式锁的唯一ID，否则返回 null
-	 */
-	public String tryLock(String lock, long expire) {
-		String lockId = AlternativeJdkIdGenerator.INSTANCE.generateId().toString();
-		String result = set(lock, lockId, NXXX.NX, EXPX.PX, expire);
-		return null == result ? null : lockId;
-	}
-
-	/**
-	 * 分布式锁：超过一定时间没有获得锁则失败
-	 * 
-	 * @param lock
-	 * @param timeoutMillis
-	 * @param expire
-	 * @return 成功则返回分布式锁的唯一ID，否则返回 null
-	 */
-	public String lock(String lock, long timeoutMillis, long expire) {
-		long begin = System.nanoTime();
-		while (true) {
-			String lockId = tryLock(lock, expire);
-			if (null != lockId)
-				return lockId;
-
-			long time = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - begin);
-			if (time >= timeoutMillis)
-				return null;
-			// TODO:
-			Thread.yield();
-		}
-	}
-
-	/**
-	 * 释放分布式锁
-	 * 
-	 * @param lock
-	 * @param lockId
-	 * @return
-	 */
-	public boolean unLock(String lock, String lockId) {
-		return delIfEquals(lock, lockId);
-	}
 
 	// ******************************** lua command ********************************
 
@@ -595,18 +252,6 @@ public class Redis {
 		return flag == 1;
 	}
 	
-	public byte[] getAndDel(String key) { 
-		return invokeLua(LuaCmd.GET_AND_DEL, key);
-	}
-	
-	public List<String> hgetAllAndRefresh(String key, int expireMillis) {
-		return invokeLua(LuaCmd.HGETALL_AND_REFRESH, key, String.valueOf(expireMillis));
-	}
-	
-	public void refreshHash(String ...params) {
-		invokeLua(LuaCmd.REFRESH_HASH, params);
-	}
-	
 	public List<byte[]> hpaging(byte[] setKey, byte[] hashKey, byte[] page, byte[] pageSize, byte[] option) {
 		return invokeLua(LuaCmd.HPAGING, setKey, hashKey, page, pageSize, option);
 	}
@@ -635,6 +280,14 @@ public class Redis {
 			logger.warn("Lua script - {}:{} already exist!", key, content);
 	}
 	
+	public void flush_1(Object key1, Object key2, Object field1, Object data, Object field2) {
+		invokeLua(LuaCmd.FLUSH_1, key1, key2, field1, data, field2);
+	}
+	
+	public byte[] load_1(Object key1, Object key2, Object field) {
+		return invokeLua(LuaCmd.LOAD_1, key1, key2, field);
+	}
+	
 	/**
 	 * 成功刷新列表之后将 key 列表返回
 	 * 
@@ -646,30 +299,17 @@ public class Redis {
 	 * @return
 	 */
 	public void protostuffCacheListFlush(String cacheControllerKey, byte[] hashKey, String setKey, String cacheControllerVal, List<? extends UniqueModel<?>> models) {
-		byte[][] params = new byte[models.size() * 2 + 4][];
+		Object[] params = new Object[models.size() * 2 + 4];
 		int index = 0;
-		params[index++] = SerializeUtil.RedisUtil.encode(cacheControllerKey);
+		params[index++] = cacheControllerKey;
 		params[index++] = hashKey;
-		params[index++] = SerializeUtil.RedisUtil.encode(setKey);
-		params[index++] = SerializeUtil.RedisUtil.encode(cacheControllerVal);
+		params[index++] = setKey;
+		params[index++] = cacheControllerVal;
 		for (UniqueModel<?> model : models) {
-			params[index++] = SerializeUtil.RedisUtil.encode(model.key());
+			params[index++] = model.key();
 			params[index++] = SerializeUtil.ProtostuffUtil.serial(model);
 		}
 		invokeLua(LuaCmd.CACHE_LIST_FLUSH, params);
-	}
-	
-	/**
-	 * 仅仅返回列表中数据实体的 key
-	 * 
-	 * @param cacheControllerKey
-	 * @param setKey
-	 * @param cacheControllerVal
-	 * @return
-	 */
-	public List<String> cacheListLoad(String cacheControllerKey, String setKey, String cacheControllerVal) {
-		return invokeLua(LuaCmd.CACHE_LIST_LOAD, 2, SerializeUtil.RedisUtil.encode(
-				cacheControllerKey, setKey, cacheControllerKey));
 	}
 	
 	/**
@@ -741,23 +381,22 @@ public class Redis {
 		});
 	}
 
-	@SuppressWarnings("unchecked")
-	public <T> T invokeLua(ILuaCmd cmd, byte[]... params) {
+	public <T> T invokeLua(ILuaCmd cmd, Object... params) {
 		LuaScript script = scripts.get(cmd.key());
 		if (null == script)
 			throw new JedisNoScriptException("Script " + cmd.key() + " not exist!");
-
+		byte[][] arr = SerializeUtil.RedisUtil.encode(params);
 		return invoke(new RedisInvocation<T>() {
 			@Override
 			public T invok(Jedis jedis) {
 				if (script.isStored())
 					try {
-						return (T) jedis.evalsha(SerializeUtil.RedisUtil.encode(script.getSha1Key()), cmd.keyNum(), params);
+						return (T) jedis.evalsha(SerializeUtil.RedisUtil.encode(script.getSha1Key()), cmd.keyNum(), arr);
 					} catch (JedisNoScriptException e) {
 						logger.warn("script {} not cached!", cmd.key());
 					}
 
-				T object = (T) jedis.eval(SerializeUtil.RedisUtil.encode(script.getContent()), cmd.keyNum(), params);
+				T object = (T) jedis.eval(SerializeUtil.RedisUtil.encode(script.getContent()), cmd.keyNum(), arr);
 				script.setStored(true);
 				return object;
 			}

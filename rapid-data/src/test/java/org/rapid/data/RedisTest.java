@@ -1,6 +1,8 @@
 package org.rapid.data;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.rapid.data.storage.redis.Redis;
 import org.rapid.data.storage.redis.RedisOption.EXPX;
@@ -20,55 +22,6 @@ public class RedisTest extends BaseTest {
 		redis.setJedisPool(pool);
 	}
 	
-	public void testInit() {
-		long flag = redis.captchaObtain("captcha", "count", "1234", 10000, 2, 30000);
-		System.out.println(flag);
-		System.out.println(redis.get("captcha"));
-		System.out.println(redis.get("count"));
-		System.out.println(redis.ttl("captcha"));
-		System.out.println(redis.ttl("count"));
-	}
-
-	public void testSet() {
-		String result = redis.set("set", "123", NXXX.NX, EXPX.EX, 10);
-		assertEquals(result, "OK");
-		result = redis.set("set", "1234", NXXX.XX, EXPX.EX, 10);
-		assertEquals(result, "OK");
-		result = redis.set("set", "123", NXXX.NX, EXPX.EX, 10);
-		assertNull(result);
-	}
-	
-	public void testDelIfEquals() {
-		String result = redis.set("captcha", "1234");
-		assertEquals(result, "OK");
-		assertFalse(redis.delIfEquals("captcha", "123"));
-		assertTrue(redis.delIfEquals("captcha", "1234"));
-	}
-	
-	public void testLock() { 
-		redis.del("lock");
-		String lockId = redis.tryLock("lock", 10000000);
-		assertNotNull(lockId);
-		lockId = redis.tryLock("lock", 10000000);
-		assertNull(lockId);
-		lockId = redis.lock("lock", 3000, 10000000);
-		assertNull(lockId);
-		redis.del("lock");
-		lockId = redis.lock("lock", 3000, 10000000);
-		assertNotNull(lockId);
-	}
-	
-	public void testHgetAllAndPexpire() { 
-		redis.pexpire("user:1", 10000000);
-		List<String> list = redis.hgetAllAndRefresh("user:1", 100000);
-		System.out.println(list);
-	}
-	
-	public void testDelAndSadd()  {
-		long value = redis.delAndSadd("set", "1", "2", "3", "2");
-		assertEquals(value, 3);
-	}
-	
 	public void testHpaging() {
 		List<byte[]> list = redis.hpaging(
 				SerializeUtil.RedisUtil.encode("set:article:time:1"), 
@@ -83,5 +36,18 @@ public class RedisTest extends BaseTest {
 		System.out.println(list.size());
 		for (byte[] buffer : list)
 			System.out.println(buffer);
+	}
+	
+	public void testFlush_1() {
+		redis.flush_1(SerializeUtil.RedisUtil.encode("map"), SerializeUtil.RedisUtil.encode("map1"), SerializeUtil.RedisUtil.encode("1"),
+				SerializeUtil.RedisUtil.encode("body"), SerializeUtil.RedisUtil.encode("age"));
+	}
+	
+	public void testLoad_1() {
+		byte[] buffer = redis.load_1(SerializeUtil.RedisUtil.encode("map1"), SerializeUtil.RedisUtil.encode("map"), SerializeUtil.RedisUtil.encode("ages"));
+		if (null == buffer)
+			System.out.println("null");
+		else
+			System.out.println(new String(buffer));
 	}
 }

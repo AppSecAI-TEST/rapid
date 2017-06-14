@@ -10,6 +10,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.http.HttpHeaders;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
@@ -25,7 +26,38 @@ public class HttpProxyTest {
 
 	public static void main(String[] args) throws Exception {
 //		getVehicleInByRenewl();
-		addUser();
+//		addUser();
+		searchCarInsuranceList();
+	}
+	
+	public static void searchCarInsuranceList() throws Exception {
+		HttpProxy proxy = new HttpProxy();
+		
+		SyncHttpAdapter adapter = new SyncHttpAdapter();
+		proxy.setSyncHttp(adapter);
+		proxy.init();
+		
+		long timestamp = DateUtils.currentTime();
+		StringBuilder builder = new StringBuilder();
+		builder.append("-1").append("2000010120170609").delete(16, builder.length())
+		.append(timestamp).append("CarCorder");
+		String sign = DigestUtils.md5Hex(builder.toString());
+		
+		URIBuilder uri = new URIBuilder();
+		uri.setScheme("http");
+		uri.setHost("120.26.118.161");
+		uri.setPort(10606);
+		uri.setPath("/Service/CustomerInterface/SearchCarInsuranceList.ashx");
+		uri.setParameter("Timestamp", String.valueOf(timestamp));
+		uri.setParameter("Sign", sign);
+		uri.setParameter("CompanyId", "-1");
+		uri.setParameter("DeptId", "2");
+		uri.setParameter("TimeStr", "2000010120170609");
+		
+		HttpGet request = new HttpGet(uri.build());
+		request.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
+		String result = proxy.syncRequest(request, SyncStrRespHandler.INSTANCE);
+		System.out.println(result);
 	}
 	
 	public static void addUser() throws Exception {

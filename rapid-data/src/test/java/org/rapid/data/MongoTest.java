@@ -2,6 +2,7 @@ package org.rapid.data;
 
 
 import org.bson.Document;
+import org.rapid.data.storage.mongo.KeyMapper;
 import org.rapid.data.storage.mongo.Mongo;
 
 import com.mongodb.client.model.Filters;
@@ -14,6 +15,7 @@ import junit.framework.TestCase;
 public class MongoTest extends TestCase {
 	
 	protected Mongo mongo;
+	protected KeyMapper keyMapper;
 
 	@Override
 	protected void setUp() throws Exception {
@@ -22,6 +24,8 @@ public class MongoTest extends TestCase {
 		mongo.setDb("btkj-test");
 		mongo.setHost("101.37.30.26");
 		mongo.init();
+		keyMapper = new KeyMapper();
+		keyMapper.setMongo(mongo);
 	}
 	
 	public void testReplaceOne() {

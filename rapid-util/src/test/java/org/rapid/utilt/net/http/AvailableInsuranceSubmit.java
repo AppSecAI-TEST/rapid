@@ -9,7 +9,7 @@ public class AvailableInsuranceSubmit {
 	private String Password;
 	private String Token = "";
 	private String Province;
-
+	
 	public String getUsername() {
 		return Username;
 	}

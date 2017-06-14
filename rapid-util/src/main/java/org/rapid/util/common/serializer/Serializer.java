@@ -20,5 +20,5 @@ public interface Serializer<S, T> extends Converter<S, T> {
 	 * @return
 	 * @throws ConvertFailuerException
 	 */
-	S antiConvet(T t, Class<S> clazz) throws ConvertFailuerException;
+	S antiConvet(T t) throws ConvertFailuerException;
 }
