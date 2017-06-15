@@ -5,20 +5,21 @@ import org.rapid.util.common.serializer.SerializeUtil;
 import org.rapid.util.common.serializer.Serializer;
 import org.rapid.util.exception.ConvertFailuerException;
 
-public class ByteJsonSerializer<T> implements Serializer<byte[], T> {
+public class ByteJsonSerializer<T> implements Serializer<T, byte[]> {
 	
 	private Class<T> clazz;
 	
 	@Override
-	public T convert(byte[] k) throws ConvertFailuerException {
-		return SerializeUtil.JsonUtil.GSON.fromJson(new String(k, Consts.UTF_8), clazz);
+	public byte[] convert(T k) throws ConvertFailuerException {
+		return SerializeUtil.JsonUtil.GSON.toJson(k).getBytes(Consts.UTF_8);
 	}
 
 	@Override
-	public byte[] antiConvet(T t) throws ConvertFailuerException {
-		return SerializeUtil.JsonUtil.GSON.toJson(t).getBytes(Consts.UTF_8);
+	public T antiConvet(byte[] t) throws ConvertFailuerException {
+		return SerializeUtil.JsonUtil.GSON.fromJson(new String(t, Consts.UTF_8), clazz);
 	}
-	
+
+	@Override
 	public void setClazz(Class<T> clazz) {
 		this.clazz = clazz;
 	}

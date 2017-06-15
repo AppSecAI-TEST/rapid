@@ -3,5 +3,5 @@ if (next(keys))
 then
 	return redis.call("hmget", KEYS[2], unpack(keys))
 else
-	return keys
+	return nil
 end

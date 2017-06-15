@@ -22,7 +22,7 @@ import com.mongodb.client.model.Filters;
  * @param <KEY>
  * @param <MODEL>
  */
-public class MongoMapper<KEY, MODEL extends UniqueModel<KEY>> implements IMapper<KEY, MODEL> {
+public class MongoMapper<KEY, MODEL extends UniqueModel<KEY>> implements Mapper<KEY, MODEL> {
 	
 	protected String FIELD_ID					= "_id";
 
@@ -43,9 +43,8 @@ public class MongoMapper<KEY, MODEL extends UniqueModel<KEY>> implements IMapper
 	}
 
 	@Override
-	public MODEL insert(MODEL model) {
+	public void insert(MODEL model) {
 		mongo.insertOne(collection, serial(model));
-		return model;
 	}
 
 	@Override

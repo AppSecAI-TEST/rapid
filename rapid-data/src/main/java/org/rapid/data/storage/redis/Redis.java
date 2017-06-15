@@ -1,9 +1,11 @@
 package org.rapid.data.storage.redis;
 
+import static org.rapid.util.common.serializer.SerializeUtil.RedisUtil.encode;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -14,9 +16,9 @@ import org.rapid.data.storage.redis.RedisOption.EXPX;
 import org.rapid.data.storage.redis.RedisOption.NXXX;
 import org.rapid.util.common.Callback;
 import org.rapid.util.common.RapidSecurity;
-import org.rapid.util.common.converter.Converter;
 import org.rapid.util.common.model.UniqueModel;
 import org.rapid.util.common.serializer.SerializeUtil;
+import org.rapid.util.common.serializer.Serializer;
 import org.rapid.util.io.FileReader;
 import org.rapid.util.lang.StringUtils;
 import org.slf4j.Logger;
@@ -78,7 +80,7 @@ public class Redis {
 		return invoke(new RedisInvocation<Long>() {
 			@Override
 			public Long invok(Jedis jedis) {
-				return jedis.del(SerializeUtil.RedisUtil.encode(keys));
+				return jedis.del(encode(keys));
 			}
 		});
 	}
@@ -87,41 +89,54 @@ public class Redis {
 		return invoke(new RedisInvocation<String>() {
 			@Override
 			public String invok(Jedis jedis) {
-				return jedis.set(SerializeUtil.RedisUtil.encode(key), SerializeUtil.RedisUtil.encode(value), 
-						SerializeUtil.RedisUtil.encode(nxxx.name()), 
-						SerializeUtil.RedisUtil.encode(expx.name()), time);
+				return jedis.set(encode(key), encode(value), encode(nxxx.name()), encode(expx.name()), time);
 			}
 		});
 	}
 
 	// ******************************** hash ********************************
 	
-	public <T> T hget(Object key, Object field, Converter<byte[], T>... converters) {
-		byte[] buffer = invoke(new RedisInvocation<byte[]>() {
+	public byte[] hget(Object key, Object field) {
+		return invoke(new RedisInvocation<byte[]>() {
 			@Override
 			public byte[] invok(Jedis jedis) {
-				return jedis.hget(SerializeUtil.RedisUtil.encode(key), SerializeUtil.RedisUtil.encode(field));
+				return jedis.hget(encode(key), encode(field));
 			}
 		});
-		if (null == buffer || null == converters || converters.length == 0)
-			return (T) buffer;
-		return converters[0].convert(buffer);
 	}
 	
-	public List<byte[]> hmget(Object key, Object... fields) {
+	public List<byte[]> hmget(Object key, Collection<?> fields) {
 		return invoke(new RedisInvocation<List<byte[]>>() {
 			@Override
 			public List<byte[]> invok(Jedis jedis) {
-				return jedis.hmget(SerializeUtil.RedisUtil.encode(key), SerializeUtil.RedisUtil.encode(fields));
+				return jedis.hmget(encode(key), encode(fields));
 			}
 		});
 	}
 	
-	public List<String> hmget(String key, String ... fields) {
-		return invoke(new RedisInvocation<List<String>>() {
+	public String hmset(Object key, Map<byte[], byte[]> map) {
+		return invoke(new RedisInvocation<String>() {
 			@Override
-			public List<String> invok(Jedis jedis) {
-				return jedis.hmget(key, fields);
+			public String invok(Jedis jedis) {
+				return jedis.hmset(encode(key), map);
+			}
+		});
+	}
+	
+	public long hset(Object key, Object field, Object value) { 
+		return invoke(new RedisInvocation<Long>() {
+			@Override
+			public Long invok(Jedis jedis) {
+				return jedis.hset(SerializeUtil.RedisUtil.encode(key), SerializeUtil.RedisUtil.encode(field), SerializeUtil.RedisUtil.encode(value));
+			}
+		});
+	}
+	
+	public boolean hsetnx(Object key, Object field, Object value) {
+		return 1 == invoke(new RedisInvocation<Long>() {
+			@Override
+			public Long invok(Jedis jedis) {
+				return jedis.hsetnx(encode(key), encode(field), encode(value));
 			}
 		});
 	}
@@ -135,60 +150,16 @@ public class Redis {
 	 * @param date
 	 * @return
 	 */
-	public <T> T hgetJsonValueIfNotExpire(String key, String field, long date, Class<T> clazz)  {
-		String value = invokeLua(LuaCmd.HGET_IF_NOT_EXPIRE, key, field, String.valueOf(date));
-		return null == value ? null : SerializeUtil.JsonUtil.GSON.fromJson(value, clazz);
+	public byte[] hgetJsonValueIfNotExpire(Object key, Object field, long date)  {
+		return invokeLua(LuaCmd.HGET_JSON_IF_NOT_EXPIRE, key, field, String.valueOf(date));
 	}
 	
 	public String hgetAndRefresh(String key, String field, int expire) {
 		return invokeLua(LuaCmd.HGET_AND_REFRESH, key, field, String.valueOf(expire));
 	}
 	
-	public <KEY, T extends UniqueModel<KEY>> String hmsetProtostuff(byte[] key, List<T> list) {
-		return invoke(new RedisInvocation<String>() {
-			@Override
-			public String invok(Jedis jedis) {
-				Map<byte[], byte[]> map = new HashMap<byte[], byte[]>(list.size() * 2);
-				for (T t : list)
-					map.put(SerializeUtil.RedisUtil.encode(t.key()), SerializeUtil.ProtostuffUtil.serial(t));
-				return jedis.hmset(key, map);
-			}
-		});
-	}
-	
-	public void hmsetAndRefresh(String ...params) {
+	public void hmsetAndRefresh(Object ...params) {
 		invokeLua(LuaCmd.HMSET_AND_REFRESH, params);
-	}
-	
-	public boolean hsetnx(String key, String field, String value) { 
-		return invoke(new RedisInvocation<Boolean>(){
-			@Override
-			public Boolean invok(Jedis jedis) {
-				return 1 == jedis.hsetnx(key, field, value);
-			}
-		});
-	}
-	
-	public long hset(String key, String field, String value) { 
-		return invoke(new RedisInvocation<Long>() {
-			@Override
-			public Long invok(Jedis jedis) {
-				return jedis.hset(key, field, value);
-			}
-		});
-	}
-	
-	public long hset(byte[] key, byte[] field, byte[] value) { 
-		return invoke(new RedisInvocation<Long>() {
-			@Override
-			public Long invok(Jedis jedis) {
-				return jedis.hset(key, field, value);
-			}
-		});
-	}
-	
-	public List<byte[]> hmgetByZsetKeys(byte[] zsetkey, byte[] hashkey, long start, long stop) { 
-		return invokeLua(LuaCmd.HMGET_BY_ZSET_KEYS, zsetkey, hashkey, start, stop);
 	}
 	
 	// ******************************** set ********************************
@@ -252,7 +223,7 @@ public class Redis {
 		return flag == 1;
 	}
 	
-	public List<byte[]> hpaging(byte[] setKey, byte[] hashKey, byte[] page, byte[] pageSize, byte[] option) {
+	public List<byte[]> hpaging(Object setKey, Object hashKey, Object page, Object pageSize, Object option) {
 		return invokeLua(LuaCmd.HPAGING, setKey, hashKey, page, pageSize, option);
 	}
 	
@@ -284,58 +255,64 @@ public class Redis {
 		invokeLua(LuaCmd.FLUSH_1, key1, key2, field1, data, field2);
 	}
 	
+	public List<byte[]> hsgetIfMarked(Object controllerKey, Object setKey, Object hashKey, String controllerVal) {
+		return invokeLua(LuaCmd.HSGET_IF_MARKED, controllerKey, setKey, hashKey, controllerVal);
+	}
+	
+	public <T extends UniqueModel<?>> void hssetMark(Object controllerKey, Object hashKey, Object setKey, String controllerVal, List<T> models, Serializer<T, byte[]> serializer) {
+		Object[] params = new Object[models.size() * 2 + 4];
+		int index = 0;
+		params[index++] = controllerKey;
+		params[index++] = hashKey;
+		params[index++] = setKey;
+		params[index++] = controllerVal;
+		for (UniqueModel<?> model : models) {
+			params[index++] = model.key();
+			params[index++] = serializer.convert((T) model);
+		}
+		invokeLua(LuaCmd.HSSET_MARK, params);
+	}
+	
+	public byte[] hzgetDel(Object hashKey, Object field, Object... zsetKeys) { 
+		Object[] params = new Object[zsetKeys.length + 2];
+		int index = 0;
+		params[index++] = hashKey;
+		for (Object zsetKey : zsetKeys)
+			params[index++] = zsetKey;
+		params[index++] = field;
+		return invokeLua(zsetKeys.length + 1, LuaCmd.HZGET_DEL, params);
+	}
+	
+	public List<byte[]> hzget(Object zsetkey, Object hashkey, long start, long stop) { 
+		return invokeLua(LuaCmd.HZGET, zsetkey, hashkey, start, stop);
+	}
+	
+	public void hzset(Object hashKey, Object field, Object value, Object score, Object... zsetKeys) {
+		Object[] params = new Object[zsetKeys.length + 4];
+		int index = 0;
+		params[index++] = hashKey;
+		for (Object zsetKey : zsetKeys)
+			params[index++] = zsetKey;
+		params[index++] = field;
+		params[index++] = value;
+		params[index++] = score;
+		invokeLua(zsetKeys.length + 1, LuaCmd.HZSET, params);
+	}
+	
 	public byte[] load_1(Object key1, Object key2, Object field) {
 		return invokeLua(LuaCmd.LOAD_1, key1, key2, field);
 	}
 	
-	/**
-	 * 成功刷新列表之后将 key 列表返回
-	 * 
-	 * @param cacheControllerKey
-	 * @param hashKey
-	 * @param setKey
-	 * @param cacheControllerVal
-	 * @param models
-	 * @return
-	 */
-	public void protostuffCacheListFlush(String cacheControllerKey, byte[] hashKey, String setKey, String cacheControllerVal, List<? extends UniqueModel<?>> models) {
-		Object[] params = new Object[models.size() * 2 + 4];
-		int index = 0;
-		params[index++] = cacheControllerKey;
-		params[index++] = hashKey;
-		params[index++] = setKey;
-		params[index++] = cacheControllerVal;
-		for (UniqueModel<?> model : models) {
-			params[index++] = model.key();
-			params[index++] = SerializeUtil.ProtostuffUtil.serial(model);
-		}
-		invokeLua(LuaCmd.CACHE_LIST_FLUSH, params);
-	}
-	
-	/**
-	 * 返回列表中的数据实体
-	 * 
-	 * @param cacheControllerKey
-	 * @param setKey
-	 * @param hashKey
-	 * @param cacheControllerVal
-	 * @return
-	 */
-	public List<byte[]> protostuffCacheListLoadWithData(String cacheControllerKey, String setKey, byte[] hashKey, String cacheControllerVal) {
-		return invokeLua(LuaCmd.CACHE_LIST_LOAD, 3, SerializeUtil.RedisUtil.encode(
-				cacheControllerKey, setKey, hashKey, cacheControllerKey));
-	}
-	
-	public <T extends UniqueModel<?>> void protostuffCacheFlush(byte[] hashKey, T model, String... setKeys) {
+	public <T extends UniqueModel<?>> void hsset(Object hashKey, Object key, Object data, String... setKeys) {
 		int keyNum = setKeys.length + 1;
-		byte[][] params = new byte[keyNum + 2][];
+		Object[] params = new Object[keyNum + 2];
 		int index = 0;
 		params[index++] = hashKey;
 		for (String setKey : setKeys)
-			params[index++] = SerializeUtil.RedisUtil.encode(setKey);
-		params[index++] = SerializeUtil.RedisUtil.encode(model.key());
-		params[index++] = SerializeUtil.ProtostuffUtil.serial(model);
-		invokeLua(LuaCmd.CACHE_FLUSH, keyNum, params);
+			params[index++] = setKey;
+		params[index++] = key;
+		params[index++] = data;
+		invokeLua(keyNum, LuaCmd.HSSET, params);
 	}
 	
 	public String tokenReplace(String userTokenKey, String tokenUserKey, int uid) {
@@ -352,102 +329,50 @@ public class Redis {
 		return invokeLua(LuaCmd.TOKEN_REMOVE, userTokenKey, tokenUserKey, token);
 	}
 
-	/**
-	 * 执行 lua 脚本，前 LuaCmd.keyNum() 个参数必须是 redis 的 key
-	 * 
-	 * @param cmd
-	 * @param params
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	public <T> T invokeLua(ILuaCmd cmd, String... params) {
-		LuaScript script = scripts.get(cmd.key());
-		if (null == script)
-			throw new JedisNoScriptException("Script " + cmd.key() + " not exist!");
-
-		return invoke(new RedisInvocation<T>() {
-			@Override
-			public T invok(Jedis jedis) {
-				if (script.isStored())
-					try {
-						return (T) jedis.evalsha(script.getSha1Key(), cmd.keyNum(), params);
-					} catch (JedisNoScriptException e) {
-						logger.warn("script {} not cached!", cmd.key());
-					}
-				T object = (T) jedis.eval(script.getContent(), cmd.keyNum(), params);
-				script.setStored(true);
-				return object;
-			}
-		});
-	}
-
 	public <T> T invokeLua(ILuaCmd cmd, Object... params) {
 		LuaScript script = scripts.get(cmd.key());
 		if (null == script)
 			throw new JedisNoScriptException("Script " + cmd.key() + " not exist!");
-		byte[][] arr = SerializeUtil.RedisUtil.encode(params);
+		byte[][] arr = encode(params);
 		return invoke(new RedisInvocation<T>() {
 			@Override
 			public T invok(Jedis jedis) {
 				if (script.isStored())
 					try {
-						return (T) jedis.evalsha(SerializeUtil.RedisUtil.encode(script.getSha1Key()), cmd.keyNum(), arr);
+						return (T) jedis.evalsha(encode(script.getSha1Key()), cmd.keyNum(), arr);
 					} catch (JedisNoScriptException e) {
 						logger.warn("script {} not cached!", cmd.key());
 					}
 
-				T object = (T) jedis.eval(SerializeUtil.RedisUtil.encode(script.getContent()), cmd.keyNum(), arr);
+				T object = (T) jedis.eval(encode(script.getContent()), cmd.keyNum(), arr);
 				script.setStored(true);
 				return object;
 			}
 		});
 	}
 	
-	@SuppressWarnings("unchecked")
-	public <T> T invokeLua(ILuaCmd cmd, int keyNum, byte[]... params) {
+	public <T> T invokeLua(int keyNum, ILuaCmd cmd, Object... params) {
 		LuaScript script = scripts.get(cmd.key());
 		if (null == script)
 			throw new JedisNoScriptException("Script " + cmd.key() + " not exist!");
-
+		byte[][] arr = encode(params);
 		return invoke(new RedisInvocation<T>() {
 			@Override
 			public T invok(Jedis jedis) {
 				if (script.isStored())
 					try {
-						return (T) jedis.evalsha(SerializeUtil.RedisUtil.encode(script.getSha1Key()), keyNum, params);
+						return (T) jedis.evalsha(encode(script.getSha1Key()), keyNum, arr);
 					} catch (JedisNoScriptException e) {
 						logger.warn("script {} not cached!", cmd.key());
 					}
 
-				T object = (T) jedis.eval(SerializeUtil.RedisUtil.encode(script.getContent()), keyNum, params);
+				T object = (T) jedis.eval(encode(script.getContent()), keyNum, arr);
 				script.setStored(true);
 				return object;
 			}
 		});
 	}
 	
-	@SuppressWarnings("unchecked")
-	public <T> T invokeLua(ILuaCmd cmd, int keyNum, String... params) {
-		LuaScript script = scripts.get(cmd.key());
-		if (null == script)
-			throw new JedisNoScriptException("Script " + cmd.key() + " not exist!");
-
-		return invoke(new RedisInvocation<T>() {
-			@Override
-			public T invok(Jedis jedis) {
-				if (script.isStored())
-					try {
-						return (T) jedis.evalsha(script.getSha1Key(), keyNum, params);
-					} catch (JedisNoScriptException e) {
-						logger.warn("script {} not cached!", cmd.key());
-					}
-				T object = (T) jedis.eval(script.getContent(), keyNum, params);
-				script.setStored(true);
-				return object;
-			}
-		});
-	}
-
 	/**
 	 * 执行普通的 redis 命令
 	 * 

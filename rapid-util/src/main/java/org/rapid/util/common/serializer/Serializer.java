@@ -21,4 +21,11 @@ public interface Serializer<S, T> extends Converter<S, T> {
 	 * @throws ConvertFailuerException
 	 */
 	S antiConvet(T t) throws ConvertFailuerException;
+	
+	/**
+	 * 反序列化需要设置需要 java 的 class 类型
+	 * 
+	 * @param clazz
+	 */
+	void setClazz(Class<S> clazz);
 }

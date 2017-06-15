@@ -1,5 +1,5 @@
 local len = #(ARGV)
-local flag = redis.call("sadd", KEYS[1], ARGV[1])
+local flag = redis.call("hsetnx", KEYS[1], ARGV[1], KEYS[1])
 if (0 ~= flag and len > 1)
 then
 	local hindex = 1

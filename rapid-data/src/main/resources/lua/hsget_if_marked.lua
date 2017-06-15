@@ -1,4 +1,4 @@
-local flag = redis.call("sismember", KEYS[1], ARGV[1])
+local flag = redis.call("hexists", KEYS[1], ARGV[1])
 if (1 == flag)
 then
 	local set = redis.call("smembers", KEYS[2])

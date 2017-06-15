@@ -5,21 +5,21 @@ import java.util.List;
 import org.rapid.util.common.model.UniqueModel;
 
 /**
- * 将普通 java 对象映射到 redis hash 的类
+ * 将普通 java 对象映射到存储系统(redis、mongodb、database)的映射类
  * 
  * @author ahab
  *
  * @param <KEY>		主键类型
  * @param <ENTITY>	表所对应的 java pojo 类型
  */
-public interface IMapper<KEY, MODEL extends UniqueModel<KEY>>  {
+public interface Mapper<KEY, MODEL extends UniqueModel<KEY>>  {
 
 	/**
 	 * 插入数据
 	 * 
 	 * @param model
 	 */
-	MODEL insert(MODEL model);
+	void insert(MODEL model);
 	
 	/**
 	 * 根据主键获取唯一的数据

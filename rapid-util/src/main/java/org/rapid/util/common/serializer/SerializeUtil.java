@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -132,6 +133,21 @@ public interface SerializeUtil {
 					buffer[i] = (byte[]) params[i];
 				else
 					buffer[i] = _encode(params[i].toString());
+			}
+			return buffer;
+		}
+		
+		public static final byte[][] encode(Collection<?> params) {
+			byte[][] buffer = new byte[params.size()][];
+			Iterator<?> iterator = params.iterator();
+			int index = 0;
+			while (iterator.hasNext()) {
+				Object param = iterator.next();
+				if (param instanceof byte[])
+					buffer[index] = (byte[]) param;
+				else
+					buffer[index] = _encode(param.toString());
+				index++;
 			}
 			return buffer;
 		}
