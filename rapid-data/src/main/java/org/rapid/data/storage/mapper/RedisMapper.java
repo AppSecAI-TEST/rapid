@@ -15,7 +15,6 @@ public abstract class RedisMapper<DATA, KEY, MODEL extends UniqueModel<KEY>> imp
 	protected DATA redisKey;
 	protected Class<MODEL> clazz;
 	
-	@SuppressWarnings("unchecked")
 	public RedisMapper() {
 		Type superType = getClass().getGenericSuperclass();   
 		Type[] generics = ((ParameterizedType) superType).getActualTypeArguments();  

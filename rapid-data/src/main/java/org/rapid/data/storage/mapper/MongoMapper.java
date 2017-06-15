@@ -4,6 +4,8 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.bson.Document;
 import org.rapid.data.storage.mongo.Mongo;
 import org.rapid.util.common.model.UniqueModel;
@@ -24,11 +26,11 @@ public class MongoMapper<KEY, MODEL extends UniqueModel<KEY>> implements IMapper
 	
 	protected String FIELD_ID					= "_id";
 
+	@Resource
 	protected Mongo mongo;
 	protected String collection;
 	protected Class<MODEL> clazz;
 	
-	@SuppressWarnings("unchecked")
 	public MongoMapper(String collection) {
 		this.collection = collection;
 		Type superType = getClass().getGenericSuperclass();   

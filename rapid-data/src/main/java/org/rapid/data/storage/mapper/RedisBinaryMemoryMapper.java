@@ -7,7 +7,6 @@ import java.util.List;
 import org.rapid.util.common.model.UniqueModel;
 import org.rapid.util.common.serializer.SerializeUtil;
 
-@SuppressWarnings("unchecked")
 public abstract class RedisBinaryMemoryMapper<KEY, MODEL extends UniqueModel<KEY>> extends RedisMapper<byte[], KEY, MODEL> {
 	
 	public RedisBinaryMemoryMapper(String redisKey) {
@@ -30,10 +29,10 @@ public abstract class RedisBinaryMemoryMapper<KEY, MODEL extends UniqueModel<KEY
 	public List<MODEL> getWithinKey(List<KEY> keys) {
 		if (null == keys || keys.isEmpty())
 			return Collections.EMPTY_LIST;
-		byte[][] fields = new byte[keys.size()][];
+		Object[] fields = new Object[keys.size()];
 		int index = 0;
 		for (KEY key : keys)
-			fields[index++] = SerializeUtil.RedisUtil.encode(key);
+			fields[index++] = key;
 		List<byte[]> datas = redis.hmget(redisKey, fields);
 		List<MODEL> models = new ArrayList<MODEL>();
 		for (byte[] data : datas) 
