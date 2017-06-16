@@ -8,6 +8,7 @@ import org.rapid.data.storage.redis.Redis;
 import org.rapid.data.storage.redis.RedisOption.EXPX;
 import org.rapid.data.storage.redis.RedisOption.NXXX;
 import org.rapid.util.common.serializer.SerializeUtil;
+import org.rapid.util.lang.DateUtils;
 
 @SuppressWarnings("all")
 public class RedisTest extends BaseTest {
@@ -49,5 +50,9 @@ public class RedisTest extends BaseTest {
 			System.out.println("null");
 		else
 			System.out.println(new String(buffer));
+	}
+	
+	public void testhzset() { 
+		redis.hzset("teststs", "1", "body", DateUtils.currentTime(), "tlist", "ulist");
 	}
 }

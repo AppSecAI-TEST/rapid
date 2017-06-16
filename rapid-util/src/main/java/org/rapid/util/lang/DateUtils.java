@@ -62,6 +62,10 @@ public final class DateUtils {
 		return getTime(date1, format, zone) - getTime(date2, format, zone);
 	}
 	
+	public static long getTime(String date, String format) { 
+		return getTime(date, format, TimeZone.getDefault());
+	}
+	
 	public static long getTime(String date, String format, TimeZone zone) { 
 		DateFormat df = new SimpleDateFormat(format);
 		df.setTimeZone(zone);
