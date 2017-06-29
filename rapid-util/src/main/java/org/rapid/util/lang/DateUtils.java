@@ -62,6 +62,10 @@ public final class DateUtils {
 		return getTime(date1, format, zone) - getTime(date2, format, zone);
 	}
 	
+	public static long getTimeGap(String date1, String date2, String format) {
+		return getTimeGap(date1, date2, format, TimeZone.getDefault());
+	}
+	
 	public static long getTime(String date, String format) { 
 		return getTime(date, format, TimeZone.getDefault());
 	}

@@ -41,4 +41,11 @@ public interface Mapper<KEY, MODEL extends UniqueModel<KEY>>  {
 	 * @param model
 	 */
 	void update(MODEL model);
+	
+	/**
+	 * 删除
+	 * 
+	 * @param key
+	 */
+	void delete(KEY key);
 }

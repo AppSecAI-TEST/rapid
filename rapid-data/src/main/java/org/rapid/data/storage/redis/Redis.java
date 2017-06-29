@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -137,6 +138,24 @@ public class Redis {
 			@Override
 			public Long invok(Jedis jedis) {
 				return jedis.hsetnx(encode(key), encode(field), encode(value));
+			}
+		});
+	}
+	
+	public List<byte[]> hvals(Object key) {
+		return invoke(new RedisInvocation<List<byte[]>>() {
+			@Override
+			public List<byte[]> invok(Jedis jedis) {
+				return jedis.hvals(encode(key));
+			}
+		});
+	}
+	
+	public Set<byte[]> hkeys(Object key) {
+		return invoke(new RedisInvocation<Set<byte[]>>() {
+			@Override
+			public Set<byte[]> invok(Jedis jedis) {
+				return jedis.hkeys(encode(key));
 			}
 		});
 	}

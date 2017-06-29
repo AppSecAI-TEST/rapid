@@ -38,6 +38,16 @@ public enum Code implements ICode {
 	TOKEN_INVALID(5, "token is invalid"),
 	
 	/**
+	 * 暂不支持的服务
+	 */
+	UNSUPPORTED_SERVICE(6, "unsupported service"),
+	
+	/**
+	 * 操作失败
+	 */
+	FAILURE(7, "failure"),
+	
+	/**
 	 * 用户不存在
 	 */
 	USER_NOT_EXIST(20, "user not exist"),

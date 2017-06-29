@@ -12,6 +12,7 @@ public interface Consts {
 	final String SYMBOL_AND					= "&";
 	final String SYMBOL_UNDERLINE			= "_";
 	final String SYMBOL_DOC					= ".";
+	final int REGION_ID_CH					= 100000;
 	
 	interface MimeType {
 		
@@ -27,9 +28,11 @@ public interface Consts {
 	interface RESULT {
 		Result OK 								= Result.result(Code.OK);
 		Result FORBID							= Result.result(Code.FORBID);
+		Result FAILURE							= Result.result(Code.FAILURE);
 		Result CAPTCHA_ERROR					= Result.result(Code.CAPTCHA_ERROR);
 		Result USER_NOT_EXIST					= Result.result(Code.USER_NOT_EXIST);
 		Result USER_STATUS_CHANGED				= Result.result(Code.USER_STATUS_CHANGED);
+		Result UNSUPPORTED_SERVICE				= Result.result(Code.UNSUPPORTED_SERVICE);
 		Result SORT_FIELD_NOT_EXIST	 			= Result.result(Code.SORT_FIELD_NOT_EXIST);
 		Result REGION_OUT_OF_BOUNDARY			= Result.result(Code.REGION_OUT_OF_BOUNDARY);
 	}

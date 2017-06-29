@@ -68,6 +68,11 @@ public class RedisMapper<KEY, MODEL extends UniqueModel<KEY>> implements Mapper<
 		this.flush(model);
 	}
 	
+	@Override
+	public void delete(KEY key) {
+		
+	}
+	
 	public void flush(MODEL model) {
 		redis.hset(redisKey, model.key(), serializer.convert(model));
 	}

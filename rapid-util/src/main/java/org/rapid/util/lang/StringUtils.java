@@ -3,18 +3,23 @@ package org.rapid.util.lang;
 public class StringUtils {
 
 	public static final String EMPTY = "";
-	
+
 	/**
 	 * 所有省、直辖市的简称
 	 */
-	public static String[] PROVINCES = {"京", "津", "冀", "晋", "蒙", "辽", "吉", "黑", "沪", "苏", "浙", "皖", "闽", "赣", "鲁", "豫", 
-			"鄂", "湘", "粤", "桂", "琼", "渝", "川", "贵", "云", "藏", "陕", "甘", "青", "宁", "新", "港", "澳", "台", "钓"};
-	
+	public static String[] PROVINCES = { "京", "津", "冀", "晋", "蒙", "辽", "吉", "黑", "沪", "苏", "浙", "皖", "闽", "赣", "鲁", "豫",
+			"鄂", "湘", "粤", "桂", "琼", "渝", "川", "贵", "云", "藏", "陕", "甘", "青", "宁", "新", "港", "澳", "台" };
+	/**
+	 * 所有省、直辖市的行政区划代码
+	 */
+	public static int[] PROVINCES_CODE = { 110000, 120000, 130000, 140000, 150000, 210000, 220000, 230000, 310000,
+			320000, 330000, 340000, 350000, 360000, 370000, 410000, 420000, 430000, 440000, 450000, 460000, 500000,
+			510000, 520000, 530000, 540000, 610000, 620000, 630000, 640000, 650000, 710000, 810000, 820000 };
 	/**
 	 * 字母表
 	 */
-	public static String[] ALPHABET = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", 
-			"R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
+	public static String[] ALPHABET = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P",
+			"Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
 
 	/**
 	 * 获取字符串的长度，如果汉子则为2个字符长度
@@ -82,14 +87,14 @@ public class StringUtils {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * 只要有一个字符串是 null 或者空就返回false
 	 * 
 	 * @param strs
 	 * @return
 	 */
-	public static boolean hasText(String ...strs) {
+	public static boolean hasText(String... strs) {
 		for (String str : strs) {
 			if (!hasText(str))
 				return false;

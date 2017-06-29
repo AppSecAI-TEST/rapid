@@ -16,6 +16,10 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.Source;
+import javax.xml.transform.sax.SAXSource;
 
 import org.rapid.util.common.Consts;
 import org.rapid.util.common.converter.StrConverter;
@@ -28,6 +32,9 @@ import org.rapid.util.common.converter.str.Str2LongConverter;
 import org.rapid.util.common.converter.str.Str2ShortConverter;
 import org.rapid.util.common.converter.str.Str2StrConverter;
 import org.rapid.util.common.key.Pair;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
 
 import com.google.gson.Gson;
 
@@ -59,9 +66,14 @@ public interface SerializeUtil {
 			try {
 				JAXBContext jaxbContext = JAXBContext.newInstance(clazz);
 				Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-				T instance = (T) unmarshaller.unmarshal(new StringReader(xml));
+				StringReader reader = new StringReader(xml);
+				SAXParserFactory sax = SAXParserFactory.newInstance();
+				sax.setNamespaceAware(false);
+				XMLReader xmlReader = sax.newSAXParser().getXMLReader();
+				Source source = new SAXSource(xmlReader, new InputSource(reader));
+				T instance = (T) unmarshaller.unmarshal(source);
 				return instance;
-			} catch (JAXBException e) {
+			} catch (JAXBException | SAXException | ParserConfigurationException e) {
 				throw new RuntimeException("Serial failure!", e);
 			}
 		}

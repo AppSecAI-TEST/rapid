@@ -4,11 +4,18 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-@SuppressWarnings("unchecked")
 public class CollectionUtils {
+	
+	public static final Integer[] toIntegerArray(String ...params) { 
+		Integer[] arr = new Integer[params.length];
+		for (int i = 0, len = params.length; i < len; i++)
+			arr[i] = Integer.valueOf(params[i]);
+		return arr;
+	}
 
 	public static final Set<Integer> toIntSet(Collection<String> collection) {
 		if (null == collection || collection.isEmpty())
@@ -25,6 +32,15 @@ public class CollectionUtils {
 		List<Integer> temp = new ArrayList<Integer>();
 		for (String str : collection)
 			temp.add(Integer.valueOf(str));
+		return temp;
+	}
+	
+	public static final LinkedList<String> toStrLinkedList(String... params) {
+		if (null == params || 0 == params.length)
+			return null;
+		LinkedList<String> temp = new LinkedList<String>();
+		for (int i = 0, len = params.length; i < len; i++)
+			temp.addLast(params[i]);
 		return temp;
 	}
 	

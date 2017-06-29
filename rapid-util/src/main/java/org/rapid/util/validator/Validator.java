@@ -1,4 +1,4 @@
-package org.rapid.util.common;
+package org.rapid.util.validator;
 
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -61,6 +61,10 @@ public class Validator {
 			return false;
 		}
     }
+    
+    public static boolean isDigital(String str) {  
+        return str == null || "".equals(str) ? false : str.matches("^[0-9]*$");  
+    } 
     
     private static boolean _matches(Pattern pattern, CharSequence input) {
     	if (null == input)

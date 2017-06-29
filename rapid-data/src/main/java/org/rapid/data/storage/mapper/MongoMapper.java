@@ -62,6 +62,11 @@ public class MongoMapper<KEY, MODEL extends UniqueModel<KEY>> implements Mapper<
 	public void update(MODEL model) {
 		mongo.replaceOne(collection, Filters.eq(FIELD_ID, model.key()), serial(model));
 	}
+	
+	@Override
+	public void delete(KEY key) {
+		mongo.deleteOne(collection, Filters.eq(FIELD_ID, key));
+	}
 
 	protected Document serial(MODEL model) {
 		return Document.parse(SerializeUtil.JsonUtil.GSON.toJson(model));
