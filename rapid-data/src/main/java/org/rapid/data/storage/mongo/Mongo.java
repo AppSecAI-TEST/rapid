@@ -123,6 +123,12 @@ public class Mongo {
 		return collection.count();
 	}
 	
+	public Document findOne(String collectionName, Bson filter, Bson sort) { 
+		MongoCollection<Document> collection = connection.getCollection(collectionName);
+		FindIterable<Document> iterable = collection.find(filter).sort(sort);
+		return iterable.first();
+	}
+	
 	public Document findOne(String collectionName, Bson filter) { 
 		MongoCollection<Document> collection = connection.getCollection(collectionName);
 		FindIterable<Document> iterable = collection.find(filter);

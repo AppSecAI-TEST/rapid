@@ -18,6 +18,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.rapid.util.common.Consts;
 import org.rapid.util.net.http.AsyncHttpAdapter;
 import org.rapid.util.net.http.HttpProxy;
 import org.rapid.util.net.http.handler.AsyncRespHandler;
@@ -36,10 +37,15 @@ public class YunPianTest {
 		
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("apikey", "8288deb5acd16da054cc67d3df93d565");
-		params.put("tpl_id", "1790102");
-		String tpl_value = URLEncoder.encode("#code#", ENCODING) + "=" + URLEncoder.encode("5689", ENCODING);
+		params.put("tpl_id", "1855094");
+		String tpl_value = URLEncoder.encode("#license#",Consts.UTF_8.name()) + "=" + URLEncoder.encode("浙H0155R", Consts.UTF_8.name()) 
+		+ "&" + URLEncoder.encode("#insurer#", Consts.UTF_8.name()) + "=" + URLEncoder.encode("人保车险", Consts.UTF_8.name())
+		+ "&" + URLEncoder.encode("#insurance#", Consts.UTF_8.name()) + "=" + URLEncoder.encode("交强险950元，车船税360元，商业险6488.93元(商业险包含:车损12.8万、三者50万、司机1万、乘客1万、玻璃[国产]、不计免赔) ", Consts.UTF_8.name())
+		+ "&" + URLEncoder.encode("#price#", Consts.UTF_8.name()) + "=" + URLEncoder.encode("7798.93", Consts.UTF_8.name())
+		+ "&" + URLEncoder.encode("#name#", Consts.UTF_8.name()) + "=" + URLEncoder.encode("张辛林", Consts.UTF_8.name())
+		+ "&" + URLEncoder.encode("#mobile#", Consts.UTF_8.name()) + "=" + URLEncoder.encode("13105716369", Consts.UTF_8.name());
 		params.put("tpl_value", tpl_value);
-		params.put("mobile", "13805730396");
+		params.put("mobile", "13105716369");
 		
 		HttpPost post = new HttpPost(URI_TPL_SEND_SMS);
 		if (params != null) {

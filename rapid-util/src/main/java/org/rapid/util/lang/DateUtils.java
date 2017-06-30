@@ -70,6 +70,10 @@ public final class DateUtils {
 		return getTime(date, format, TimeZone.getDefault());
 	}
 	
+	public static int getSecondTime(String date, String format) { 
+		return (int) (getTime(date, format, TimeZone.getDefault()) / 1000);
+	}
+	
 	public static long getTime(String date, String format, TimeZone zone) { 
 		DateFormat df = new SimpleDateFormat(format);
 		df.setTimeZone(zone);

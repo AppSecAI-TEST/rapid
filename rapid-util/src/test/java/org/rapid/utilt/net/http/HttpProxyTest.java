@@ -41,7 +41,7 @@ public class HttpProxyTest {
 		VehicleSearcher submit = new VehicleSearcher();
 		submit.setUsername("cxdlzjcx");
 		submit.setPassword("111111");
-		submit.setVin("WAU8FD8T5FA028514");
+		submit.setVin("LBV3M2107DMC16468");
 		String body = SerializeUtil.XmlUtil.beanToXml(submit, "utf-8");
 		System.out.println(body);
 		body = DesUtil.EncryptDES(body, "68730531");
