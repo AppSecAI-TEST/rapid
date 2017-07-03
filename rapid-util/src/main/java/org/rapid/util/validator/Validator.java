@@ -1,6 +1,5 @@
 package org.rapid.util.validator;
 
-import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -52,10 +51,10 @@ public class Validator {
      * @param mobile
      * @return
      */
-    public static boolean isMobile(String mobile) {
+    public static boolean isMobile(String mobile, String countryCode) {
     	PhoneNumberUtil util = PhoneNumberUtil.getInstance();
 		try {
-			PhoneNumber number = util.parse(mobile, Locale.getDefault().getCountry());
+			PhoneNumber number = util.parse(mobile, countryCode);
 			return util.isValidNumber(number);
 		} catch (NumberParseException e) {
 			return false;
