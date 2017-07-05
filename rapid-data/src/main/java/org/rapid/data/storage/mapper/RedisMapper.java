@@ -45,6 +45,11 @@ public class RedisMapper<KEY, MODEL extends UniqueModel<KEY>> implements Mapper<
 	public void insert(MODEL model) {
 		this.flush(model);
 	}
+	
+	@Override
+	public List<MODEL> getAll() {
+		return null;
+	}
 
 	@Override
 	public MODEL getByKey(KEY key) {
@@ -70,11 +75,15 @@ public class RedisMapper<KEY, MODEL extends UniqueModel<KEY>> implements Mapper<
 	
 	@Override
 	public void delete(KEY key) {
-		
+		this.remove(key);
 	}
 	
 	public void flush(MODEL model) {
 		redis.hset(redisKey, model.key(), serializer.convert(model));
+	}
+	
+	public void remove(KEY key) {
+		redis.hdel(redisKey, key);
 	}
 	
 	public void flush(Collection<MODEL> models) {

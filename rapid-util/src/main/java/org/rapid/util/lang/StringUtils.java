@@ -20,6 +20,15 @@ public class StringUtils {
 	 */
 	public static String[] ALPHABET = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P",
 			"Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
+	
+	public static final String provinceAbbreviation(int region) {
+		for (int idx = 0, len = PROVINCES_CODE.length; idx < len; idx++) {
+			if (PROVINCES_CODE[idx] != region)
+				continue;
+			return PROVINCES[idx];
+		}
+		return null;
+	}
 
 	/**
 	 * 获取字符串的长度，如果汉子则为2个字符长度

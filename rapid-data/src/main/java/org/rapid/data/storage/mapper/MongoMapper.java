@@ -59,6 +59,11 @@ public class MongoMapper<KEY, MODEL extends UniqueModel<KEY>> implements Mapper<
 	}
 	
 	@Override
+	public List<MODEL> getAll() {
+		return null;
+	}
+	
+	@Override
 	public void update(MODEL model) {
 		mongo.replaceOne(collection, Filters.eq(FIELD_ID, model.key()), serial(model));
 	}

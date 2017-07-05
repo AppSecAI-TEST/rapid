@@ -53,6 +53,13 @@ public interface ILuaCmd {
 			}
 		},
 		
+		FLUSH_1_BATCH {
+			@Override
+			public int keyNum() {
+				return 2;
+			}
+		},
+		
 		FLUSH_1 {
 			@Override
 			public int keyNum() {

@@ -36,4 +36,18 @@ public interface Consts {
 		Result SORT_FIELD_NOT_EXIST	 			= Result.result(Code.SORT_FIELD_NOT_EXIST);
 		Result REGION_OUT_OF_BOUNDARY			= Result.result(Code.REGION_OUT_OF_BOUNDARY);
 	}
+	
+	enum RegionLevel {
+		COUNTRY(1),
+		PROVINCE(2),
+		CITY(3),
+		COUNTY(4);
+		private int mark;
+		private RegionLevel(int mark) {
+			this.mark = mark;
+		}
+		public int mark() {
+			return mark;
+		}
+	}
 }

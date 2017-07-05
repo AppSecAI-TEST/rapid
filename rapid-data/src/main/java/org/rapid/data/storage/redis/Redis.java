@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -96,6 +97,15 @@ public class Redis {
 	}
 
 	// ******************************** hash ********************************
+	
+	public boolean hdel(Object key, Object field) { 
+		return 1 == invoke(new RedisInvocation<Long>() {
+			@Override
+			public Long invok(Jedis jedis) {
+				return jedis.hdel(encode(key), encode(field));
+			}
+		});
+	}
 	
 	public byte[] hget(Object key, Object field) {
 		return invoke(new RedisInvocation<byte[]>() {
@@ -268,6 +278,20 @@ public class Redis {
 		String shalKey = DigestUtils.sha1Hex(content);
 		if (null != scripts.putIfAbsent(key, new LuaScript(shalKey, content)))
 			logger.warn("Lua script - {}:{} already exist!", key, content);
+	}
+	
+	public <T extends UniqueModel<?>> void flush_1_batch(Object key1, Object key2, Map<T, Object> map, Serializer<T, byte[]> serializer) {
+		Object[] params = new Object[map.size() * 3 + 2];
+		int idx = 0;
+		params[idx++] = key1;
+		params[idx++] = key2;
+		for (Entry<T, Object> entry : map.entrySet()) {
+			T model = entry.getKey();
+			params[idx++] = model.key();
+			params[idx++] = serializer.convert(model);
+			params[idx++] = entry.getValue();
+		}
+		invokeLua(LuaCmd.FLUSH_1_BATCH, params);
 	}
 	
 	public void flush_1(Object key1, Object key2, Object field1, Object data, Object field2) {

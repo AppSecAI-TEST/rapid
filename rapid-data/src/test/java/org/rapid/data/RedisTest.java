@@ -5,9 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.rapid.data.storage.redis.Redis;
-import org.rapid.data.storage.redis.RedisOption.EXPX;
-import org.rapid.data.storage.redis.RedisOption.NXXX;
 import org.rapid.util.common.serializer.SerializeUtil;
+import org.rapid.util.common.serializer.impl.ByteProtostuffSerializer;
 import org.rapid.util.lang.DateUtils;
 
 @SuppressWarnings("all")
@@ -54,5 +53,17 @@ public class RedisTest extends BaseTest {
 	
 	public void testhzset() { 
 		redis.hzset("teststs", "1", "body", DateUtils.currentTime(), "tlist", "ulist");
+	}
+	
+	public void testFlush_1_Batch() {
+		Map<Mem, Object> map = new HashMap<Mem, Object>();
+		for (int i = 0; i < 10; i++) {
+			Mem mem = new Mem();
+			mem.setId(i);
+			mem.setAge(i + 10);
+			mem.setName("test" + i);
+			map.put(mem, i + 100);
+		}
+		redis.flush_1_batch("key-1", "key-2", map, new ByteProtostuffSerializer<Mem>());
 	}
 }

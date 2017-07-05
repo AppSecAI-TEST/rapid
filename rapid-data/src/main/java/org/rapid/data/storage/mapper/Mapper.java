@@ -22,6 +22,13 @@ public interface Mapper<KEY, MODEL extends UniqueModel<KEY>>  {
 	void insert(MODEL model);
 	
 	/**
+	 * 获取所有的数据
+	 * 
+	 * @return
+	 */
+	List<MODEL> getAll();
+	
+	/**
 	 * 根据主键获取唯一的数据
 	 * 
 	 * @return

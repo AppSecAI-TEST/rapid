@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.rapid.util.common.model.UniqueModel;
 import org.rapid.util.common.serializer.Serializer;
+import org.rapid.util.lang.CollectionUtils;
 
 /**
  * 将数据库中的数据映射到 redis 的适配器，其本身也是一个 Mapper
@@ -28,6 +29,17 @@ public abstract class RedisDBAdapter<KEY, ENTITY extends UniqueModel<KEY>, DAO e
 	public void insert(ENTITY entity) {
 		dao.insert(entity);
 		flush(entity);
+	}
+	
+	@Override
+	public List<ENTITY> getAll() {
+		List<byte[]> list = redis.hvals(redisKey);
+		if (CollectionUtils.isEmpty(list))
+			return null;
+		List<ENTITY> brands = new ArrayList<ENTITY>(list.size());
+		for (byte[] data : list)
+			brands.add(serializer.antiConvet(data));
+		return brands;
 	}
 	
 	@Override
@@ -70,6 +82,21 @@ public abstract class RedisDBAdapter<KEY, ENTITY extends UniqueModel<KEY>, DAO e
 	public void update(ENTITY entity) {
 		dao.update(entity);
 		flush(entity);
+	}
+	
+	@Override
+	public void delete(KEY key) {
+		dao.delete(key);
+		remove(key);
+	}
+	
+	protected void checkLoad(String cacheControllerKey, String cacheControllerField) {
+		if (!redis.hsetnx(cacheControllerKey, cacheControllerField, cacheControllerField))
+			return;
+		List<ENTITY> list = dao.getAll();
+		if (list.isEmpty())
+			return;
+		flush(list);
 	}
 	
 	public void setDao(DAO dao) {
