@@ -140,7 +140,7 @@ public class Mongo {
 		collection.replaceOne(filter, replacement);
 	}
 	
-	public void replaceOne(String collectionName, Bson filter, Document replacement, UpdateOptions options) { 
+	public void replaceOne(String collectionName, Bson filter, Document replacement, UpdateOptions options) {
 		MongoCollection<Document> collection = connection.getCollection(collectionName);
 		collection.replaceOne(filter, replacement, options);
 	}

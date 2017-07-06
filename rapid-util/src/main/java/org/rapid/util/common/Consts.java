@@ -1,6 +1,7 @@
 package org.rapid.util.common;
 
 import java.nio.charset.Charset;
+import java.util.Collections;
 
 import org.rapid.util.common.consts.code.Code;
 import org.rapid.util.common.message.Result;
@@ -35,6 +36,8 @@ public interface Consts {
 		Result UNSUPPORTED_SERVICE				= Result.result(Code.UNSUPPORTED_SERVICE);
 		Result SORT_FIELD_NOT_EXIST	 			= Result.result(Code.SORT_FIELD_NOT_EXIST);
 		Result REGION_OUT_OF_BOUNDARY			= Result.result(Code.REGION_OUT_OF_BOUNDARY);
+		
+		Result EMPTY_LIST						= Result.result(Collections.EMPTY_LIST);
 	}
 	
 	enum RegionLevel {
