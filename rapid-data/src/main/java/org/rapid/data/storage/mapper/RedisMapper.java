@@ -75,15 +75,23 @@ public class RedisMapper<KEY, MODEL extends UniqueModel<KEY>> implements Mapper<
 	
 	@Override
 	public void delete(KEY key) {
-		this.remove(key);
+		MODEL model = getByKey(key);
+		if (null == model)
+			return;
+		this.remove(model);
+	}
+	
+	@Override
+	public void delete(MODEL model) {
+		this.remove(model);
 	}
 	
 	public void flush(MODEL model) {
 		redis.hset(redisKey, model.key(), serializer.convert(model));
 	}
 	
-	public void remove(KEY key) {
-		redis.hdel(redisKey, key);
+	public void remove(MODEL model) {
+		redis.hdel(redisKey, model.key());
 	}
 	
 	public void flush(Collection<MODEL> models) {

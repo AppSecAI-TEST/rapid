@@ -23,5 +23,5 @@ local start = (page - 1) * pageSize
 local stop = start + pageSize - 1
 local set = redis.call(ARGV[3], KEYS[1], start, stop)
 local data = redis.call("hmget", KEYS[2], unpack(set))
-table.insert(data, 1, tostring(total))
+table.insert(data, 1, tostring(totalPage))
 return data

@@ -1,9 +1,12 @@
 package org.rapid.data;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.rapid.data.storage.redis.ILuaCmd;
 import org.rapid.data.storage.redis.Redis;
 import org.rapid.util.common.serializer.SerializeUtil;
 import org.rapid.util.common.serializer.impl.ByteProtostuffSerializer;
@@ -65,5 +68,53 @@ public class RedisTest extends BaseTest {
 			map.put(mem, i + 100);
 		}
 		redis.flush_1_batch("key-1", "key-2", map, new ByteProtostuffSerializer<Mem>());
+	}
+	
+	public void testHmzset() { 
+		Mem[] models = new Mem[4];
+		for (int i = 0; i < 4; i++) {
+			Mem mem = new Mem();
+			mem.setId(i);
+			mem.setAge(i + 10);
+			mem.setName("test" + i);
+			models[i] = mem;
+		}
+		Map<String, double[]> map = new HashMap<String, double[]>();
+		double[] scores = new double[4];
+		for (int i = 0; i < 4; i++) 
+			scores[i] = i;
+		map.put("datazset1", scores);
+		scores = new double[4];
+		for (int i = 0; i < 4; i++) 
+			scores[i] = DateUtils.currentTime();
+		map.put("datazset2", scores);
+		redis.hmzset("data", models, map, new ByteProtostuffSerializer<Mem>());
+	}
+	
+	public void testHmzsetAlone() { 
+		Mem mem = new Mem();
+		mem.setId(10);
+		mem.setAge(10 + 10);
+		mem.setName("test" + 10);
+		Map<String, Double> map = new HashMap<String, Double>();
+		map.put("datazset1", 10.0);
+		map.put("datazset2", Double.valueOf(DateUtils.currentTime()));
+		redis.hmzset("data", mem, map, new ByteProtostuffSerializer<Mem>());
+	}
+	
+	public void testHmdel() { 
+		List<Integer> list = new ArrayList<Integer>();
+		list.add(0);
+		list.add(1);
+		redis.hmzdel("data", list, "datazset1", "datazset2");
+	}
+	
+	public void testHmdel1() { 
+		redis.hmzdel("data", 10, "datazset1", "datazset2");
+	}
+	
+	public void testHmzdrop() {
+		redis.hset("data", "100", "ss");
+		redis.hmzdrop("data", "datazset1");
 	}
 }

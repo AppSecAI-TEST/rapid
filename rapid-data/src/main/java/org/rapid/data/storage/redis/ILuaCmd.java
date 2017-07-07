@@ -145,6 +145,27 @@ public interface ILuaCmd {
 			}
 		},
 		
+		HMZDEL {
+			@Override
+			public int keyNum() {
+				throw new UnsupportedOperationException("HMZDEL has no fixed keys!");
+			}
+		},
+		
+		HMZDROP {
+			@Override
+			public int keyNum() {
+				throw new UnsupportedOperationException("HMZDROP has no fixed keys!");
+			}
+		},
+		
+		HMZSET {
+			@Override
+			public int keyNum() {
+				throw new UnsupportedOperationException("HMZSET has no fixed keys!");
+			}
+		},
+		
 		/**
 		 * hash 分页：数据存放在 hash 中，sorted set 中只存放 hash 的 各个 field
 		 */

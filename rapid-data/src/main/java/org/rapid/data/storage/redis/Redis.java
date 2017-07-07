@@ -98,7 +98,7 @@ public class Redis {
 
 	// ******************************** hash ********************************
 	
-	public boolean hdel(Object key, Object field) { 
+	public boolean hdel(Object key, Object... field) { 
 		return 1 == invoke(new RedisInvocation<Long>() {
 			@Override
 			public Long invok(Jedis jedis) {
@@ -250,6 +250,84 @@ public class Redis {
 	public boolean delIfEquals(String key, String value) {
 		long flag = invokeLua(LuaCmd.DEL_IF_EQUALS, key, value);
 		return flag == 1;
+	}
+	
+	public void hmzdel(Object redisKey, Object field, Object... zsetKeys) {
+		Object[] params = new Object[zsetKeys.length + 2];
+		int idx = 0;
+		params[idx++] = redisKey;
+		for (Object zsetKey : zsetKeys)
+			params[idx++] = zsetKey;
+		params[idx++] = field;
+		invokeLua(zsetKeys.length + 1, ILuaCmd.LuaCmd.HMZDEL, params);
+	}
+	
+	public void hmzdel(Object redisKey, Collection<?> fields, Object... zsetKeys) {
+		Object[] params = new Object[fields.size() + zsetKeys.length + 1];
+		int idx = 0;
+		params[idx++] = redisKey;
+		for (Object zsetKey : zsetKeys)
+			params[idx++] = zsetKey;
+		for (Object field : fields)
+			params[idx++] = field;
+		invokeLua(zsetKeys.length + 1, ILuaCmd.LuaCmd.HMZDEL, params);
+	}
+	
+	public void hmzdrop(Object redisKey, Object... zsetKeys) {
+		if (zsetKeys.length == 0)
+			throw new RuntimeException("Must speicfy a set key to drop");
+		Object[] params = new Object[zsetKeys.length + 1];
+		int idx = 0;
+		params[idx++] = redisKey;
+		for (Object zsetKey : zsetKeys)
+			params[idx++] = zsetKey;
+		invokeLua(zsetKeys.length + 1, ILuaCmd.LuaCmd.HMZDROP, params);
+	}
+	
+	public <T extends UniqueModel<?>> void hmzset(Object redisKey, T model, String zsetKey, double score, Serializer<T, byte[]> serializer) {
+		Object[] params = new Object[6];
+		int idx = 0;
+		params[idx++] = redisKey;
+		params[idx++] = zsetKey;
+		params[idx++] = 1;
+		params[idx++] = model.key();
+		params[idx++] = serializer.convert(model);
+		params[idx++] = score;
+		invokeLua(2, ILuaCmd.LuaCmd.HMZSET, params);
+	}
+	
+	public <T extends UniqueModel<?>> void hmzset(Object redisKey, T model, Map<String, Double> zsetParams, Serializer<T, byte[]> serializer) {
+		Object[] params = new Object[zsetParams.size() * 2 + 4];
+		int idx = 0;
+		params[idx++] = redisKey;
+		for (String zsetKey : zsetParams.keySet())
+			params[idx++] = zsetKey;
+		params[idx++] = 1;
+		params[idx++] = model.key();
+		params[idx++] = serializer.convert(model);
+		for (int i = 1; i < zsetParams.size() + 1; i++)
+			params[idx++] = zsetParams.get(params[i]);
+		invokeLua(zsetParams.size() + 1, ILuaCmd.LuaCmd.HMZSET, params);
+	}
+	
+	public <T extends UniqueModel<?>> void hmzset(Object redisKey, T[] models, Map<String, double[]> zsetParams, Serializer<T, byte[]> serializer) {
+		Object[] params = new Object[models.length * 2 + zsetParams.size() * models.length + zsetParams.size() + 2];
+		int idx = 0;
+		params[idx++] = redisKey;
+		for (String zsetKey : zsetParams.keySet())
+			params[idx++] = zsetKey;
+		params[idx++] = models.length;
+		for (int i = 0, len = models.length; i < len; i++) {
+			T model = models[i];
+			params[idx++] = model.key();
+			params[idx++] = serializer.convert(model);
+		}
+		for (int i = 1; i < zsetParams.size() + 1; i++) {
+			double[] scores = zsetParams.get(params[i]);
+			for (int j = 0, len = models.length; j < len; j++)
+				params[idx++] = scores[j];
+		}
+		invokeLua(zsetParams.size() + 1, ILuaCmd.LuaCmd.HMZSET, params);
 	}
 	
 	public List<byte[]> hpaging(Object setKey, Object hashKey, Object page, Object pageSize, Object option) {

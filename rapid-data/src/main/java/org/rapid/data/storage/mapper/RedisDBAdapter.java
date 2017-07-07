@@ -86,10 +86,25 @@ public abstract class RedisDBAdapter<KEY, ENTITY extends UniqueModel<KEY>, DAO e
 	
 	@Override
 	public void delete(KEY key) {
+		ENTITY entity = getByKey(key);
+		if (null == entity)
+			return;
+		remove(entity);
 		dao.delete(key);
-		remove(key);
 	}
 	
+	@Override
+	public void delete(ENTITY model) {
+		remove(model);
+		dao.delete(model.key());
+	}
+	
+	/**
+	 * 检测是否全部加载入内存
+	 * 
+	 * @param cacheControllerKey
+	 * @param cacheControllerField
+	 */
 	protected void checkLoad(String cacheControllerKey, String cacheControllerField) {
 		if (!redis.hsetnx(cacheControllerKey, cacheControllerField, cacheControllerField))
 			return;

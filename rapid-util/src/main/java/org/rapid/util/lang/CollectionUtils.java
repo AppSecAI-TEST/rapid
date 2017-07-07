@@ -10,6 +10,22 @@ import java.util.Set;
 
 public class CollectionUtils {
 	
+	public static final Set<Long> splitToLongSet(String param, String regex) {
+		String[] arr = param.split(regex);
+		Set<Long> set = new HashSet<Long>(arr.length);
+		for (int i = 0, len = arr.length; i < len; i++)
+			set.add(Long.valueOf(arr[i]));
+		return set;
+	}
+	
+	public static final List<Long> splitToLongList(String param, String regex) {
+		String[] arr = param.split(regex);
+		List<Long> list = new ArrayList<Long>(arr.length);
+		for (int i = 0, len = arr.length; i < len; i++)
+			list.add(Long.valueOf(arr[i]));
+		return list;
+	}
+	
 	public static final Integer[] toIntegerArray(String ...params) { 
 		Integer[] arr = new Integer[params.length];
 		for (int i = 0, len = params.length; i < len; i++)
