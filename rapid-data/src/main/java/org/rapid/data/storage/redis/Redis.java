@@ -252,6 +252,47 @@ public class Redis {
 		return flag == 1;
 	}
 	
+	public void hmsdel(Object hashKey, Object member, Object... setKeys) {
+		Object[] params = new Object[setKeys.length + 2];
+		int idx = 0;
+		params[idx++] = hashKey;
+		for (Object setKey : setKeys)
+			params[idx++] = setKey;
+		params[idx++] = member;
+		invokeLua(setKeys.length + 1, ILuaCmd.LuaCmd.HMSDEL, params);
+	}
+	
+	public List<byte[]> hmsget(Object hashKey, Object setKey) {
+		Object[] params = new Object[2];
+		params[0] = hashKey;
+		params[1] = setKey;
+		return invokeLua(LuaCmd.HMSGET, params);
+	}
+	
+	public <T extends UniqueModel<?>> void hmsset(Object hashKey, T model, Serializer<T, byte[]> serializer, Object... setKeys) {
+		Object[] params = new Object[setKeys.length + 3];
+		int idx = 0;
+		params[idx++] = hashKey;
+		for (Object setKey : setKeys)
+			params[idx++] = setKey;
+		params[idx++] = model.key();
+		params[idx++] = serializer.convert(model);
+		invokeLua(setKeys.length + 1, ILuaCmd.LuaCmd.HMSSET, params);
+	}
+	
+	public <T extends UniqueModel<?>> void hmsset(Object hashKey, List<T> models, Serializer<T, byte[]> serializer, Object... setKeys) {
+		Object[] params = new Object[models.size() * 2 + setKeys.length + 1];
+		int idx = 0;
+		params[idx++] = hashKey;
+		for (Object setKey : setKeys)
+			params[idx++] = setKey;
+		for (T model : models) {
+			params[idx++] = model.key();
+			params[idx++] = serializer.convert(model);
+		}
+		invokeLua(setKeys.length + 1, ILuaCmd.LuaCmd.HMSSET, params);
+	}
+	
 	public void hmzdel(Object redisKey, Object field, Object... zsetKeys) {
 		Object[] params = new Object[zsetKeys.length + 2];
 		int idx = 0;

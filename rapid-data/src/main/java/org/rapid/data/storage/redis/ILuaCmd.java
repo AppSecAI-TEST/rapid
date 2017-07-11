@@ -124,6 +124,13 @@ public interface ILuaCmd {
 			}
 		},
 		
+		HMSDEL {
+			@Override
+			public int keyNum() {
+				throw new UnsupportedOperationException("HMSDEL has no fixed keys!");
+			}
+		},
+		
 		HMSET_AND_REFRESH {
 			@Override
 			public int keyNum() {
@@ -142,6 +149,20 @@ public interface ILuaCmd {
 			@Override
 			public int keyNum() {
 				return 1;
+			}
+		},
+		
+		HMSGET {
+			@Override
+			public int keyNum() {
+				return 2;
+			}
+		},
+		
+		HMSSET {
+			@Override
+			public int keyNum() {
+				throw new UnsupportedOperationException("HMSSET has no fixed keys!");
 			}
 		},
 		

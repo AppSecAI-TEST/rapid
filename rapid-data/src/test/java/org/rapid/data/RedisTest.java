@@ -117,4 +117,38 @@ public class RedisTest extends BaseTest {
 		redis.hset("data", "100", "ss");
 		redis.hmzdrop("data", "datazset1");
 	}
+	
+	public void testHmsset() {
+		List<Mem> models = new ArrayList<Mem>();
+		for (int i = 10; i < 15; i++) {
+			Mem mem = new Mem();
+			mem.setId(i);
+			mem.setAge(i + 10);
+			mem.setName("test" + i);
+			models.add(mem);
+		}
+		redis.hmsset("mem", models, new ByteProtostuffSerializer<Mem>(), "set1", "set2");
+	}
+	
+	public void testHmsset1() {
+		Mem mem = new Mem();
+		mem.setId(10);
+		mem.setAge(20);
+		mem.setName("test" + 10);
+		redis.hmsset("mem", mem, new ByteProtostuffSerializer<Mem>(), "set1", "set2");
+	}
+	
+	public void testHmsdel() {
+		redis.hmsdel("mem", "10", "set1", "set2");
+	}
+	
+	public void testHmsget() {
+		List<byte[]> list = redis.hmsget("mem", "set1");
+		ByteProtostuffSerializer<Mem> serializer = new ByteProtostuffSerializer<Mem>();
+		serializer.setClazz(Mem.class);
+		for (byte[] buffer : list) {
+			Mem mem = serializer.antiConvet(buffer);
+			System.out.println(mem.getName());
+		}
+	}
 }
