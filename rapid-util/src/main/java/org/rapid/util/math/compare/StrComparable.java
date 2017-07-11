@@ -12,8 +12,6 @@ public enum StrComparable implements Comparable<String> {
 		switch (symbol) {
 		case EQUAL:
 			return targets[0].equals(src);
-		case NOT_EQUAL:
-			return !targets[0].equals(src);
 		case GREATER_THAN:
 		case GREATER_THAN_OR_EQUAL:
 		case LESS_THAN:
@@ -22,20 +20,6 @@ public enum StrComparable implements Comparable<String> {
 		case LE_BETWEEN:
 		case RE_BETWEEN:
 			throw new UnsupportedOperationException("String can not compare whith range symbol");
-		case IN:
-			for (String str : targets) {
-				if (!src.equals(str)) 
-					continue;
-				return true;
-			}
-			return false;
-		case NOT_IN:
-			for (String str : targets) {
-				if (!src.equals(str)) 
-					continue;
-				return false;
-			}
-			return true;
 		default:
 			return false;
 		}

@@ -20,15 +20,17 @@ public class GetInfo {
 		proxy.setSyncHttp(adapter);
 		proxy.init();
 		
-		URIBuilder builder = new URIBuilder("http://iu.91bihu.com/api/CarInsurance/GetFirstVehicleInfo");
+		URIBuilder builder = new URIBuilder("http://iu.91bihu.com/api/CarInsurance/GetPrecisePrice");
 		String key = "0bf1714de07";
 		Map<String, String> map = new TreeMap<String, String>();
-		map.put("EngineNo", "05207709");
-		map.put("CarVin", "LBVFR7908BSE50921");
-		map.put("MoldName", "揽胜RANGE ROVER SPORT 3.0L越野车");
-		map.put("CiytCode", "9");
+		map.put("LicenseNo", "浙F010CA");
+		map.put("TimeFormat", "1");
+		map.put("ShowEmail", "1");
+		map.put("ShowVehicleInfo", "1");
+		map.put("ShowCarInfo", "1");
+		map.put("QuoteGroup", "2");
 		map.put("Agent", "73065");
-		map.put("CustKey", "10000000000");
+		map.put("CustKey", DigestUtils.md5Hex(String.valueOf(17)));
 		StringBuilder uri = new StringBuilder();
 		for (Entry<String, String> entry : map.entrySet()) {
 			uri.append(entry.getKey()).append("=").append(entry.getValue()).append("&");

@@ -12,8 +12,6 @@ public enum IntComparable implements Comparable<Integer> {
 		switch (symbol) {
 		case EQUAL:
 			return targets[0] == src;
-		case NOT_EQUAL:
-			return targets[0] != src;
 		case GREATER_THAN:
 			return src.intValue() > targets[0].intValue();
 		case GREATER_THAN_OR_EQUAL:
@@ -35,20 +33,6 @@ public enum IntComparable implements Comparable<Integer> {
 				return (src >= min && src < max);
 			else
 				return (src > min && src <= max);
-		case IN:
-			for (int i : targets) {
-				if (src != i) 
-					continue;
-				return true;
-			}
-			return false;
-		case NOT_IN:
-			for (int i : targets) {
-				if (src != i) 
-					continue;
-				return false;
-			}
-			return true;
 		default:
 			return false;
 		}

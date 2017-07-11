@@ -17,17 +17,11 @@ public enum ComparisonSymbol {
 	
 	EQUAL(5),
 	
-	NOT_EQUAL(6),
-	
 	BETWEEN(7),
 	
 	LE_BETWEEN(8),
 	
-	RE_BETWEEN(9),
-	
-	IN(10),
-	
-	NOT_IN(11);
+	RE_BETWEEN(9);
 	
 	private int mark;
 	

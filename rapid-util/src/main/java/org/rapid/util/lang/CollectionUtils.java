@@ -1,5 +1,6 @@
 package org.rapid.util.lang;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -28,6 +29,20 @@ public class CollectionUtils {
 	
 	public static final Integer[] toIntegerArray(String ...params) { 
 		Integer[] arr = new Integer[params.length];
+		for (int i = 0, len = params.length; i < len; i++)
+			arr[i] = Integer.valueOf(params[i]);
+		return arr;
+	}
+	
+	public static final List<BigDecimal> toDecimalList(String ...params) { 
+		List<BigDecimal> decimals = new ArrayList<BigDecimal>();
+		for (int i = 0, len = params.length; i < len; i++)
+			decimals.add(new BigDecimal(params[i]));
+		return decimals;
+	}
+	
+	public static final int[] toIntArray(String ...params) { 
+		int[] arr = new int[params.length];
 		for (int i = 0, len = params.length; i < len; i++)
 			arr[i] = Integer.valueOf(params[i]);
 		return arr;
