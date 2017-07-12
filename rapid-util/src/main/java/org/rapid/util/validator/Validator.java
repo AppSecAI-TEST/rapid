@@ -9,6 +9,9 @@ import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber;
 
 public class Validator {
 	
+	/**
+	 * 10位 unix 时间戳
+	 */
 	private static final Pattern UNIX_TIMESTAMP	= Pattern.compile("[1-9]\\d{9}");
 	
 	/**
@@ -20,6 +23,11 @@ public class Validator {
      * 正则表达式：车牌号
      */
     private static final Pattern VEHICLE_LICENSE = Pattern.compile("^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[A-Z0-9]{4}[A-Z0-9挂学警港澳]{1}$");
+    
+    /**
+     * 数值
+     */
+    private static final Pattern NUMBER = Pattern.compile("^[0-9]+(.[0-9]*)?$");
     
     public static boolean isUnixTimestamp(String value) {
     	return _matches(UNIX_TIMESTAMP, value);
@@ -64,6 +72,10 @@ public class Validator {
     public static boolean isDigital(String str) {  
         return str == null || "".equals(str) ? false : str.matches("^[0-9]*$");  
     } 
+    
+    public static boolean isNumber(String input) {
+    	return _matches(NUMBER, input);
+    }
     
     private static boolean _matches(Pattern pattern, CharSequence input) {
     	if (null == input)
