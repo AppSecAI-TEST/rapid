@@ -105,6 +105,6 @@ public class ClassUtil {
 	}
 	
 	public static boolean isNumber(Object value) {
-		return isByte(value) || isDouble(value) || isByte(value) || isFloat(value) || isShort(value) || isLong(value) || isInteger(value);
+		return  isInteger(value) || isLong(value) || isDouble(value) || isShort(value) || isByte(value) || isFloat(value);
 	}
 }
