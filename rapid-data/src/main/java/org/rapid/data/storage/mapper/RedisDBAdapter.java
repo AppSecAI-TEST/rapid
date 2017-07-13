@@ -8,6 +8,7 @@ import java.util.List;
 import org.rapid.util.common.model.UniqueModel;
 import org.rapid.util.common.serializer.Serializer;
 import org.rapid.util.lang.CollectionUtils;
+import org.rapid.util.lang.StringUtils;
 
 /**
  * 将数据库中的数据映射到 redis 的适配器，其本身也是一个 Mapper
@@ -106,7 +107,7 @@ public abstract class RedisDBAdapter<KEY, ENTITY extends UniqueModel<KEY>, DAO e
 	 * @param cacheControllerField
 	 */
 	protected void checkLoad(String cacheControllerKey, String cacheControllerField) {
-		if (!redis.hsetnx(cacheControllerKey, cacheControllerField, cacheControllerField))
+		if (!redis.hsetnx(cacheControllerKey, cacheControllerField, StringUtils.EMPTY))
 			return;
 		List<ENTITY> list = dao.getAll();
 		if (list.isEmpty())

@@ -48,6 +48,11 @@ public enum Code implements ICode {
 	FAILURE(7, "failure"),
 	
 	/**
+	 * 主键冲突
+	 */
+	KEY_DUPLICATED(8, "key duplicated!"),
+	
+	/**
 	 * 用户不存在
 	 */
 	USER_NOT_EXIST(20, "user not exist"),

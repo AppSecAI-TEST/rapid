@@ -10,6 +10,7 @@ public final class DateUtils {
 	
 	public static final String ISO8601_UTC 				= "yyyy-MM-dd'T'HH:mm:ss'Z'";
 	public static final String YYYY_MM_DD_HH_MM_SS		= "yyyy-MM-dd HH:mm:ss";
+	public static final String YYYYMMDD					= "yyyyMMdd";
 	public static final TimeZone TIMEZONE_UTC			= TimeZone.getTimeZone("UTC");
 
 	/**
@@ -33,6 +34,14 @@ public final class DateUtils {
 	
 	public static String UTCDate() { 
 		return getDate(ISO8601_UTC, System.currentTimeMillis(), TIMEZONE_UTC);
+	}
+	
+	public static String getDate(String format, int timestamp) {
+		return getDate(format, timestamp * 1000l, TimeZone.getDefault());
+	}
+	
+	public static String getDate(String format, int timestamp, TimeZone timeZone) {
+		return getDate(format, timestamp * 1000l, timeZone);
 	}
 	
 	/**
