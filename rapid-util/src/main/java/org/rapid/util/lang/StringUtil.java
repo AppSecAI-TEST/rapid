@@ -1,6 +1,6 @@
 package org.rapid.util.lang;
 
-public class StringUtils {
+public class StringUtil {
 
 	public static final String EMPTY = "";
 

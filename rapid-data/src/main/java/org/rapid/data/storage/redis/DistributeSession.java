@@ -7,7 +7,7 @@ import java.util.Map.Entry;
 import org.rapid.data.storage.redis.ILuaCmd.LuaCmd;
 import org.rapid.util.common.serializer.SerializeUtil;
 import org.rapid.util.common.uuid.AlternativeJdkIdGenerator;
-import org.rapid.util.lang.DateUtils;
+import org.rapid.util.lang.DateUtil;
 
 /**
  * 分布式 session
@@ -23,7 +23,7 @@ public class DistributeSession {
 	/**
 	 * 默认 30 分钟
 	 */
-	private static final byte[] DEFAULT_INACTIVE_INTERVAL	= SerializeUtil.RedisUtil.encode(String.valueOf(DateUtils.MILLIS_HALF_HOUR));
+	private static final byte[] DEFAULT_INACTIVE_INTERVAL	= SerializeUtil.RedisUtil.encode(String.valueOf(DateUtil.MILLIS_HALF_HOUR));
 	
 	private Redis redis;
 	private String sessionId;

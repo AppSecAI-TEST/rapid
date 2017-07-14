@@ -10,7 +10,7 @@ import org.rapid.data.storage.redis.ILuaCmd;
 import org.rapid.data.storage.redis.Redis;
 import org.rapid.util.common.serializer.SerializeUtil;
 import org.rapid.util.common.serializer.impl.ByteProtostuffSerializer;
-import org.rapid.util.lang.DateUtils;
+import org.rapid.util.lang.DateUtil;
 
 @SuppressWarnings("all")
 public class RedisTest extends BaseTest {
@@ -55,7 +55,7 @@ public class RedisTest extends BaseTest {
 	}
 	
 	public void testhzset() { 
-		redis.hzset("teststs", "1", "body", DateUtils.currentTime(), "tlist", "ulist");
+		redis.hzset("teststs", "1", "body", DateUtil.currentTime(), "tlist", "ulist");
 	}
 	
 	public void testFlush_1_Batch() {
@@ -86,7 +86,7 @@ public class RedisTest extends BaseTest {
 		map.put("datazset1", scores);
 		scores = new double[4];
 		for (int i = 0; i < 4; i++) 
-			scores[i] = DateUtils.currentTime();
+			scores[i] = DateUtil.currentTime();
 		map.put("datazset2", scores);
 		redis.hmzset("data", models, map, new ByteProtostuffSerializer<Mem>());
 	}
@@ -98,7 +98,7 @@ public class RedisTest extends BaseTest {
 		mem.setName("test" + 10);
 		Map<String, Double> map = new HashMap<String, Double>();
 		map.put("datazset1", 10.0);
-		map.put("datazset2", Double.valueOf(DateUtils.currentTime()));
+		map.put("datazset2", Double.valueOf(DateUtil.currentTime()));
 		redis.hmzset("data", mem, map, new ByteProtostuffSerializer<Mem>());
 	}
 	

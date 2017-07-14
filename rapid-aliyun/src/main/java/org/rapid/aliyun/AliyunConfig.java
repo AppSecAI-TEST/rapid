@@ -8,7 +8,7 @@ import java.util.Properties;
 import org.rapid.util.common.consts.conveter.StrConstConverter;
 import org.rapid.util.exception.ConstConvertFailureException;
 import org.rapid.util.io.ResourceUtil;
-import org.rapid.util.lang.StringUtils;
+import org.rapid.util.lang.StringUtil;
 
 public class AliyunConfig {
 	
@@ -44,7 +44,7 @@ public class AliyunConfig {
 	 */
 	public <T> T getConfig(StrConstConverter<T> constant) throws ConstConvertFailureException {
 		String val = props.getProperty(constant.key());
-		if (!StringUtils.hasText(val))
+		if (!StringUtil.hasText(val))
 			throw ConstConvertFailureException.nullConstException(constant);
 		try {
 			return constant.convert(val);

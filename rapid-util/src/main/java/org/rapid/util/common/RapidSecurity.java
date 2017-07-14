@@ -4,14 +4,14 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import org.rapid.util.common.uuid.AlternativeJdkIdGenerator;
-import org.rapid.util.lang.StringUtils;
+import org.rapid.util.lang.StringUtil;
 
 public class RapidSecurity {
 
 public static char[] hexChar = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
 	
 	public static String encodeToken(String context) {
-		return StringUtils.hasText(context) ? 
+		return StringUtil.hasText(context) ? 
 				toMd5(context + System.currentTimeMillis()) : 
 					toMd5(AlternativeJdkIdGenerator.INSTANCE.generateId().toString() + System.currentTimeMillis());
 	}

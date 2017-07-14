@@ -7,8 +7,8 @@ import java.util.List;
 
 import org.rapid.util.common.model.UniqueModel;
 import org.rapid.util.common.serializer.Serializer;
-import org.rapid.util.lang.CollectionUtils;
-import org.rapid.util.lang.StringUtils;
+import org.rapid.util.lang.CollectionUtil;
+import org.rapid.util.lang.StringUtil;
 
 /**
  * 将数据库中的数据映射到 redis 的适配器，其本身也是一个 Mapper
@@ -35,7 +35,7 @@ public abstract class RedisDBAdapter<KEY, ENTITY extends UniqueModel<KEY>, DAO e
 	@Override
 	public List<ENTITY> getAll() {
 		List<byte[]> list = redis.hvals(redisKey);
-		if (CollectionUtils.isEmpty(list))
+		if (CollectionUtil.isEmpty(list))
 			return null;
 		List<ENTITY> brands = new ArrayList<ENTITY>(list.size());
 		for (byte[] data : list)
@@ -107,7 +107,7 @@ public abstract class RedisDBAdapter<KEY, ENTITY extends UniqueModel<KEY>, DAO e
 	 * @param cacheControllerField
 	 */
 	protected void checkLoad(String cacheControllerKey, String cacheControllerField) {
-		if (!redis.hsetnx(cacheControllerKey, cacheControllerField, StringUtils.EMPTY))
+		if (!redis.hsetnx(cacheControllerKey, cacheControllerField, StringUtil.EMPTY))
 			return;
 		List<ENTITY> list = dao.getAll();
 		if (list.isEmpty())

@@ -8,7 +8,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.NoSuchFileException;
 
-import org.rapid.util.lang.StringUtils;
+import org.rapid.util.lang.StringUtil;
 import org.rapid.util.reflect.ClassUtil;
 
 public abstract class ResourceUtil {
@@ -76,6 +76,6 @@ public abstract class ResourceUtil {
 	}
 	
 	public static URI toURI(String location) throws URISyntaxException {
-		return new URI(StringUtils.replace(location, " ", "%20"));
+		return new URI(StringUtil.replace(location, " ", "%20"));
 	}
 }	

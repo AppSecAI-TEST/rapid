@@ -22,7 +22,7 @@ import org.rapid.util.common.model.UniqueModel;
 import org.rapid.util.common.serializer.SerializeUtil;
 import org.rapid.util.common.serializer.Serializer;
 import org.rapid.util.io.FileReader;
-import org.rapid.util.lang.StringUtils;
+import org.rapid.util.lang.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,7 +62,7 @@ public class Redis {
 		}, new Callback<File, Void>() {
 			@Override
 			public Void invoke(File file) throws Exception {
-				_addLuaScript(file.getName().replaceAll(LUA_SCRIPT_SUFFIX, StringUtils.EMPTY), new String(FileReader.bufferRead(file)));
+				_addLuaScript(file.getName().replaceAll(LUA_SCRIPT_SUFFIX, StringUtil.EMPTY), new String(FileReader.bufferRead(file)));
 				return null;
 			}
 		});

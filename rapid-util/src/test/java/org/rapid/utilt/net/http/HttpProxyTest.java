@@ -17,7 +17,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicNameValuePair;
 import org.rapid.util.common.serializer.SerializeUtil;
 import org.rapid.util.crypto.DesUtil;
-import org.rapid.util.lang.DateUtils;
+import org.rapid.util.lang.DateUtil;
 import org.rapid.util.net.http.HttpProxy;
 import org.rapid.util.net.http.SyncHttpAdapter;
 import org.rapid.util.net.http.handler.SyncStrRespHandler;
@@ -41,7 +41,7 @@ public class HttpProxyTest {
 		VehicleSearcher submit = new VehicleSearcher();
 		submit.setUsername("cxdlzjcx");
 		submit.setPassword("111111");
-		submit.setVin("LGXC76D26C0073694");
+		submit.setVin("LSVFD2554A2158794");
 		String body = SerializeUtil.XmlUtil.beanToXml(submit, "utf-8");
 		System.out.println(body);
 		body = DesUtil.EncryptDES(body, "68730531");
@@ -64,7 +64,7 @@ public class HttpProxyTest {
 		proxy.setSyncHttp(adapter);
 		proxy.init();
 		
-		long timestamp = DateUtils.currentTime();
+		long timestamp = DateUtil.currentTime();
 		StringBuilder builder = new StringBuilder();
 		builder.append("-1").append("2000010120170609").delete(16, builder.length())
 		.append(timestamp).append("CarCorder");
@@ -94,7 +94,7 @@ public class HttpProxyTest {
 		proxy.setSyncHttp(adapter);
 		proxy.init();
 		
-		long timestamp = DateUtils.currentTime();
+		long timestamp = DateUtil.currentTime();
 		StringBuilder builder = new StringBuilder();
 		builder.append(timestamp).append("000000").append(timestamp).append("CarCorder");
 		String sign = DigestUtils.md5Hex(builder.toString()).toUpperCase();

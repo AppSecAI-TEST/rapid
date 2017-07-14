@@ -2,7 +2,7 @@ package org.rapid.util.common.consts.conveter;
 
 import org.rapid.util.common.consts.StrConst;
 import org.rapid.util.exception.ConstConvertFailureException;
-import org.rapid.util.lang.StringUtils;
+import org.rapid.util.lang.StringUtil;
 
 public class Str2StrConstConverter extends StrConst implements StrConstConverter<String> {
 
@@ -28,6 +28,6 @@ public class Str2StrConstConverter extends StrConst implements StrConstConverter
 	 */
 	@Override
 	public String convert(String value) throws ConstConvertFailureException {
-		return StringUtils.trimWhitespace(value);
+		return StringUtil.trimWhitespace(value);
 	}
 }

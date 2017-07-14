@@ -9,7 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-public class CollectionUtils {
+public class CollectionUtil {
 	
 	public static final Set<Long> splitToLongSet(String param, String regex) {
 		String[] arr = param.split(regex);
