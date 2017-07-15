@@ -151,4 +151,12 @@ public class RedisTest extends BaseTest {
 			System.out.println(mem.getName());
 		}
 	}
+	
+	public void testHmGet() {
+		List<Integer> list = new ArrayList<Integer>();
+		list.add(1);
+		list.add(2);
+		List<byte[]> data = redis.hmget("ssss", list);
+		System.out.println(data);
+	}
 }

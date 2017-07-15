@@ -1,6 +1,9 @@
 package org.rapid.data.storage.mapper;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.rapid.util.common.model.UniqueModel;
 
@@ -26,24 +29,32 @@ public interface Mapper<KEY, MODEL extends UniqueModel<KEY>>  {
 	 * 
 	 * @return
 	 */
-	List<MODEL> getAll();
+	Map<KEY, MODEL> getAll();
 	
 	/**
-	 * 根据主键获取唯一的数据
+	 * 获取指定主键
 	 * 
 	 * @return
 	 */
 	MODEL getByKey(KEY key);
 	
 	/**
-	 * 获取多个指定主键的对象
+	 * 获取多个主键
 	 * 
 	 * @return
 	 */
-	List<MODEL> getWithinKey(List<KEY> keys);
+	Map<KEY, MODEL> getByKeys(Collection<KEY> keys);
 	
 	/**
-	 * 更新数据
+	 * 通过属性获取
+	 * 
+	 * @param fields
+	 * @return
+	 */
+	Map<KEY, MODEL> getByProperties(Map<String, Object> properties);
+	
+	/**
+	 * 修改
 	 * 
 	 * @param model
 	 */
@@ -57,8 +68,26 @@ public interface Mapper<KEY, MODEL extends UniqueModel<KEY>>  {
 	void delete(KEY key);
 	
 	/**
-	 * 删除
-	 * @param model
+	 * 将一个 list 转换为 map
+	 * 
+	 * @param list
+	 * @return
 	 */
-	void delete(MODEL model);
+	default Map<KEY, MODEL> convertToMap(List<MODEL> list) {
+		Map<KEY, MODEL> map = new HashMap<KEY, MODEL>(list.size());
+		for (MODEL model : list)
+			map.put(model.key(), model);
+		return map;
+	}
+	
+	/**
+	 * 将 list 中数据载入 map 中
+	 * 
+	 * @param map
+	 * @param list
+	 */
+	default void loadInToMap(Map<KEY, MODEL> map, List<MODEL> list) {
+		for (MODEL model : list)
+			map.put(model.key(), model);
+	}
 }

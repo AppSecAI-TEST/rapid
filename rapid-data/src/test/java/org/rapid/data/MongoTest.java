@@ -4,6 +4,7 @@ package org.rapid.data;
 import org.bson.Document;
 import org.rapid.data.storage.mongo.KeyMapper;
 import org.rapid.data.storage.mongo.Mongo;
+import org.rapid.data.storage.mongo.MongoKey;
 
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.FindOneAndUpdateOptions;
@@ -35,6 +36,6 @@ public class MongoTest extends TestCase {
 	public void testFindOneAndUpdate() {
 		mongo.findOneAndUpdate("findOneAndUpdate", 
 				Filters.eq("_id", "1"), Updates.set("policies.1", new Document().append("world", "hello")), 
-				new FindOneAndUpdateOptions().upsert(true));
+				new FindOneAndUpdateOptions().upsert(true), MongoKey.class);
 	}
 }

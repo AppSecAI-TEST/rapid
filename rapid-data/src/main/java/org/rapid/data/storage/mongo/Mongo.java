@@ -27,15 +27,15 @@ public class Mongo {
 		this.connection = mongo.getDatabase(db);
 	}
 	
-	public void insertOne(String collectionName, Document document) {
+	public void insertOne(String collectionName, Object object) {
 		MongoCollection<Document> collection = connection.getCollection(collectionName);
-		collection.insertOne(document);
+		collection.insertOne(serial(object));
 	}
 	
 	public <T> List<T> find(String collectionName, Class<T> clazz) { 
 		MongoCollection<Document> collection = connection.getCollection(collectionName);
 		FindIterable<Document> iterable = collection.find();
-		List<T> list = new ArrayList<T>(4);
+		List<T> list = new ArrayList<T>();
 		MongoCursor<Document> cursor = iterable.iterator();
 		while (cursor.hasNext()) 
 			list.add(SerializeUtil.JsonUtil.GSON.fromJson(cursor.next().toJson(), clazz));
@@ -123,36 +123,34 @@ public class Mongo {
 		return collection.count();
 	}
 	
-	public Document findOne(String collectionName, Bson filter, Bson sort) { 
-		MongoCollection<Document> collection = connection.getCollection(collectionName);
-		FindIterable<Document> iterable = collection.find(filter).sort(sort);
-		return iterable.first();
-	}
-	
-	public Document findOne(String collectionName, Bson filter) { 
+	public <T> T findOne(String collectionName, Bson filter, Class<T> clazz) { 
 		MongoCollection<Document> collection = connection.getCollection(collectionName);
 		FindIterable<Document> iterable = collection.find(filter);
-		return iterable.first();
+		Document document = iterable.first();
+		return null == document ? null : deserial(document, clazz);
 	}
 	
-	public void replaceOne(String collectionName, Bson filter, Document replacement) { 
+	public <T> T findOne(String collectionName, Bson filter, Bson sort, Class<T> clazz) { 
 		MongoCollection<Document> collection = connection.getCollection(collectionName);
-		collection.replaceOne(filter, replacement);
+		FindIterable<Document> iterable = collection.find(filter).sort(sort);
+		Document document = iterable.first();
+		return null == document ? null : deserial(document, clazz);
 	}
 	
-	public void replaceOne(String collectionName, Bson filter, Document replacement, UpdateOptions options) {
+	public void replaceOne(String collectionName, Bson filter, Object replacement) { 
 		MongoCollection<Document> collection = connection.getCollection(collectionName);
-		collection.replaceOne(filter, replacement, options);
+		collection.replaceOne(filter, serial(replacement));
 	}
 	
-	public Document findOneAndUpdate(String collectionName, Bson filter, Bson update) { 
+	public void replaceOne(String collectionName, Bson filter, Object replacement, UpdateOptions options) {
 		MongoCollection<Document> collection = connection.getCollection(collectionName);
-		return collection.findOneAndUpdate(filter, update);
+		collection.replaceOne(filter, serial(replacement), options);
 	}
-
-	public Document findOneAndUpdate(String collectionName, Bson filter, Bson update, FindOneAndUpdateOptions options) { 
+	
+	public <T> T findOneAndUpdate(String collectionName, Bson filter, Bson update, FindOneAndUpdateOptions options, Class<T> clazz) { 
 		MongoCollection<Document> collection = connection.getCollection(collectionName);
-		return collection.findOneAndUpdate(filter, update, options);
+		Document document = collection.findOneAndUpdate(filter, update, options);
+		return null == document ? null : deserial(document, clazz);
 	}
 	
 	public void deleteMany(String collectionName, Bson filter) {
@@ -163,6 +161,14 @@ public class Mongo {
 	public void deleteOne(String collectionName, Bson filter) {
 		MongoCollection<Document> collection = connection.getCollection(collectionName);
 		collection.deleteOne(filter);
+	}
+	
+	public Document serial(Object model) {
+		return Document.parse(SerializeUtil.JsonUtil.GSON.toJson(model));
+	}
+	
+	public <T> T deserial(Document document, Class<T> clazz) {
+		return SerializeUtil.JsonUtil.GSON.fromJson(document.toJson(), clazz);
 	}
 	
 	public void setDb(String db) {

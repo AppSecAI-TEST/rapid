@@ -1,6 +1,5 @@
 package org.rapid.data.storage.mongo;
 
-import org.bson.Document;
 import org.rapid.data.storage.mapper.MongoMapper;
 
 import com.mongodb.client.model.Filters;
@@ -19,8 +18,8 @@ public class KeyMapper extends MongoMapper<String, MongoKey> {
 	}
 	
 	public long getAndInc(String key, Number number) { 
-		Document document = mongo.findOneAndUpdate(collection, Filters.eq(NAME, key), Updates.inc(VALUE, number), 
-				new FindOneAndUpdateOptions().upsert(true).returnDocument(ReturnDocument.AFTER).projection(Projections.excludeId()));
-		return deserial(document).getValue();
+		MongoKey mongoKey = mongo.findOneAndUpdate(collection, Filters.eq(NAME, key), Updates.inc(VALUE, number), 
+				new FindOneAndUpdateOptions().upsert(true).returnDocument(ReturnDocument.AFTER).projection(Projections.excludeId()), clazz);
+		return null == mongoKey ? 0 : mongoKey.getValue();
 	}
 }

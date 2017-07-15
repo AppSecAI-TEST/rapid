@@ -2,14 +2,16 @@ package org.rapid.data.storage.mapper;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
-import org.bson.Document;
 import org.rapid.data.storage.mongo.Mongo;
+import org.rapid.data.storage.mongo.MongoUtil;
 import org.rapid.util.common.model.UniqueModel;
-import org.rapid.util.common.serializer.SerializeUtil;
+import org.rapid.util.lang.CollectionUtil;
 
 import com.mongodb.client.model.Filters;
 
@@ -38,34 +40,37 @@ public class MongoMapper<KEY, MODEL extends UniqueModel<KEY>> implements Mapper<
 		clazz = (Class<MODEL>) generics[1];
 	}
 	
-	public void setMongo(Mongo mongo) {
-		this.mongo = mongo;
-	}
-
 	@Override
 	public void insert(MODEL model) {
-		mongo.insertOne(collection, serial(model));
+		mongo.insertOne(collection, model);
+	}
+	
+	@Override
+	public Map<KEY, MODEL> getAll() {
+		return convertToMap(mongo.find(collection, clazz));
 	}
 
 	@Override
 	public MODEL getByKey(KEY key) {
-		Document document = mongo.findOne(collection, Filters.eq(FIELD_ID, key));
-		return null == document ? null : deserial(document);
+		return mongo.findOne(collection, Filters.eq(FIELD_ID, key), clazz);
 	}
 
 	@Override
-	public List<MODEL> getWithinKey(List<KEY> keys) {
-		return null;
+	public Map<KEY, MODEL> getByKeys(Collection<KEY> keys) {
+		Map<KEY, MODEL> map = new HashMap<KEY, MODEL>();
+		if (!CollectionUtil.isEmpty(keys)) 
+			loadInToMap(map, mongo.find(collection, MongoUtil.or(FIELD_ID, keys), clazz));
+		return map;
 	}
 	
 	@Override
-	public List<MODEL> getAll() {
-		return null;
+	public Map<KEY, MODEL> getByProperties(Map<String, Object> properties) {
+		return convertToMap(mongo.find(collection, MongoUtil.and(properties), clazz));
 	}
 	
 	@Override
 	public void update(MODEL model) {
-		mongo.replaceOne(collection, Filters.eq(FIELD_ID, model.key()), serial(model));
+		mongo.replaceOne(collection, Filters.eq(FIELD_ID, model.key()), model);
 	}
 	
 	@Override
@@ -73,16 +78,7 @@ public class MongoMapper<KEY, MODEL extends UniqueModel<KEY>> implements Mapper<
 		mongo.deleteOne(collection, Filters.eq(FIELD_ID, key));
 	}
 	
-	@Override
-	public void delete(MODEL model) {
-		mongo.deleteOne(collection, Filters.eq(FIELD_ID, model.key()));
-	}
-
-	protected Document serial(MODEL model) {
-		return Document.parse(SerializeUtil.JsonUtil.GSON.toJson(model));
-	}
-	
-	protected MODEL deserial(Document document) {
-		return SerializeUtil.JsonUtil.GSON.fromJson(document.toJson(), clazz);
+	public void setMongo(Mongo mongo) {
+		this.mongo = mongo;
 	}
 }
