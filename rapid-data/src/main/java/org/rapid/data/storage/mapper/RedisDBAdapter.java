@@ -1,14 +1,13 @@
 package org.rapid.data.storage.mapper;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.rapid.util.common.model.UniqueModel;
 import org.rapid.util.common.serializer.Serializer;
+import org.rapid.util.lang.CollectionUtil;
 import org.rapid.util.lang.StringUtil;
 
 /**
@@ -22,16 +21,10 @@ import org.rapid.util.lang.StringUtil;
 public abstract class RedisDBAdapter<KEY, ENTITY extends UniqueModel<KEY>, DAO extends DBMapper<KEY, ENTITY>> extends RedisMapper<KEY, ENTITY> {
 	
 	protected DAO dao;
-	protected final String CACHE_CONTROLLER_KEY						= "hash:cache:controller";
-	protected final String FULL_CACHE_CONTROLLER;
+	protected static final String CACHE_CONTROLLER_KEY						= "hash:cache:controller";
 	
 	protected RedisDBAdapter(Serializer<ENTITY, byte[]> serializer, String redisKey) {
-		this(serializer, redisKey, null);
-	}
-	
-	protected RedisDBAdapter(Serializer<ENTITY, byte[]> serializer, String redisKey, String fullCacheController) {
 		super(serializer, redisKey);
-		this.FULL_CACHE_CONTROLLER = fullCacheController;
 	}
 	
 	@Override
@@ -42,7 +35,8 @@ public abstract class RedisDBAdapter<KEY, ENTITY extends UniqueModel<KEY>, DAO e
 	
 	@Override
 	public Map<KEY, ENTITY> getAll() {
-		return super.getAll();
+		Map<KEY, ENTITY> map = checkLoad();
+		return null == map ? super.getAll() : map;
 	}
 	
 	@Override
@@ -58,30 +52,23 @@ public abstract class RedisDBAdapter<KEY, ENTITY extends UniqueModel<KEY>, DAO e
 	
 	@Override
 	public Map<KEY, ENTITY> getByKeys(Collection<KEY> keys) {
-		List<byte[]> list = redis.hmget(redisKey, keys);
 		Map<KEY, ENTITY> entities = new HashMap<KEY, ENTITY>();
-		Iterator<KEY> iterator = keys.iterator();
-		int index = 0;
-		while (iterator.hasNext()) {
-			iterator.next();
-			byte[] data = list.get(index++);
-			if (null != data) {
-				iterator.remove();
-				ENTITY entity = serializer.antiConvet(data);
-				entities.put(entity.key(), entity);
-			}
+		if (CollectionUtil.isEmpty(keys))
+			return entities;
+		List<byte[]> list = redis.hmget(redisKey, keys);
+		for (byte[] data : list) {
+			if (null == data)
+				continue;
+			ENTITY entity = serializer.antiConvet(data);
+			entities.put(entity.key(), entity);
 		}
+		keys.removeAll(entities.keySet());
 		if (!keys.isEmpty()) {
 			Map<KEY, ENTITY> temp = dao.getByKeys(keys);
 			entities.putAll(temp);
-			flush(new ArrayList<ENTITY>(temp.values()));
+			flush(temp);
 		}
 		return entities;
-	}
-	
-	@Override
-	public Map<KEY, ENTITY> getByProperties(Map<String, Object> properties) {
-		return super.getByProperties(properties);
 	}
 	
 	@Override
@@ -99,26 +86,22 @@ public abstract class RedisDBAdapter<KEY, ENTITY extends UniqueModel<KEY>, DAO e
 		dao.delete(key);
 	}
 	
-	public void delete(ENTITY model) {
-		remove(model);
-		dao.delete(model.key());
+	public void delete(ENTITY entity) {
+		remove(entity);
+		dao.delete(entity.key());
 	}
 	
-	/**
-	 * 检测是否全部加载入内存
-	 * 
-	 * @param cacheControllerKey
-	 * @param cacheControllerField
-	 */
-	protected void checkLoad(String cacheControllerKey, String cacheControllerField) {
-		if (null == cacheControllerField)
-			throw new UnsupportedOperationException("Unsupport full cache load!");
-		if (!redis.hsetnx(cacheControllerKey, cacheControllerField, StringUtil.EMPTY))
-			return;
+	protected Map<KEY, ENTITY> checkLoad() {
+		if (!redis.hsetnx(CACHE_CONTROLLER_KEY, redisKey, StringUtil.EMPTY))
+			return null;
 		Map<KEY, ENTITY> map = dao.getAll();
-		if (map.isEmpty())
-			return;
-		flush(new ArrayList<ENTITY>(map.values()));
+		if (!CollectionUtil.isEmpty(map))
+			flush(map);
+		return map;
+	}
+	
+	protected boolean checkLoad(String controllerField) {
+		return redis.hsetnx(CACHE_CONTROLLER_KEY, controllerField, StringUtil.EMPTY);
 	}
 	
 	public void setDao(DAO dao) {

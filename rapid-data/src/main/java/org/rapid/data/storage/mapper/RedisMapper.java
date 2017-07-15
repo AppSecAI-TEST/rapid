@@ -78,11 +78,6 @@ public class RedisMapper<KEY, MODEL extends UniqueModel<KEY>> implements Mapper<
 	}
 	
 	@Override
-	public Map<KEY, MODEL> getByProperties(Map<String, Object> properties) {
-		throw new UnsupportedOperationException("Redis mapper unsupport getByProperties!");
-	}
-
-	@Override
 	public void update(MODEL model) {
 		this.flush(model);
 	}
@@ -103,6 +98,16 @@ public class RedisMapper<KEY, MODEL extends UniqueModel<KEY>> implements Mapper<
 		redis.hdel(redisKey, model.key());
 	}
 	
+	public void flush(Map<KEY, MODEL> models) {
+		if (CollectionUtil.isEmpty(models))
+			return;
+		Map<byte[], byte[]> map = new HashMap<byte[], byte[]>(models.size());
+		for (MODEL model : models.values())
+			map.put(SerializeUtil.RedisUtil.encode(model.key()), serializer.convert(model));
+		redis.hmset(redisKey, map);
+	}
+	
+	@Deprecated
 	public void flush(Collection<MODEL> models) {
 		if (CollectionUtil.isEmpty(models))
 			return;

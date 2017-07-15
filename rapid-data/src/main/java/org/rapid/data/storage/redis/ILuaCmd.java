@@ -53,41 +53,6 @@ public interface ILuaCmd {
 			}
 		},
 		
-		FLUSH_1_BATCH {
-			@Override
-			public int keyNum() {
-				return 2;
-			}
-		},
-		
-		FLUSH_1 {
-			@Override
-			public int keyNum() {
-				return 2;
-			}
-		},
-		
-		HSGET_IF_MARKED {
-			@Override
-			public int keyNum() {
-				return 3;
-			}
-		},
-		
-		HSSET_MARK {
-			@Override
-			public int keyNum() {
-				return 3;
-			}
-		},
-		
-		HSSET {
-			@Override
-			public int keyNum() {
-				throw new UnsupportedOperationException("HSSET has no fixed keys!");
-			}
-		},
-		
 		HZGET_DEL {
 			@Override
 			public int keyNum() {
@@ -110,13 +75,6 @@ public interface ILuaCmd {
 			
 		},
 		
-		LOAD_1 {
-			@Override
-			public int keyNum() {
-				return 2;
-			}
-		},
-		
 		HSET_AND_REFRESH {
 			@Override
 			public int keyNum() {
@@ -128,20 +86,6 @@ public interface ILuaCmd {
 			@Override
 			public int keyNum() {
 				throw new UnsupportedOperationException("HMSDEL has no fixed keys!");
-			}
-		},
-		
-		HMSET_AND_REFRESH {
-			@Override
-			public int keyNum() {
-				return 1;
-			}
-		},
-		
-		HGET_AND_REFRESH {
-			@Override
-			public int keyNum() {
-				return 1;
 			}
 		},
 		
@@ -159,17 +103,17 @@ public interface ILuaCmd {
 			}
 		},
 		
-		HMSSET {
-			@Override
-			public int keyNum() {
-				throw new UnsupportedOperationException("HMSSET has no fixed keys!");
-			}
-		},
-		
 		HMZDEL {
 			@Override
 			public int keyNum() {
 				throw new UnsupportedOperationException("HMZDEL has no fixed keys!");
+			}
+		},
+		
+		HMSSET {
+			@Override
+			public int keyNum() {
+				throw new UnsupportedOperationException("HMSSET has no fixed keys!");
 			}
 		},
 		

@@ -1,8 +1,6 @@
 package org.rapid.data.storage.redis;
 
 import java.text.MessageFormat;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.rapid.data.storage.redis.ILuaCmd.LuaCmd;
 import org.rapid.util.common.serializer.SerializeUtil;
@@ -55,18 +53,6 @@ public class DistributeSession {
 	
 	public byte[] put(byte[] key, byte[] value) {
 		return redis.invokeLua(LuaCmd.HSET_AND_REFRESH, sessionKey, key, value, inactiveInterval);
-	}
-	
-	public void putAll(Map<byte[], byte[]> map) {
-		Object[] data = new Object[map.size() + 2];
-		int index = 0;
-		data[index++] = sessionKey;
-		data[index++] = inactiveInterval;
-		for (Entry<byte[], byte[]> entry : map.entrySet()) {
-			data[index++] = entry.getKey();
-			data[index++] = entry.getValue();
-		}
-		redis.invokeLua(LuaCmd.HMSET_AND_REFRESH, data);
 	}
 	
 	public byte[] get(byte[] field) {

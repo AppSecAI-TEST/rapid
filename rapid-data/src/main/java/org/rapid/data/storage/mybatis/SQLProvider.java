@@ -9,8 +9,8 @@ public class SQLProvider {
 	
 	private static final String COLLECTION					= "collection";
 	
-	protected final String table;
-	protected final String keyCol;
+	protected String table;
+	protected String keyCol;
 	
 	protected SQLProvider(String table, String keyCol) {
 		this.table = table;

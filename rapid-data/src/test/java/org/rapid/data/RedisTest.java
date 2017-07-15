@@ -41,33 +41,8 @@ public class RedisTest extends BaseTest {
 			System.out.println(buffer);
 	}
 	
-	public void testFlush_1() {
-		redis.flush_1(SerializeUtil.RedisUtil.encode("map"), SerializeUtil.RedisUtil.encode("map1"), SerializeUtil.RedisUtil.encode("1"),
-				SerializeUtil.RedisUtil.encode("body"), SerializeUtil.RedisUtil.encode("age"));
-	}
-	
-	public void testLoad_1() {
-		byte[] buffer = redis.load_1(SerializeUtil.RedisUtil.encode("map1"), SerializeUtil.RedisUtil.encode("map"), SerializeUtil.RedisUtil.encode("ages"));
-		if (null == buffer)
-			System.out.println("null");
-		else
-			System.out.println(new String(buffer));
-	}
-	
 	public void testhzset() { 
 		redis.hzset("teststs", "1", "body", DateUtil.currentTime(), "tlist", "ulist");
-	}
-	
-	public void testFlush_1_Batch() {
-		Map<Mem, Object> map = new HashMap<Mem, Object>();
-		for (int i = 0; i < 10; i++) {
-			Mem mem = new Mem();
-			mem.setId(i);
-			mem.setAge(i + 10);
-			mem.setName("test" + i);
-			map.put(mem, i + 100);
-		}
-		redis.flush_1_batch("key-1", "key-2", map, new ByteProtostuffSerializer<Mem>());
 	}
 	
 	public void testHmzset() { 
@@ -100,13 +75,6 @@ public class RedisTest extends BaseTest {
 		map.put("datazset1", 10.0);
 		map.put("datazset2", Double.valueOf(DateUtil.currentTime()));
 		redis.hmzset("data", mem, map, new ByteProtostuffSerializer<Mem>());
-	}
-	
-	public void testHmdel() { 
-		List<Integer> list = new ArrayList<Integer>();
-		list.add(0);
-		list.add(1);
-		redis.hmzdel("data", list, "datazset1", "datazset2");
 	}
 	
 	public void testHmdel1() { 

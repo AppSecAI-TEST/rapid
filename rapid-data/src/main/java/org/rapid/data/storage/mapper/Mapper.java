@@ -46,14 +46,6 @@ public interface Mapper<KEY, MODEL extends UniqueModel<KEY>>  {
 	Map<KEY, MODEL> getByKeys(Collection<KEY> keys);
 	
 	/**
-	 * 通过属性获取
-	 * 
-	 * @param fields
-	 * @return
-	 */
-	Map<KEY, MODEL> getByProperties(Map<String, Object> properties);
-	
-	/**
 	 * 修改
 	 * 
 	 * @param model

@@ -64,11 +64,6 @@ public class MongoMapper<KEY, MODEL extends UniqueModel<KEY>> implements Mapper<
 	}
 	
 	@Override
-	public Map<KEY, MODEL> getByProperties(Map<String, Object> properties) {
-		return convertToMap(mongo.find(collection, MongoUtil.and(properties), clazz));
-	}
-	
-	@Override
 	public void update(MODEL model) {
 		mongo.replaceOne(collection, Filters.eq(FIELD_ID, model.key()), model);
 	}

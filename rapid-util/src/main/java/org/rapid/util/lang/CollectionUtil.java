@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -85,6 +84,10 @@ public class CollectionUtil {
 	 */
 	public static final boolean isEmpty(Collection<?> collection) {
 		return null == collection || collection.isEmpty();
+	}
+	
+	public static final boolean isEmpty(Map<?, ?> map) {
+		return null == map || map.isEmpty();
 	}
 	
 	/**

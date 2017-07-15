@@ -8,8 +8,6 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -68,25 +66,8 @@ public class Redis {
 		});
 	}
 
-	// ******************************** key ********************************
-	
 	// ******************************** string ********************************
 
-	/**
-	 * 删除指定的多个 key
-	 * 
-	 * @param keys
-	 * @return 返回成功删除的 key 的数量
-	 */
-	public long del(Object... keys) {
-		return invoke(new RedisInvocation<Long>() {
-			@Override
-			public Long invok(Jedis jedis) {
-				return jedis.del(encode(keys));
-			}
-		});
-	}
-	
 	public String set(Object key, Object value, NXXX nxxx, EXPX expx, int time) {
 		return invoke(new RedisInvocation<String>() {
 			@Override
@@ -161,15 +142,6 @@ public class Redis {
 		});
 	}
 	
-	public Set<byte[]> hkeys(Object key) {
-		return invoke(new RedisInvocation<Set<byte[]>>() {
-			@Override
-			public Set<byte[]> invok(Jedis jedis) {
-				return jedis.hkeys(encode(key));
-			}
-		});
-	}
-	
 	/**
 	 * 如果指定的 key 中的数据没有失效则获取，否则会删除返回nil
 	 * 注意 field 对应的 value 必须是一个 json，且有一个 expire 字段
@@ -183,38 +155,6 @@ public class Redis {
 		return invokeLua(LuaCmd.HGET_JSON_IF_NOT_EXPIRE, key, field, String.valueOf(date));
 	}
 	
-	public String hgetAndRefresh(String key, String field, int expire) {
-		return invokeLua(LuaCmd.HGET_AND_REFRESH, key, field, String.valueOf(expire));
-	}
-	
-	public void hmsetAndRefresh(Object ...params) {
-		invokeLua(LuaCmd.HMSET_AND_REFRESH, params);
-	}
-	
-	// ******************************** set ********************************
-	
-	// ******************************** sorted set ********************************
-	
-	public long zadd(String key, double score, String member) { 
-		return invoke(new RedisInvocation<Long>() {
-			@Override
-			public Long invok(Jedis jedis) {
-				return jedis.zadd(key, score, member);
-			}
-		});
-	}
-	
-	public long zadd(String key, Map<String, Double> scoreMembers) { 
-		return invoke(new RedisInvocation<Long>() {
-			@Override
-			public Long invok(Jedis jedis) {
-				return jedis.zadd(key, scoreMembers);
-			}
-		});
-	}
-	
-	// ******************************** server command ********************************
-
 	// ******************************** lua command ********************************
 
 	/**
@@ -303,17 +243,6 @@ public class Redis {
 		invokeLua(zsetKeys.length + 1, ILuaCmd.LuaCmd.HMZDEL, params);
 	}
 	
-	public void hmzdel(Object redisKey, Collection<?> fields, Object... zsetKeys) {
-		Object[] params = new Object[fields.size() + zsetKeys.length + 1];
-		int idx = 0;
-		params[idx++] = redisKey;
-		for (Object zsetKey : zsetKeys)
-			params[idx++] = zsetKey;
-		for (Object field : fields)
-			params[idx++] = field;
-		invokeLua(zsetKeys.length + 1, ILuaCmd.LuaCmd.HMZDEL, params);
-	}
-	
 	public void hmzdrop(Object redisKey, Object... zsetKeys) {
 		if (zsetKeys.length == 0)
 			throw new RuntimeException("Must speicfy a set key to drop");
@@ -375,66 +304,6 @@ public class Redis {
 		return invokeLua(LuaCmd.HPAGING, setKey, hashKey, page, pageSize, option);
 	}
 	
-	/**
-	 * 加载预定义的 lua 脚本
-	 * 
-	 */
-	private void _loadPredefinedLuaScript() {
-		for (LuaCmd cmd : LuaCmd.values()) {
-			try {
-				byte[] buffer = FileReader.bufferReadFromClassOrJar(Redis.class,
-						DEFAULT_LUA_FILE + cmd.key() + LUA_SCRIPT_SUFFIX);
-				_addLuaScript(cmd.key(), new String(buffer));
-			} catch (IOException e) {
-				logger.warn("Lua script {} load failure!", cmd.key());
-			}
-		}
-
-		logger.info("Total {} lua files are loaded by default!", scripts.size());
-	}
-
-	private void _addLuaScript(String key, String content) throws IOException {
-		String shalKey = DigestUtils.sha1Hex(content);
-		if (null != scripts.putIfAbsent(key, new LuaScript(shalKey, content)))
-			logger.warn("Lua script - {}:{} already exist!", key, content);
-	}
-	
-	public <T extends UniqueModel<?>> void flush_1_batch(Object key1, Object key2, Map<T, Object> map, Serializer<T, byte[]> serializer) {
-		Object[] params = new Object[map.size() * 3 + 2];
-		int idx = 0;
-		params[idx++] = key1;
-		params[idx++] = key2;
-		for (Entry<T, Object> entry : map.entrySet()) {
-			T model = entry.getKey();
-			params[idx++] = model.key();
-			params[idx++] = serializer.convert(model);
-			params[idx++] = entry.getValue();
-		}
-		invokeLua(LuaCmd.FLUSH_1_BATCH, params);
-	}
-	
-	public void flush_1(Object key1, Object key2, Object field1, Object data, Object field2) {
-		invokeLua(LuaCmd.FLUSH_1, key1, key2, field1, data, field2);
-	}
-	
-	public List<byte[]> hsgetIfMarked(Object controllerKey, Object setKey, Object hashKey, String controllerVal) {
-		return invokeLua(LuaCmd.HSGET_IF_MARKED, controllerKey, setKey, hashKey, controllerVal);
-	}
-	
-	public <T extends UniqueModel<?>> void hssetMark(Object controllerKey, Object hashKey, Object setKey, String controllerVal, List<T> models, Serializer<T, byte[]> serializer) {
-		Object[] params = new Object[models.size() * 2 + 4];
-		int index = 0;
-		params[index++] = controllerKey;
-		params[index++] = hashKey;
-		params[index++] = setKey;
-		params[index++] = controllerVal;
-		for (UniqueModel<?> model : models) {
-			params[index++] = model.key();
-			params[index++] = serializer.convert((T) model);
-		}
-		invokeLua(LuaCmd.HSSET_MARK, params);
-	}
-	
 	public byte[] hzgetDel(Object hashKey, Object field, Object... zsetKeys) { 
 		Object[] params = new Object[zsetKeys.length + 2];
 		int index = 0;
@@ -461,22 +330,6 @@ public class Redis {
 		invokeLua(zsetKeys.length + 1, LuaCmd.HZSET, params);
 	}
 	
-	public byte[] load_1(Object key1, Object key2, Object field) {
-		return invokeLua(LuaCmd.LOAD_1, key1, key2, field);
-	}
-	
-	public <T extends UniqueModel<?>> void hsset(Object hashKey, Object key, Object data, String... setKeys) {
-		int keyNum = setKeys.length + 1;
-		Object[] params = new Object[keyNum + 2];
-		int index = 0;
-		params[index++] = hashKey;
-		for (String setKey : setKeys)
-			params[index++] = setKey;
-		params[index++] = key;
-		params[index++] = data;
-		invokeLua(keyNum, LuaCmd.HSSET, params);
-	}
-	
 	public String tokenReplace(String userTokenKey, String tokenUserKey, int uid) {
 		String token = RapidSecurity.encodeToken(String.valueOf(uid));
 		invokeLua(LuaCmd.TOKEN_REPLACE, userTokenKey, tokenUserKey, String.valueOf(uid), token);
@@ -490,7 +343,31 @@ public class Redis {
 	public long tokenRemove(String userTokenKey, String tokenUserKey, String token) {
 		return invokeLua(LuaCmd.TOKEN_REMOVE, userTokenKey, tokenUserKey, token);
 	}
+	
+	/**
+	 * 加载预定义的 lua 脚本
+	 * 
+	 */
+	private void _loadPredefinedLuaScript() {
+		for (LuaCmd cmd : LuaCmd.values()) {
+			try {
+				byte[] buffer = FileReader.bufferReadFromClassOrJar(Redis.class,
+						DEFAULT_LUA_FILE + cmd.key() + LUA_SCRIPT_SUFFIX);
+				_addLuaScript(cmd.key(), new String(buffer));
+			} catch (IOException e) {
+				logger.warn("Lua script {} load failure!", cmd.key());
+			}
+		}
 
+		logger.info("Total {} lua files are loaded by default!", scripts.size());
+	}
+
+	private void _addLuaScript(String key, String content) throws IOException {
+		String shalKey = DigestUtils.sha1Hex(content);
+		if (null != scripts.putIfAbsent(key, new LuaScript(shalKey, content)))
+			logger.warn("Lua script - {}:{} already exist!", key, content);
+	}
+	
 	public <T> T invokeLua(ILuaCmd cmd, Object... params) {
 		LuaScript script = scripts.get(cmd.key());
 		if (null == script)
