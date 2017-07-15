@@ -1,5 +1,10 @@
 package org.rapid.util.lang;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.rapid.util.common.Consts;
+
 public class StringUtil {
 
 	public static final String EMPTY = "";
@@ -20,6 +25,15 @@ public class StringUtil {
 	 */
 	public static String[] ALPHABET = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P",
 			"Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
+	
+	/**
+	 * 驼峰表示法
+	 */
+	public static final Pattern CAMEL = Pattern.compile("[A-Z]([a-z\\d]+)?");
+	/**
+	 * 下划线表示法
+	 */
+	public static final Pattern UNDERLINE = Pattern.compile("([A-Za-z\\d]+)(_)?");
 	
 	public static final String provinceAbbreviation(int region) {
 		for (int idx = 0, len = PROVINCES_CODE.length; idx < len; idx++) {
@@ -135,4 +149,45 @@ public class StringUtil {
 		sb.append(string.substring(pos));
 		return sb.toString();
 	}
+	
+	/**
+	 * 下划线转驼峰：只能识别数字和字母
+	 * 
+	 * @param line
+	 * @param smallCamel 如果第一个词首字母需要小写则为 true，否则每个单词开头都是大写
+	 * @return
+	 */
+	public static final String underline2Camel(String line, boolean smallCamel){
+        if(!StringUtil.hasText(line))
+        	return line;
+        StringBuilder builder = new StringBuilder();
+        Matcher matcher = UNDERLINE.matcher(line);
+        while (matcher.find()) {
+            String word = matcher.group();
+            builder.append(smallCamel && matcher.start() == 0 ? Character.toLowerCase(word.charAt(0)) : Character.toUpperCase(word.charAt(0)));
+            int index = word.lastIndexOf(Consts.SYMBOL_UNDERLINE);
+            builder.append(index > 0 ? word.substring(1, index).toLowerCase() : word.substring(1).toLowerCase());
+        }
+        return builder.toString();
+    }
+	
+	/**
+	 * 驼峰转下划线
+	 * 
+	 * @param line
+	 * @return
+	 */
+	public static final String camel2Underline(String line){
+		if(!StringUtil.hasText(line))
+        	return line;
+        line = String.valueOf(line.charAt(0)).toUpperCase().concat(line.substring(1));
+        StringBuilder builder = new StringBuilder();
+        Matcher matcher = CAMEL.matcher(line);
+        while (matcher.find()) {
+            String word = matcher.group();
+            builder.append(word.toLowerCase());
+            builder.append(matcher.end() == line.length() ? StringUtil.EMPTY : Consts.SYMBOL_UNDERLINE);
+        }
+        return builder.toString();
+    }
 }

@@ -3,6 +3,8 @@ package org.rapid.utilt.net.http;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.codec.binary.Base64;
@@ -15,6 +17,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicNameValuePair;
+import org.rapid.util.common.Consts;
 import org.rapid.util.common.serializer.SerializeUtil;
 import org.rapid.util.crypto.DesUtil;
 import org.rapid.util.lang.DateUtil;
@@ -23,12 +26,49 @@ import org.rapid.util.net.http.SyncHttpAdapter;
 import org.rapid.util.net.http.handler.SyncStrRespHandler;
 
 public class HttpProxyTest {
+	
+	private static HttpProxy proxy = new HttpProxy();
+	
+	static {
+		SyncHttpAdapter adapter = new SyncHttpAdapter();
+		proxy.setSyncHttp(adapter);
+		try {
+			proxy.init();
+		} catch (Exception e) {
+			System.exit(1);
+		}
+	}
 
 	public static void main(String[] args) throws Exception {
 //		getVehicleInByRenewl();
 //		addUser();
 //		searchCarInsuranceList();
-		carInfo();
+//		carInfo();
+		System.out.println(biHuRenewal("浙A068TR", "212"));
+	}
+	
+	public static String biHuRenewal(String license, String custKey) throws Exception {
+		TreeMap<String, String> map = new TreeMap<String, String>();
+		map.put("Group", "1");
+		map.put("CanShowNo", "1");
+		map.put("CanShowExhaustScale", "1");
+		map.put("ShowXiuLiChangType", "1");
+		map.put("TimeFormat", "1");
+		map.put("LicenseNo", license);
+		map.put("CustKey", custKey);
+		map.put("Agent", "73065");
+		map.put("CityCode", "9");
+		URIBuilder builder = new URIBuilder("http://iu.91bihu.com/api/CarInsurance/getreinfo");
+		StringBuilder str2encode = new StringBuilder();
+		for (Entry<String, String> entry : map.entrySet()) {
+			builder.addParameter(entry.getKey(), entry.getValue());
+			str2encode.append(entry.getKey()).append(Consts.SYMBOL_EQUAL).append(entry.getValue()).append(Consts.SYMBOL_AND);
+		}
+		str2encode.deleteCharAt(str2encode.length() - 1);
+		str2encode.append("0bf1714de07");
+		builder.addParameter("SecCode", DigestUtils.md5Hex(str2encode.toString()));
+		String info = proxy.syncRequest(new HttpGet(builder.build()), SyncStrRespHandler.INSTANCE);
+		return info;
 	}
 	
 	public static void carInfo() throws Exception {
