@@ -12,6 +12,8 @@ public class ConvertFailuerException extends RuntimeException {
 	
 	private Object source;
 	private Object target;
+	
+	public ConvertFailuerException() {}
 
 	public ConvertFailuerException(Object source, Object target, String message) {
 		super(message);

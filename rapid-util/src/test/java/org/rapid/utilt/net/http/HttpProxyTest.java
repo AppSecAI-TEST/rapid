@@ -44,7 +44,7 @@ public class HttpProxyTest {
 //		addUser();
 //		searchCarInsuranceList();
 //		carInfo();
-		System.out.println(biHuRenewal("浙A068TR", "212"));
+		System.out.println(biHuRenewal("浙A068TR", "2122222222222222"));
 	}
 	
 	public static String biHuRenewal(String license, String custKey) throws Exception {
@@ -67,7 +67,8 @@ public class HttpProxyTest {
 		str2encode.deleteCharAt(str2encode.length() - 1);
 		str2encode.append("0bf1714de07");
 		builder.addParameter("SecCode", DigestUtils.md5Hex(str2encode.toString()));
-		String info = proxy.syncRequest(new HttpGet(builder.build()), SyncStrRespHandler.INSTANCE);
+		HttpGet request = new HttpGet(builder.build());
+		String info = proxy.syncRequest(request, SyncStrRespHandler.INSTANCE);
 		return info;
 	}
 	
