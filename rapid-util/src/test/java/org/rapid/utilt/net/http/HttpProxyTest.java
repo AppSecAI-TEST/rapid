@@ -43,8 +43,8 @@ public class HttpProxyTest {
 //		getVehicleInByRenewl();
 //		addUser();
 //		searchCarInsuranceList();
-//		carInfo();
-		System.out.println(biHuRenewal("浙A068TR", "2122222222222222"));
+		carInfo();
+//		System.out.println(biHuRenewal("浙A068TR", "2122222222222222"));
 	}
 	
 	public static String biHuRenewal(String license, String custKey) throws Exception {
@@ -76,13 +76,14 @@ public class HttpProxyTest {
 		HttpProxy proxy = new HttpProxy();
 		
 		SyncHttpAdapter adapter = new SyncHttpAdapter();
+		adapter.setSoTimeout(300000);
 		proxy.setSyncHttp(adapter);
 		proxy.init();
 		
 		VehicleSearcher submit = new VehicleSearcher();
 		submit.setUsername("cxdlzjcx");
 		submit.setPassword("111111");
-		submit.setVin("LSVFD2554A2158794");
+		submit.setVin("WBAPG5106AA594625");
 		String body = SerializeUtil.XmlUtil.beanToXml(submit, "utf-8");
 		System.out.println(body);
 		body = DesUtil.EncryptDES(body, "68730531");
