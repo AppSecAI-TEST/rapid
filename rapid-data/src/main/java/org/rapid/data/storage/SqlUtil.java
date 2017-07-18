@@ -1,8 +1,9 @@
-package org.rapid.util.common;
+package org.rapid.data.storage;
 
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.rapid.util.common.Consts;
 import org.rapid.util.reflect.ClassUtil;
 
 public class SqlUtil {
