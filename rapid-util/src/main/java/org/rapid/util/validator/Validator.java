@@ -3,10 +3,6 @@ package org.rapid.util.validator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.google.i18n.phonenumbers.NumberParseException;
-import com.google.i18n.phonenumbers.PhoneNumberUtil;
-import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber;
-
 public class Validator {
 	
 	/**
@@ -51,22 +47,6 @@ public class Validator {
      */
     public static boolean isVehicleLisense(String license) {
     	return _matches(VEHICLE_LICENSE, license);
-    }
-    
-    /**
-     * 检验手机号
-     * 
-     * @param mobile
-     * @return
-     */
-    public static boolean isMobile(String mobile, String countryCode) {
-    	PhoneNumberUtil util = PhoneNumberUtil.getInstance();
-		try {
-			PhoneNumber number = util.parse(mobile, countryCode);
-			return util.isValidNumber(number);
-		} catch (NumberParseException e) {
-			return false;
-		}
     }
     
     public static boolean isDigital(String str) {  

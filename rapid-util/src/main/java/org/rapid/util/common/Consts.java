@@ -13,6 +13,7 @@ public interface Consts {
 	final String SYMBOL_AND					= "&";
 	final String SYMBOL_UNDERLINE			= "_";
 	final String SYMBOL_DOC					= ".";
+	final String SYMBOL_PLUS				= "+";
 	final int REGION_ID_CH					= 100000;
 	
 	interface MimeType {
