@@ -31,6 +31,7 @@ public interface Consts {
 		Result OK 								= Result.result(Code.OK);
 		Result FORBID							= Result.result(Code.FORBID);
 		Result FAILURE							= Result.result(Code.FAILURE);
+		Result API_NOT_EXIST					= Result.result(Code.API_NOT_EXIST);
 		Result CAPTCHA_ERROR					= Result.result(Code.CAPTCHA_ERROR);
 		Result USER_NOT_EXIST					= Result.result(Code.USER_NOT_EXIST);
 		Result KEY_DUPLICATED					= Result.result(Code.KEY_DUPLICATED);

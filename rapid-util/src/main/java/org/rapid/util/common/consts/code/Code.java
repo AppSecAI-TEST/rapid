@@ -53,6 +53,11 @@ public enum Code implements ICode {
 	KEY_DUPLICATED(8, "key duplicated!"),
 	
 	/**
+	 * 接口不存在
+	 */
+	API_NOT_EXIST(9, "api not exist"),
+	
+	/**
 	 * 用户不存在
 	 */
 	USER_NOT_EXIST(20, "user not exist"),

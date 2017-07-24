@@ -90,7 +90,7 @@ public class SQLProvider {
 		return new SQL() {
 			{
 				DELETE_FROM(table);
-				WHERE(keyCol + "=#{key}");
+				WHERE("`" + keyCol + "`=#{key}");
 			}
 		}.toString();
 	}
