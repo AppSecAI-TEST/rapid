@@ -32,6 +32,14 @@ public class Mongo {
 		collection.insertOne(serial(object));
 	}
 	
+	public void insertMany(String collectionName, List<?> objects) {
+		MongoCollection<Document> collection = connection.getCollection(collectionName);
+		List<Document> list = new ArrayList<Document>(objects.size());
+		for (Object object : objects)
+			list.add(serial(object));
+		collection.insertMany(list);
+	}
+	
 	public <T> List<T> find(String collectionName, Class<T> clazz) { 
 		MongoCollection<Document> collection = connection.getCollection(collectionName);
 		FindIterable<Document> iterable = collection.find();
