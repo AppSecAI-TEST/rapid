@@ -2,6 +2,8 @@ package org.rapid.data.storage.mongo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -13,6 +15,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.FindOneAndUpdateOptions;
+import com.mongodb.client.model.UpdateOneModel;
 import com.mongodb.client.model.UpdateOptions;
 
 public class Mongo {
@@ -58,6 +61,14 @@ public class Mongo {
 		while (cursor.hasNext()) 
 			list.add(SerializeUtil.JsonUtil.GSON.fromJson(cursor.next().toJson(), clazz));
 		return list;
+	}
+	
+	public void bulkUpdateOne(String collectionName, Map<Bson, Bson> updates) {
+		MongoCollection<Document> collection = connection.getCollection(collectionName);
+		List<UpdateOneModel<Document>> list = new ArrayList<UpdateOneModel<Document>>(updates.size());
+		for (Entry<Bson, Bson> entry : updates.entrySet())
+			list.add(new UpdateOneModel<Document>(entry.getKey(), entry.getValue()));
+		collection.bulkWrite(list);
 	}
 	
 	/**

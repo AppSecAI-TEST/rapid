@@ -1,7 +1,11 @@
 package org.rapid.data;
 
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.rapid.data.storage.mongo.KeyMapper;
 import org.rapid.data.storage.mongo.Mongo;
 import org.rapid.data.storage.mongo.MongoKey;
@@ -37,5 +41,12 @@ public class MongoTest extends TestCase {
 		mongo.findOneAndUpdate("findOneAndUpdate", 
 				Filters.eq("_id", "1"), Updates.set("policies.1", new Document().append("world", "hello")), 
 				new FindOneAndUpdateOptions().upsert(true), MongoKey.class);
+	}
+	
+	public void testUpdateOne() {
+		Map<Bson, Bson> map = new HashMap<Bson, Bson>();
+		for (int i = 0; i < 20; i++)
+			map.put(Filters.eq("_id", i), Updates.set("name", "张三" + i));
+		mongo.bulkUpdateOne("bulkUpdateOne", map);
 	}
 }

@@ -59,6 +59,8 @@
 		<aliyun.sts.version>2.1.6</aliyun.sts.version>
 		<aliyun.oss.version>2.5.0</aliyun.oss.version>
 		<aliyun.core.version>3.2.2</aliyun.core.version>
+		
+		<validation.version>1.1.0.Final</validation.version>
 
 		<!-- plugins -->
 		<maven-assembly.version>3.0.0</maven-assembly.version>
@@ -451,6 +453,12 @@
 				<groupId>org.mongodb</groupId>
 				<artifactId>mongo-java-driver</artifactId>
 				<version>${mongo.java.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>javax.validation</groupId>
+				<artifactId>validation-api</artifactId>
+				<version>${validation.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
