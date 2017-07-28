@@ -190,6 +190,10 @@ public class Mongo {
 		return SerializeUtil.JsonUtil.GSON.fromJson(document.toJson(), clazz);
 	}
 	
+	public MongoCollection<Document> collection(String collectionName) {
+		return connection.getCollection(collectionName);
+	}
+	
 	public void setDb(String db) {
 		this.db = db;
 	}

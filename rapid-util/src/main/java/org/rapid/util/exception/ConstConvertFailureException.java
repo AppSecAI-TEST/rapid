@@ -9,6 +9,7 @@ public class ConstConvertFailureException extends ConvertFailuerException {
 
 	private static final long serialVersionUID = 8901815837258754841L;
 	
+	private String desc;
 	private boolean miss;
 	private Const<?> constant;
 	
@@ -29,8 +30,12 @@ public class ConstConvertFailureException extends ConvertFailuerException {
 		this.constant = constant;
 	}
 	
+	public void setDesc(String desc) {
+		this.desc = desc;
+	}
+	
 	public String desc() {
-		return MessageFormat.format(miss ? Code.PARAM_MISS.value() : Code.PARAM_ERROR.value(), constant.key());
+		return null != desc ? desc : MessageFormat.format(miss ? Code.PARAM_MISS.value() : Code.PARAM_ERROR.value(), constant.key());
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -39,14 +44,14 @@ public class ConstConvertFailureException extends ConvertFailuerException {
 	}
 	
 	public static final ConstConvertFailureException nullConstException(Const<?> constant) { 
-		throw new ConstConvertFailureException(constant, true);
+		return new ConstConvertFailureException(constant, true);
 	}
 	
 	public static final ConstConvertFailureException errorConstException(Const<?> constant) { 
-		throw new ConstConvertFailureException(constant, false);
+		return new ConstConvertFailureException(constant, false);
 	}
 	
 	public static final ConstConvertFailureException errorConstException(Const<?> constant, Throwable cause) { 
-		throw new ConstConvertFailureException(constant, cause);
+		return new ConstConvertFailureException(constant, cause);
 	}
 }

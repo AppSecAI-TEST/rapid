@@ -31,6 +31,7 @@ public interface Consts {
 		Result OK 								= Result.result(Code.OK);
 		Result FORBID							= Result.result(Code.FORBID);
 		Result FAILURE							= Result.result(Code.FAILURE);
+		Result TOKEN_INVALID					= Result.result(Code.TOKEN_INVALID);
 		Result API_NOT_EXIST					= Result.result(Code.API_NOT_EXIST);
 		Result CAPTCHA_ERROR					= Result.result(Code.CAPTCHA_ERROR);
 		Result USER_NOT_EXIST					= Result.result(Code.USER_NOT_EXIST);
@@ -41,6 +42,12 @@ public interface Consts {
 		Result REGION_OUT_OF_BOUNDARY			= Result.result(Code.REGION_OUT_OF_BOUNDARY);
 		
 		Result EMPTY_LIST						= Result.result(Collections.EMPTY_LIST);
+	}
+	
+	interface REDIS {
+		final String OK														= "OK";
+		final String OPTION_ZREVRANGE 										= "ZREVRANGE";
+		final String OPTION_ZRANGE											= "ZRANGE";
 	}
 	
 	enum RegionLevel {

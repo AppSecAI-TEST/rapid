@@ -10,6 +10,8 @@ import org.rapid.data.storage.mongo.KeyMapper;
 import org.rapid.data.storage.mongo.Mongo;
 import org.rapid.data.storage.mongo.MongoKey;
 
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.FindOneAndUpdateOptions;
 import com.mongodb.client.model.UpdateOptions;
@@ -44,9 +46,10 @@ public class MongoTest extends TestCase {
 	}
 	
 	public void testUpdateOne() {
-		Map<Bson, Bson> map = new HashMap<Bson, Bson>();
-		for (int i = 0; i < 20; i++)
-			map.put(Filters.eq("_id", i), Updates.set("name", "张三" + i));
-		mongo.bulkUpdateOne("bulkUpdateOne", map);
+		FindIterable<Document> iterable =mongo.collection("vehicleOrder").find(Filters.eq("bonus.set", true));
+		MongoCursor<Document> cursor = iterable.iterator();
+		while (cursor.hasNext()) {
+			System.out.println(cursor.next());
+		}
 	}
 }

@@ -3,7 +3,11 @@ package org.rapid.util.validator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.validation.Validation;
+
 public class Validator {
+	
+	public static final javax.validation.Validator JSR_VALIDATOR = Validation.buildDefaultValidatorFactory().getValidator();
 
 	/**
 	 * 10位 unix 时间戳
