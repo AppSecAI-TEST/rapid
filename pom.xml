@@ -486,6 +486,14 @@
 						<groupId>javax.validation</groupId>
 						<artifactId>validation-api</artifactId>
 					</exclusion>
+					<exclusion>
+						<groupId>org.jboss.logging</groupId>
+						<artifactId>jboss-logging</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>com.fasterxml</groupId>
+						<artifactId>classmate</artifactId>
+					</exclusion>
 				</exclusions>
 			</dependency>
 			<dependency>

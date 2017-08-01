@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,6 +12,8 @@ import java.util.Map;
 import java.util.Set;
 
 public class CollectionUtil {
+	
+	public static final Map EMPTY_MAP	= new HashMap<>();
 	
 	public static final Set<Long> splitToLongSet(String param, String regex) {
 		String[] arr = param.split(regex);
@@ -64,6 +67,15 @@ public class CollectionUtil {
 		List<Integer> temp = new ArrayList<Integer>();
 		for (String str : collection)
 			temp.add(Integer.valueOf(str));
+		return temp;
+	}
+	
+	public static final LinkedList<Integer> toIntLinkedList(String... params) {
+		if (null == params || 0 == params.length)
+			return null;
+		LinkedList<Integer> temp = new LinkedList<Integer>();
+		for (int i = 0, len = params.length; i < len; i++)
+			temp.addLast(Integer.valueOf(params[i]));
 		return temp;
 	}
 	

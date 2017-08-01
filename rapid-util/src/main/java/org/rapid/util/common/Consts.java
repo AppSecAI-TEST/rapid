@@ -34,9 +34,9 @@ public interface Consts {
 		Result TOKEN_INVALID					= Result.result(Code.TOKEN_INVALID);
 		Result API_NOT_EXIST					= Result.result(Code.API_NOT_EXIST);
 		Result CAPTCHA_ERROR					= Result.result(Code.CAPTCHA_ERROR);
+		Result LOCK_CONFLICT					= Result.result(Code.LOCK_CONFLICT);
 		Result USER_NOT_EXIST					= Result.result(Code.USER_NOT_EXIST);
 		Result KEY_DUPLICATED					= Result.result(Code.KEY_DUPLICATED);
-		Result USER_STATUS_CHANGED				= Result.result(Code.USER_STATUS_CHANGED);
 		Result UNSUPPORTED_SERVICE				= Result.result(Code.UNSUPPORTED_SERVICE);
 		Result SORT_FIELD_NOT_EXIST	 			= Result.result(Code.SORT_FIELD_NOT_EXIST);
 		Result REGION_OUT_OF_BOUNDARY			= Result.result(Code.REGION_OUT_OF_BOUNDARY);

@@ -26,6 +26,20 @@ public class DistributeLock {
 		return null;
 	}
 	
+	public String lock(String lock) {
+		long begin = System.nanoTime();
+		while (true) {
+			String lockId = tryLock(lock);
+			if (null != lockId)
+				return lockId;
+			
+			long time = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - begin);
+			if (time >= lockTimeout)
+				return null;
+			Thread.yield();
+		}
+	}
+	
 	public String lock(String lock, long timeout) {
 		long begin = System.nanoTime();
 		while (true) {
@@ -36,7 +50,6 @@ public class DistributeLock {
 			long time = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - begin);
 			if (time >= timeout)
 				return null;
-			// TODO:
 			Thread.yield();
 		}
 	}

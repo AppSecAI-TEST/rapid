@@ -10,7 +10,7 @@ import org.rapid.util.reflect.BeanUtils;
 
 public class SQLProvider {
 	
-	private static final String COLLECTION					= "collection";
+	protected static final String COLLECTION					= "collection";
 	
 	protected String table;
 	protected String keyCol;

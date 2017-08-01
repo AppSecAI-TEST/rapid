@@ -46,7 +46,7 @@ public class Validator {
 	public static boolean isIdentity(String identity) {
 		return _matches(IDENTITY, identity);
 	}
-
+	
 	/**
 	 * 校验车牌号
 	 * 
@@ -81,6 +81,9 @@ public class Validator {
 	 */
 	public static boolean isLetterDigitOrChinese(String input) {
 		return _matches(LETTER_DIGIT_CHINESE, input);
+	}
+	public static void main(String[] args) {
+		
 	}
 	
 	private static boolean _matches(Pattern pattern, CharSequence input) {

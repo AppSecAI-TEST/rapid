@@ -68,9 +68,9 @@ public enum Code implements ICode {
 	USER_ALREADY_EXIST(21, "user already exist"),
 	
 	/**
-	 * 用户状态已经改变，当获取用户锁失败时返回该错误，表示当前用户的数据正在被修改中
+	 * 锁资源冲突,需要客户端提示服务正忙请稍后类似的提示
 	 */
-	USER_STATUS_CHANGED(22, "user status changed"),
+	LOCK_CONFLICT(22, "lock conflict"),
 	
 	/**
 	 * 验证码获取CD

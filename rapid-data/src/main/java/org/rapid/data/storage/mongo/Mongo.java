@@ -1,12 +1,14 @@
 package org.rapid.data.storage.mongo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.rapid.util.common.model.UniqueModel;
 import org.rapid.util.common.serializer.SerializeUtil;
 
 import com.mongodb.MongoClient;
@@ -14,7 +16,9 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.FindOneAndUpdateOptions;
+import com.mongodb.client.model.ReplaceOneModel;
 import com.mongodb.client.model.UpdateOneModel;
 import com.mongodb.client.model.UpdateOptions;
 
@@ -53,6 +57,18 @@ public class Mongo {
 		return list;
 	}
 	
+	public <KEY, T extends UniqueModel<KEY>> Map<KEY, T> findMap(String collectionName, Bson filter, Class<T> clazz) { 
+		MongoCollection<Document> collection = connection.getCollection(collectionName);
+		FindIterable<Document> iterable = collection.find(filter);
+		Map<KEY, T> map = new HashMap<KEY, T>();
+		MongoCursor<Document> cursor = iterable.iterator();
+		while (cursor.hasNext()) {
+			T t = SerializeUtil.JsonUtil.GSON.fromJson(cursor.next().toJson(), clazz);
+			map.put(t.key(), t);
+		}
+		return map;
+	}
+	
 	public <T> List<T> find(String collectionName, Bson filter, Class<T> clazz) { 
 		MongoCollection<Document> collection = connection.getCollection(collectionName);
 		FindIterable<Document> iterable = collection.find(filter);
@@ -68,6 +84,14 @@ public class Mongo {
 		List<UpdateOneModel<Document>> list = new ArrayList<UpdateOneModel<Document>>(updates.size());
 		for (Entry<Bson, Bson> entry : updates.entrySet())
 			list.add(new UpdateOneModel<Document>(entry.getKey(), entry.getValue()));
+		collection.bulkWrite(list);
+	}
+	
+	public <KEY, MODEL extends UniqueModel<KEY>> void bulkReplaceOne(String collectionName, Map<KEY, MODEL> replaces) {
+		MongoCollection<Document> collection = connection.getCollection(collectionName);
+		List<ReplaceOneModel<Document>> list = new ArrayList<ReplaceOneModel<Document>>(replaces.size());
+		for (MODEL model : replaces.values()) 
+			list.add(new ReplaceOneModel<Document>(Filters.eq("_id", model.key()), serial(model), new UpdateOptions().upsert(true)));
 		collection.bulkWrite(list);
 	}
 	
@@ -170,6 +194,11 @@ public class Mongo {
 		MongoCollection<Document> collection = connection.getCollection(collectionName);
 		Document document = collection.findOneAndUpdate(filter, update, options);
 		return null == document ? null : deserial(document, clazz);
+	}
+	
+	public void update(String collectionName, Bson filter, Bson update) {
+		MongoCollection<Document> collection = connection.getCollection(collectionName);
+		collection.updateMany(filter, update);
 	}
 	
 	public void deleteMany(String collectionName, Bson filter) {

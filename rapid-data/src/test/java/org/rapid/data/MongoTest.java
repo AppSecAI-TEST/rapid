@@ -1,11 +1,7 @@
 package org.rapid.data;
 
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.bson.Document;
-import org.bson.conversions.Bson;
 import org.rapid.data.storage.mongo.KeyMapper;
 import org.rapid.data.storage.mongo.Mongo;
 import org.rapid.data.storage.mongo.MongoKey;
@@ -46,10 +42,14 @@ public class MongoTest extends TestCase {
 	}
 	
 	public void testUpdateOne() {
-		FindIterable<Document> iterable =mongo.collection("vehicleOrder").find(Filters.eq("bonus.set", true));
+		FindIterable<Document> iterable = mongo.collection("vehicleOrder").find(Filters.eq("bonus.set", true));
 		MongoCursor<Document> cursor = iterable.iterator();
 		while (cursor.hasNext()) {
 			System.out.println(cursor.next());
 		}
+	}
+	
+	public void testUpdate() {
+		mongo.update("NonAutoCategory", Filters.eq("name", "疾病险"), Updates.set("name", "健康险"));
 	}
 }
