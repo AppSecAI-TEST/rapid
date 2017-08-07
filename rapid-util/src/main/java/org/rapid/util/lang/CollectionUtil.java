@@ -15,14 +15,6 @@ public class CollectionUtil {
 	
 	public static final Map EMPTY_MAP	= new HashMap<>();
 	
-	public static final Set<Long> splitToLongSet(String param, String regex) {
-		String[] arr = param.split(regex);
-		Set<Long> set = new HashSet<Long>(arr.length);
-		for (int i = 0, len = arr.length; i < len; i++)
-			set.add(Long.valueOf(arr[i]));
-		return set;
-	}
-	
 	public static final List<Long> splitToLongList(String param, String regex) {
 		String[] arr = param.split(regex);
 		List<Long> list = new ArrayList<Long>(arr.length);
