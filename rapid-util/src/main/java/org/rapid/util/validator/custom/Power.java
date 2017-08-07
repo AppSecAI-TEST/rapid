@@ -1,4 +1,4 @@
-package org.rapid.util.validator;
+package org.rapid.util.validator.custom;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

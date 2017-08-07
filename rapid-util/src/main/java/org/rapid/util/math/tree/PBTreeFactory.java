@@ -1,8 +1,10 @@
 package org.rapid.util.math.tree;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Parent based tree factory ： 基于父子结构的 factory，根据当前节点的父节点来构造树，需要子类实现 instance 方法
@@ -24,15 +26,22 @@ public abstract class PBTreeFactory<ID, NODE extends Node<ID>, DOCUMENT extends 
 		for (NODE node : nodes) {
 			ID id = node.getId();
 			DOCUMENT document = instance(node);
-			DOCUMENT child = parallels.get(id);
-			if (null == child) 
-				parallels.put(id, document);
-			else {
-				parallels.remove(id);
-				document.addChild(child);
-				if (null != node.getParentId())
-					parallels.put(node.getParentId(), document);
+			parallels.put(id, document);
+			if (null != node.getParentId()) {
+				for (Entry<ID, DOCUMENT> entry : parallels.entrySet()) {
+					if (node.getParentId().equals(entry.getKey())) {
+						entry.getValue().addChild(document);
+						break;
+					}
+				}
 			}
+		}
+		Iterator<DOCUMENT> iterator = parallels.values().iterator();
+		while (iterator.hasNext()) {
+			DOCUMENT document = iterator.next();
+			if (null == document.node.getParentId())
+				continue;
+			iterator.remove();
 		}
 		return parallels;
 	}

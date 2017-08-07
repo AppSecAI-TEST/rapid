@@ -1,8 +1,10 @@
 package org.rapid.data.storage.mybatis;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.ibatis.jdbc.SQL;
 import org.rapid.util.lang.StringUtil;
@@ -14,7 +16,8 @@ public class SQLProvider {
 	
 	protected String table;
 	protected String keyCol;
-	protected boolean useGeneratedKeys;						// 是否自动生成主键默认自动生成主键
+	protected boolean useGeneratedKeys;													// 是否自动生成主键默认自动生成主键
+	protected Set<String> updateExclusive = new HashSet<String>();						// 不需要更新的字段
 	
 	protected SQLProvider(String table, String keyCol) {
 		this(table, keyCol, true);
@@ -74,11 +77,15 @@ public class SQLProvider {
 		SQL sql = new SQL();
 		sql.UPDATE(table);
 		String keyCamelCol = null;
-		for (Entry<String, Object> entry : params.entrySet()) {
+		a : for (Entry<String, Object> entry : params.entrySet()) {
 			String col = StringUtil.camel2Underline(entry.getKey());
 			if (keyCol.equals(col))	{									// 主键不在更新之列
 				keyCamelCol = entry.getKey();
 				continue;
+			}
+			for (String ncol : updateExclusive) {
+				if (col.equals(ncol))
+					continue a;
 			}
 			sql.SET("`" + col + "`=#{" + entry.getKey() + "}");
 		}
@@ -93,5 +100,10 @@ public class SQLProvider {
 				WHERE("`" + keyCol + "`=#{key}");
 			}
 		}.toString();
+	}
+	
+	protected void addNoUpdateCol(String... cols) {
+		for (String col : cols)
+			this.updateExclusive.add(col);
 	}
 }
