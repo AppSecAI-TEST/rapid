@@ -115,16 +115,6 @@ public class RedisMapper<KEY, MODEL extends UniqueModel<KEY>> implements Mapper<
 		redis.hmset(redisKey, map);
 	}
 	
-	@Deprecated
-	public void flush(Collection<MODEL> models) {
-		if (CollectionUtil.isEmpty(models))
-			return;
-		Map<byte[], byte[]> map = new HashMap<byte[], byte[]>();
-		for (MODEL model : models)
-			map.put(SerializeUtil.RedisUtil.encode(model.key()), serializer.convert(model));
-		redis.hmset(redisKey, map);
-	}
-	
 	public void setSerializer(Serializer<MODEL, byte[]> serializer) {
 		this.serializer = serializer;
 	}
