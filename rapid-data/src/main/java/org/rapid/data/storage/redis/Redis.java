@@ -202,6 +202,17 @@ public class Redis {
 		invokeLua(setKeys.length + 1, ILuaCmd.LuaCmd.HMSDEL, params);
 	}
 	
+	public void hmsdrop(Object redisKey, Object... setKeys) { 
+		if (setKeys.length == 0)
+			throw new RuntimeException("Must speicfy a set key to drop");
+		Object[] params = new Object[setKeys.length + 1];
+		int idx = 0;
+		params[idx++] = redisKey;
+		for (Object zsetKey : setKeys)
+			params[idx++] = zsetKey;
+		invokeLua(setKeys.length + 1, ILuaCmd.LuaCmd.HMSDROP, params);
+	}
+	
 	public List<byte[]> hmsget(Object hashKey, Object setKey) {
 		Object[] params = new Object[2];
 		params[0] = hashKey;

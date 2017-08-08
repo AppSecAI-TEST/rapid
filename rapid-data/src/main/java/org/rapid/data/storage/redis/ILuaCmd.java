@@ -96,6 +96,13 @@ public interface ILuaCmd {
 			}
 		},
 		
+		HMSDROP {
+			@Override
+			public int keyNum() {
+				throw new UnsupportedOperationException("HMSDROP has no fixed keys!");
+			}
+		},
+		
 		HMSGET {
 			@Override
 			public int keyNum() {
