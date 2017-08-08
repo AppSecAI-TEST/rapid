@@ -98,6 +98,14 @@ public class RedisMapper<KEY, MODEL extends UniqueModel<KEY>> implements Mapper<
 		redis.hdel(redisKey, model.key());
 	}
 	
+	public void remove(Map<KEY, MODEL> models) {
+		Object[] keys = new Object[models.size()];
+		int idx = 0;
+		for (KEY key : models.keySet())
+			keys[idx++] = key;
+		redis.hdel(redisKey, keys);
+	}
+	
 	public void flush(Map<KEY, MODEL> models) {
 		if (CollectionUtil.isEmpty(models))
 			return;
