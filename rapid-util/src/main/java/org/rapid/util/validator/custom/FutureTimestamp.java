@@ -11,15 +11,13 @@ import javax.validation.Payload;
 
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = MobileValidator.class)
+@Constraint(validatedBy = TimestampValidator.class)
 @Documented
-public @interface Mobile {
+public @interface FutureTimestamp {
 
-	String message() default "{org.btkj.mobile}";
+	String message() default "{org.btkj.timestamp}";
 	
 	Class<?>[] groups() default {};
 	
 	Class<? extends Payload>[] payload() default {};
-	
-	String region() default "CN";
 }
