@@ -31,6 +31,7 @@ public interface Consts {
 		Result OK 								= Result.result(Code.OK);
 		Result FORBID							= Result.result(Code.FORBID);
 		Result FAILURE							= Result.result(Code.FAILURE);
+		Result NO_PRIVILEGE						= Result.result(Code.NO_PRIVILEGE);
 		Result TOKEN_INVALID					= Result.result(Code.TOKEN_INVALID);
 		Result API_NOT_EXIST					= Result.result(Code.API_NOT_EXIST);
 		Result CAPTCHA_ERROR					= Result.result(Code.CAPTCHA_ERROR);

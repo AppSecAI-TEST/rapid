@@ -21,7 +21,8 @@ public class SqlUtil {
 		for (Entry<String, Object> entry : params.entrySet()) {
 			if (!first)
 				sql.append(SPACE).append(AND).append(SPACE);
-			first = false;
+			else
+				first = false;
 			sql.append(REV_QUOTE).append(entry.getKey()).append(REV_QUOTE).append(Consts.SYMBOL_EQUAL);
 			if (ClassUtil.isNumber(entry.getValue())) 
 				sql.append(entry.getValue());

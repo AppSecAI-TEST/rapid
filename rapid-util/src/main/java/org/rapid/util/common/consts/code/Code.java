@@ -58,6 +58,11 @@ public enum Code implements ICode {
 	API_NOT_EXIST(9, "api not exist"),
 	
 	/**
+	 * 权限不够
+	 */
+	NO_PRIVILEGE(10, "no privilege"),
+	
+	/**
 	 * 用户不存在
 	 */
 	USER_NOT_EXIST(20, "user not exist"),
