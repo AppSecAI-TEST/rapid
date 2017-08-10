@@ -15,7 +15,7 @@ import javax.validation.Payload;
 @Documented
 public @interface FutureTimestamp {
 
-	String message() default "{org.btkj.timestamp}";
+	String message() default "{org.btkj.futureTimestamp}";
 	
 	Class<?>[] groups() default {};
 	

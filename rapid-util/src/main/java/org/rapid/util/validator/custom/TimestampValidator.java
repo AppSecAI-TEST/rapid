@@ -14,6 +14,6 @@ public class TimestampValidator implements ConstraintValidator<FutureTimestamp, 
 	public boolean isValid(Integer value, ConstraintValidatorContext context) {
 		if (null == value)
 			return true;
-		return DateUtil.currentTime() > value;
+		return DateUtil.currentTime() < value;
 	}
 }

@@ -101,6 +101,34 @@ public final class DateUtil {
 		}
 	}
 	
+	/**
+	 * 根据传入的时间获取该时间下一年的终点
+	 * 
+	 * @param date
+	 * @param fomat
+	 * @param toFormat
+	 * @return
+	 */
+	public static String dateOfYearTail(String date, String format, String toFormat) {
+		long timestamp = getTime(date, format);
+		GregorianCalendar calendar = new GregorianCalendar();
+		calendar.setTimeInMillis(timestamp);
+		return null;
+	}
+	public static void main(String[] args) {
+		String date = "2017-08-10 15:09:10";
+		System.out.println(getTime(date, YYYY_MM_DD_HH_MM_SS));
+		GregorianCalendar calendar = new GregorianCalendar();
+		calendar.setTimeInMillis(getTime(date, YYYY_MM_DD_HH_MM_SS));
+		System.out.println(calendar.get(Calendar.YEAR));
+		System.out.println(calendar.get(Calendar.MONTH));
+		System.out.println(calendar.get(Calendar.DAY_OF_MONTH));
+		System.out.println(calendar.get(Calendar.HOUR_OF_DAY));
+		System.out.println(calendar.get(Calendar.MINUTE));
+		System.out.println(calendar.get(Calendar.SECOND));
+		System.out.println(calendar.get(Calendar.MILLISECOND));
+	}
+	
 	public static int year(TimeZone timeZone, Locale locale, long time) {
 		GregorianCalendar calendar = new GregorianCalendar(timeZone, locale);
 		calendar.setTime(new Date(time));

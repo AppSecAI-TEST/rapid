@@ -63,6 +63,11 @@ public enum Code implements ICode {
 	NO_PRIVILEGE(10, "no privilege"),
 	
 	/**
+	 * 区间重叠
+	 */
+	RANGE_OVERLAP(11, "range overlap"),
+	
+	/**
 	 * 用户不存在
 	 */
 	USER_NOT_EXIST(20, "user not exist"),
