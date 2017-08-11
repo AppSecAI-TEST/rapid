@@ -15,6 +15,10 @@ public class CollectionUtil {
 	
 	public static final Map EMPTY_MAP	= new HashMap<>();
 	
+	public static final <T> List<T> emptyArrayList() {
+		return new ArrayList<T>();
+	}
+	
 	public static final List<Long> splitToLongList(String param, String regex) {
 		String[] arr = param.split(regex);
 		List<Long> list = new ArrayList<Long>(arr.length);

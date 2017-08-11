@@ -12,17 +12,17 @@ public enum ComparisonSymbol {
 	/**
 	 * 大于
 	 */
-	GREATER_THAN(1) {
+	gt(1) {
 		@Override
 		protected boolean checkOverlap(ComparisonSymbol symbol, String[] cval, String[] val) {
 			switch (symbol) {
-			case EQUAL:
-			case LESS_THAN:
-			case LESS_THAN_OR_EQUAL:
+			case eq:
+			case lt:
+			case lte:
 				return Integer.valueOf(cval[0]) <= Integer.valueOf(val[0]);
-			case BETWEEN:
-			case LE_BETWEEN:
-			case RE_BETWEEN:
+			case bteween:
+			case lbteween:
+			case rbteween:
 				return Integer.valueOf(cval[1]) <= Integer.valueOf(val[0]);
 			default:
 				return false;
@@ -33,19 +33,19 @@ public enum ComparisonSymbol {
 	/**
 	 * 大于等于
 	 */
-	GREATER_THAN_OR_EQUAL(2) {
+	gte(2) {
 		@Override
 		protected boolean checkOverlap(ComparisonSymbol symbol, String[] cval, String[] val) {
 			switch (symbol) {
-			case LESS_THAN:
+			case lt:
 				return Integer.valueOf(cval[0]) <= Integer.valueOf(val[0]);
-			case EQUAL:
-			case LESS_THAN_OR_EQUAL:
+			case eq:
+			case lte:
 				return Integer.valueOf(cval[0]) < Integer.valueOf(val[0]);
-			case BETWEEN:
-			case LE_BETWEEN:
+			case bteween:
+			case lbteween:
 				return Integer.valueOf(cval[1]) <= Integer.valueOf(val[0]);
-			case RE_BETWEEN:
+			case rbteween:
 				return Integer.valueOf(cval[1]) < Integer.valueOf(val[0]);
 			default:
 				return false;
@@ -53,16 +53,16 @@ public enum ComparisonSymbol {
 		}
 	},
 	
-	LESS_THAN(3) {
+	lt(3) {
 		@Override
 		protected boolean checkOverlap(ComparisonSymbol symbol, String[] cval, String[] val) {
 			switch (symbol) {
-			case EQUAL:
-			case BETWEEN:
-			case LE_BETWEEN:
-			case RE_BETWEEN:
-			case GREATER_THAN:
-			case GREATER_THAN_OR_EQUAL:
+			case eq:
+			case bteween:
+			case lbteween:
+			case rbteween:
+			case gt:
+			case gte:
 				return Integer.valueOf(cval[0]) >= Integer.valueOf(val[0]);
 			default:
 				return false;
@@ -70,17 +70,17 @@ public enum ComparisonSymbol {
 		}
 	},
 	
-	LESS_THAN_OR_EQUAL(4) {
+	lte(4) {
 		@Override
 		protected boolean checkOverlap(ComparisonSymbol symbol, String[] cval, String[] val) {
 			switch (symbol) {
-			case EQUAL:
-			case LE_BETWEEN:
-			case GREATER_THAN_OR_EQUAL:
+			case eq:
+			case lbteween:
+			case gte:
 				return Integer.valueOf(cval[0]) > Integer.valueOf(val[0]);
-			case BETWEEN:
-			case RE_BETWEEN:
-			case GREATER_THAN:
+			case bteween:
+			case rbteween:
+			case gt:
 				return Integer.valueOf(cval[0]) >= Integer.valueOf(val[0]);
 			default:
 				return false;
@@ -88,28 +88,28 @@ public enum ComparisonSymbol {
 		}
 	},
 	
-	EQUAL(5) {
+	eq(5) {
 		@Override
 		protected boolean checkOverlap(ComparisonSymbol symbol, String[] cval, String[] val) {
 			if (Validator.isNumber(val[0])) {
 				switch (symbol) {
-				case GREATER_THAN:
+				case gt:
 					return Integer.valueOf(cval[0]) >= Integer.valueOf(val[0]);
-				case GREATER_THAN_OR_EQUAL:
+				case gte:
 					return Integer.valueOf(cval[0]) > Integer.valueOf(val[0]);
-				case LESS_THAN:
+				case lt:
 					return Integer.valueOf(cval[0]) <= Integer.valueOf(val[0]);
-				case LESS_THAN_OR_EQUAL:
+				case lte:
 					return Integer.valueOf(cval[0]) < Integer.valueOf(val[0]);
-				case EQUAL:
+				case eq:
 					return Integer.valueOf(cval[0]) != Integer.valueOf(val[0]);
-				case BETWEEN:
+				case bteween:
 					return Integer.valueOf(cval[0]) >= Integer.valueOf(val[0])
 						|| Integer.valueOf(cval[1]) <= Integer.valueOf(val[0]);
-				case LE_BETWEEN:
+				case lbteween:
 					return Integer.valueOf(cval[0]) > Integer.valueOf(val[0])
 						|| Integer.valueOf(cval[1]) <= Integer.valueOf(val[0]);
-				case RE_BETWEEN:
+				case rbteween:
 					return Integer.valueOf(cval[0]) >= Integer.valueOf(val[0])
 						|| Integer.valueOf(cval[1]) < Integer.valueOf(val[0]);
 				default:
@@ -117,7 +117,7 @@ public enum ComparisonSymbol {
 				}
 			} else {
 				switch (symbol) {
-				case EQUAL:
+				case eq:
 					return !cval[0].equals(val[0]);
 				default:
 					return false;
@@ -126,22 +126,22 @@ public enum ComparisonSymbol {
 		}
 	},
 	
-	BETWEEN(7) {
+	bteween(7) {
 		@Override
 		protected boolean checkOverlap(ComparisonSymbol symbol, String[] cval, String[] val) {
 			switch (symbol) {
-			case GREATER_THAN:
-			case GREATER_THAN_OR_EQUAL:
+			case gt:
+			case gte:
 				return Integer.valueOf(cval[0]) >= Integer.valueOf(val[1]);
-			case LESS_THAN:
-			case LESS_THAN_OR_EQUAL:
+			case lt:
+			case lte:
 				return Integer.valueOf(cval[0]) <= Integer.valueOf(val[0]);
-			case EQUAL:
+			case eq:
 				return Integer.valueOf(cval[0]) <= Integer.valueOf(val[0])
 					|| Integer.valueOf(cval[0]) >= Integer.valueOf(val[1]);
-			case BETWEEN:
-			case LE_BETWEEN:
-			case RE_BETWEEN:
+			case bteween:
+			case lbteween:
+			case rbteween:
 				return Integer.valueOf(cval[0]) >= Integer.valueOf(val[1])
 					|| Integer.valueOf(cval[1]) <= Integer.valueOf(val[0]);
 			default:
@@ -150,25 +150,25 @@ public enum ComparisonSymbol {
 		}
 	},
 	
-	LE_BETWEEN(8) {
+	lbteween(8) {
 		@Override
 		protected boolean checkOverlap(ComparisonSymbol symbol, String[] cval, String[] val) {
 			switch (symbol) {
-			case GREATER_THAN:
-			case GREATER_THAN_OR_EQUAL:
+			case gt:
+			case gte:
 				return Integer.valueOf(cval[0]) >= Integer.valueOf(val[1]);
-			case LESS_THAN:
+			case lt:
 				return Integer.valueOf(cval[0]) <= Integer.valueOf(val[0]);
-			case LESS_THAN_OR_EQUAL:
+			case lte:
 				return Integer.valueOf(cval[0]) < Integer.valueOf(val[0]);
-			case EQUAL:
+			case eq:
 				return Integer.valueOf(cval[0]) >= Integer.valueOf(val[1])
 					|| Integer.valueOf(cval[0]) < Integer.valueOf(val[0]);
-			case BETWEEN:
-			case LE_BETWEEN:
+			case bteween:
+			case lbteween:
 				return Integer.valueOf(cval[0]) >= Integer.valueOf(val[1])
 					|| Integer.valueOf(cval[1]) <= Integer.valueOf(val[0]);
-			case RE_BETWEEN:
+			case rbteween:
 				return Integer.valueOf(cval[0]) >= Integer.valueOf(val[1])
 					|| Integer.valueOf(cval[1]) < Integer.valueOf(val[0]);
 			default:
@@ -177,25 +177,25 @@ public enum ComparisonSymbol {
 		}
 	},
 	
-	RE_BETWEEN(9) {
+	rbteween(9) {
 		@Override
 		protected boolean checkOverlap(ComparisonSymbol symbol, String[] cval, String[] val) {
 			switch (symbol) {
-			case GREATER_THAN:
+			case gt:
 				return Integer.valueOf(cval[0]) >= Integer.valueOf(val[1]);
-			case GREATER_THAN_OR_EQUAL:
+			case gte:
 				return Integer.valueOf(cval[0]) > Integer.valueOf(val[1]);
-			case LESS_THAN:
-			case LESS_THAN_OR_EQUAL:
+			case lt:
+			case lte:
 				return Integer.valueOf(cval[0]) <= Integer.valueOf(val[0]);
-			case EQUAL:
+			case eq:
 				return Integer.valueOf(cval[0]) > Integer.valueOf(val[1])
 					|| Integer.valueOf(cval[0]) <= Integer.valueOf(val[0]);
-			case BETWEEN:
-			case RE_BETWEEN:
+			case bteween:
+			case rbteween:
 				return Integer.valueOf(cval[0]) >= Integer.valueOf(val[1])
 					|| Integer.valueOf(cval[1]) <= Integer.valueOf(val[0]);
-			case LE_BETWEEN:
+			case lbteween:
 				return Integer.valueOf(cval[0]) > Integer.valueOf(val[1])
 					|| Integer.valueOf(cval[1]) <= Integer.valueOf(val[0]);
 			default:
@@ -222,7 +222,7 @@ public enum ComparisonSymbol {
 	
 	public boolean isOverlap(ComparisonSymbol symbol, String[] cval, String[] val) {
 		try {
-			if (symbol == ComparisonSymbol.BETWEEN || symbol == ComparisonSymbol.LE_BETWEEN || symbol == ComparisonSymbol.RE_BETWEEN) {
+			if (symbol == ComparisonSymbol.bteween || symbol == ComparisonSymbol.lbteween || symbol == ComparisonSymbol.rbteween) {
 				if (cval.length != 2 || (Integer.valueOf(cval[0]) >= Integer.valueOf(cval[1])))
 					return true;
 			} else if (cval.length != 1)

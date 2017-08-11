@@ -10,15 +10,15 @@ public enum StrComparable implements Comparable<String> {
 		if (0 == len)
 			throw new IllegalArgumentException("Comparable targets error");
 		switch (symbol) {
-		case EQUAL:
+		case eq:
 			return targets[0].equals(src);
-		case GREATER_THAN:
-		case GREATER_THAN_OR_EQUAL:
-		case LESS_THAN:
-		case LESS_THAN_OR_EQUAL:
-		case BETWEEN:
-		case LE_BETWEEN:
-		case RE_BETWEEN:
+		case gt:
+		case gte:
+		case lt:
+		case lte:
+		case bteween:
+		case lbteween:
+		case rbteween:
 			throw new UnsupportedOperationException("String can not compare whith range symbol");
 		default:
 			return false;

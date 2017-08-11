@@ -10,26 +10,26 @@ public enum IntComparable implements Comparable<Integer> {
 		if (0 == len)
 			throw new IllegalArgumentException("Comparable targets error");
 		switch (symbol) {
-		case EQUAL:
+		case eq:
 			return targets[0] == src;
-		case GREATER_THAN:
+		case gt:
 			return src.intValue() > targets[0].intValue();
-		case GREATER_THAN_OR_EQUAL:
+		case gte:
 			return src.intValue() >= targets[0].intValue();
-		case LESS_THAN:
+		case lt:
 			return src.intValue() < targets[0].intValue();
-		case LESS_THAN_OR_EQUAL:
+		case lte:
 			return src.intValue() <= targets[0].intValue();
-		case BETWEEN:
-		case LE_BETWEEN:
-		case RE_BETWEEN:
+		case bteween:
+		case lbteween:
+		case rbteween:
 			if (2 != len)
 				throw new IllegalArgumentException("Comparable targets error");
 			int max = Math.max(targets[0], targets[1]);
 			int min = Math.min(targets[0], targets[1]);
-			if (symbol == ComparisonSymbol.BETWEEN)
+			if (symbol == ComparisonSymbol.bteween)
 				return (src > min && src < max);
-			else if (symbol == ComparisonSymbol.LE_BETWEEN) 
+			else if (symbol == ComparisonSymbol.lbteween) 
 				return (src >= min && src < max);
 			else
 				return (src > min && src <= max);
