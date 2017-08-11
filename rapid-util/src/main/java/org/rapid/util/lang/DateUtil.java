@@ -17,9 +17,10 @@ public final class DateUtil {
 	public static final String YYYYMM					= "yyyyMM";
 	public static final String YYYYMMDD					= "yyyyMMdd";
 	public static final String YYYY_MM_DD_HH_MM_SS		= "yyyy-MM-dd HH:mm:ss";
+	public static final String YYYY_MM_DDTHH_MM_SS		= "yyyy-MM-dd'T'HH:mm:ss";
 	public static final String ISO8601_UTC 				= "yyyy-MM-dd'T'HH:mm:ss'Z'";
 	public static final TimeZone TIMEZONE_UTC			= TimeZone.getTimeZone("UTC");
-	public static final TimeZone TIMEZONE_GMT_8			= TimeZone.getTimeZone("GMT+:08:00");
+	public static final TimeZone TIMEZONE_GMT_8			= TimeZone.getTimeZone("GMT+8:00");
 	
 	/**
 	 * 一天的毫秒数
@@ -42,6 +43,11 @@ public final class DateUtil {
 	
 	public static String UTCDate() { 
 		return getDate(ISO8601_UTC, System.currentTimeMillis(), TIMEZONE_UTC);
+	}
+	
+	public static String convert(String date, String format, String toFormat, TimeZone timeZone) {
+		long timestamp = getTime(date, format, timeZone);
+		return getDate(toFormat, timestamp, timeZone);
 	}
 	
 	public static String getDate(String format, int timestamp) {
@@ -109,24 +115,14 @@ public final class DateUtil {
 	 * @param toFormat
 	 * @return
 	 */
-	public static String dateOfYearTail(String date, String format, String toFormat) {
-		long timestamp = getTime(date, format);
+	public static String dateOyearTail(String date, String format, String toFormat, TimeZone timeZone) {
+		long timestamp = getTime(date, format, timeZone);
+		timestamp -= 1000;				// 减去一秒
 		GregorianCalendar calendar = new GregorianCalendar();
+		calendar.setTimeZone(timeZone);
 		calendar.setTimeInMillis(timestamp);
-		return null;
-	}
-	public static void main(String[] args) {
-		String date = "2017-08-10 15:09:10";
-		System.out.println(getTime(date, YYYY_MM_DD_HH_MM_SS));
-		GregorianCalendar calendar = new GregorianCalendar();
-		calendar.setTimeInMillis(getTime(date, YYYY_MM_DD_HH_MM_SS));
-		System.out.println(calendar.get(Calendar.YEAR));
-		System.out.println(calendar.get(Calendar.MONTH));
-		System.out.println(calendar.get(Calendar.DAY_OF_MONTH));
-		System.out.println(calendar.get(Calendar.HOUR_OF_DAY));
-		System.out.println(calendar.get(Calendar.MINUTE));
-		System.out.println(calendar.get(Calendar.SECOND));
-		System.out.println(calendar.get(Calendar.MILLISECOND));
+		calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) + 1);	// 加一年
+		return getDate(toFormat, calendar.getTimeInMillis(), timeZone);
 	}
 	
 	public static int year(TimeZone timeZone, Locale locale, long time) {
